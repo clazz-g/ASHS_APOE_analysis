@@ -9,62 +9,14 @@ editor_options:
 ---
 
 ```{r, include = F}
-library(readxl)
-#install.packages("ggplot2")
-library(ggplot2)
-#install.packages("psych")
-library(psych)
-#install.packages("tidyverse")
-library(tidyverse)
-#install.packages("ggpubr")
-library(ggpubr)
-#install.packages("broom")
-library(broom)
-#install.packages("ggeffects")
-library(ggeffects)
-#install.packages("MASS")
-library(MASS)
-#install.packages("mice")
-library(mice)
-#install.packages("VIM")
-library(VIM)
-#install.packages("car")
-library(car)
-#install.packages("sjPlot")
-library(sjPlot)
-#install.packages("caret")
-library(caret)
-#install.packages("bestNormalize")
-library(bestNormalize)
-#install.packages("ggrain")
-library(ggrain)
-#install.packages("emmeans")
-library(emmeans)
-#install.packages("skimr")
-library(skimr)
-library(glmnet)
-#install.packages("bullseye")
-library(bullseye)
-#install.packages("lavaan")
-library(lavaan)
-#install.packages("brms")
-library(brms)
-#install.packages("mgcv")
-library(mgcv)
-library(splines)
-#install.packages("fitdistrplus")
-library(fitdistrplus)
-#install.packages("patchwork")
-library(patchwork)
-#install.packages("lme4")
-library(lme4)
-#install.packages("lmerTest")
-library(lmerTest)
-library(gtsummary)
-library(broom.mixed)
-library(purrr)
-library(huxtable)
-library(pwrss)
+
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load(tidyverse, VIM, ggpubr, ggeffects, car, sjPlot,caret, ggrain, emmeans, skimr, lavaan, patchwork, lme4, lmerTest, gtsummary, huxtable)
+
+config <- config::get()
+
+source("C:/Users/U253662/Documents/git/functions/jt_plot_aesthetics.R")
 ```
 
 
@@ -73,13 +25,13 @@ library(pwrss)
 
 
 ```{r, include=F}
-hippo_WRAP<-read_delim("G:/My Drive/Data/WRAP/hippocampus_dataset.csv", col_select = -1)
+hippo_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "hippocampus_dataset.csv"),col_select = -1)
 
-ptau_WRAP<-read_delim("G:/My Drive/Data/WRAP/ptau217_dataset.csv", col_select = -1)
+ptau_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "ptau217_dataset.csv"), col_select = -1)
 
-centiloids_WRAP<-read_delim("G:/My Drive/Data/WRAP/centiloids_PIB_dataset.csv", col_select = -1)
+centiloids_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "centiloids_PIB_dataset.csv"), col_select = -1)
 
-WRAP<-read_delim("G:/My Drive/Data/WRAP/basic_dataset.csv", col_select = -1)%>%
+WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "basic_dataset.csv"), col_select = -1)%>%
   left_join(.,hippo_WRAP)%>%
   left_join(., ptau_WRAP)%>%
   left_join(., centiloids_WRAP)%>%
@@ -104,6 +56,12 @@ age_scan1<-WRAP%>%
   filter(Visit==1)%>%
   dplyr::select(subject, age_at_acquisition)
 
+time_between_scans<-WRAP%>%
+  dplyr::select(subject, days_since_baseline, Visit)%>%
+  pivot_wider(names_from = Visit, values_from = days_since_baseline, names_prefix = "days_scan_")%>%
+  mutate(diff_mri = days_scan_2 - days_scan_1)%>%
+  dplyr::select(subject, diff_mri)
+
 WRAP_descriptive<-WRAP%>%
   filter(sex==2)%>%
   group_by(subject)%>%
@@ -111,6 +69,7 @@ WRAP_descriptive<-WRAP%>%
   ungroup()%>%
   dplyr::select(subject, Visit, kids_total, APOE_binary, education, vol_HIPP)%>%
   left_join(., age_scan1)%>%
+  left_join(., time_between_scans)%>%
   pivot_wider(names_from = Visit, values_from = vol_HIPP, names_prefix = "HIPP_V")%>%
   mutate(APOE_binary=ifelse(APOE_binary==1, "Carrier", "Non-Carrier"),
          kids_total=as.numeric(kids_total))%>%
@@ -122,7 +81,8 @@ desc_table<-tbl_summary(WRAP_descriptive,
             missing = "no",
             label= list(kids_total = "Number of childbirths",
                      APOE_binary = "APOE-E4 carrier, Count (%)",
-                     age_at_acquisition = "Age at first scan",
+                     age_at_acquisition = "Age at first scan, Mean (SD)",
+                     diff_mri = "Time between scans, Mean (SD)",
                      education = "Education (years), Mean (SD)",
                      HIPP_V1 = "Baseline Hippocampal volume, Mean (SD)",
                      HIPP_V2 = "Follow-up Hippocampal volume, Mean (SD)"
