@@ -13,65 +13,27 @@ csl: elsevier-vancouver.csl
 ---
 
 ```{r, include = F}
-library(readxl)
-#install.packages("ggplot2")
-library(ggplot2)
-#install.packages("psych")
-library(psych)
-#install.packages("tidyverse")
-library(tidyverse)
-#install.packages("ggpubr")
-library(ggpubr)
-#install.packages("broom")
-library(broom)
-#install.packages("ggeffects")
-library(ggeffects)
-#install.packages("MASS")
-library(MASS)
-#install.packages("mice")
-library(mice)
-#install.packages("VIM")
-library(VIM)
-#install.packages("car")
-library(car)
-#install.packages("sjPlot")
-library(sjPlot)
-#install.packages("caret")
-library(caret)
-#install.packages("bestNormalize")
-library(bestNormalize)
-#install.packages("ggrain")
-library(ggrain)
-#install.packages("emmeans")
-library(emmeans)
-#install.packages("skimr")
-library(skimr)
-library(glmnet)
-#install.packages("bullseye")
-library(bullseye)
-#install.packages("lavaan")
-library(lavaan)
-#install.packages("brms")
-library(brms)
-#install.packages("mgcv")
-library(mgcv)
-library(splines)
-#install.packages("fitdistrplus")
-library(fitdistrplus)
-#install.packages("patchwork")
-library(patchwork)
-#install.packages("lme4")
-library(lme4)
-#install.packages("lmerTest")
-library(lmerTest)
-library(gtsummary)
-library(broom.mixed)
-library(purrr)
-library(huxtable)
-library(pwrss)
+
+if (!require("pacman")) install.packages("pacman")
+
+pacman::p_load(tidyverse, VIM, ggpubr, ggeffects, car, sjPlot,caret, ggrain, emmeans, skimr, lavaan, patchwork, lme4, lmerTest, gtsummary, huxtable, readxl, broom.mixed, pwrss)
 ```
 
+
+
 ```{r setup, include=FALSE}
+
+# Project: ASHS_APOE_analysis
+# Script: paper_ashs_pregnancy_APOE.R
+# Author: Clazz
+# Date: 25/09/2025
+#
+# DATA SOURCES:
+# - ALFA+: G:/My Drive/Data/ALFA+
+#
+#
+
+
 # Register an inline hook:
 options(scipen = 1, digits = 3)
 
@@ -81,37 +43,10 @@ knitr::opts_chunk$set(
   out.width = "100%",
   dpi = 300
 )
-```
 
-```{r, include=FALSE}
-## Plot aesthetics
+config <- config::get()
 
-
-call_aesthethics <- function(text_size){
-  th <- theme(   panel.grid.major = element_blank(),
-                 panel.grid.minor = element_blank(),
-                 panel.border = element_blank(),
-                 panel.background = element_blank(),
-                 axis.line = element_line(linewidth = 0.5),
-                 legend.position = 'right',
-                 legend.text = element_text(size= text_size, family="Helvetica"),
-                 text = element_text(size= text_size, family="Helvetica"),
-                 strip.text.x = element_text(size = rel(0.90)),
-                 strip.text.y = element_text(size = rel(0.90)),
-                 axis.title.x = element_text(vjust=-0.3),
-                 plot.title = element_text(hjust = 0.5, vjust = 0),
-                 axis.ticks = element_line(linewidth = 0.4),
-                 axis.text.x.bottom  = element_text(size = rel(0.90), margin = unit(c(t = 2.5, r = 0, b = 0, l = 0), "mm")),
-                 axis.title.y = element_text(vjust = 1),
-                 axis.text.y = element_text(size = rel(0.90), margin = unit(c(t = 0, r = 2.5, b = 0, l = 0), "mm")),
-                 axis.ticks.length = unit(-1.2, "mm"),
-                 axis.text.x.top = element_text(size = rel(0.90), margin = unit(c(t = 0, r = 0, b = 2.5, l = 0), "mm")))
-  return(th)
-}
-
-
-th <- call_aesthethics(15)
-
+source("C:/Users/U253662/Documents/git/functions/jt_plot_aesthetics.R")
 ```
 
 # Abstract
@@ -187,7 +122,7 @@ Additional linear regressions were also performed to explore the interaction bet
 ```{r, include=FALSE}
 # creating basic dataset
 
-data_naked<-read_delim("G:/My Drive/Data/ALFA+/ALFA_dataset_basic.csv", 
+data_naked<-read_delim(paste0(config$alfa_dataset_cleaned, "ALFA_dataset_basic.csv"), 
     delim = ",", escape_double = FALSE, trim_ws = TRUE)%>%
   mutate(sex=factor(sex),
          APOE_binary = factor(APOE_binary), 
@@ -198,13 +133,13 @@ alfa_subjects<-data_naked%>%
   dplyr::select(subject, sex)
 
 #adding scan dates for descriptives, horizontal 
-date_mri_v1<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/bx_scandates_ALFA_PLUS_V1_20231120_20250210_135308.xlsx")%>%
+date_mri_v1<-read_excel(paste0(config$alfa_dataset_neuroimaging, "scan_dates/bx_scandates_ALFA_PLUS_V1_20231120_20250210_135308.xlsx"))%>%
   dplyr::select(subject_label, scandate)%>%
   mutate(subject_label = as.numeric(subject_label))%>%
   rename(subject = subject_label,
          scandate_v1 = scandate)
 
-date_mri_v2<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/bx_scandates_ALFA_PLUS_V2_20230518_20250210_135351.xlsx")%>%
+date_mri_v2<-read_excel(paste0(config$alfa_dataset_neuroimaging, "scan_dates/bx_scandates_ALFA_PLUS_V2_20230518_20250210_135351.xlsx"))%>%
   dplyr::select(subject_label, scandate)%>%
   mutate(subject_label = as.numeric(subject_label))%>%
   rename(subject = subject_label,
@@ -215,29 +150,24 @@ date_mri_long<-full_join(date_mri_v1, date_mri_v2)%>%
          scandate_v2 = as.Date(scandate_v2, format = "%Y-%m-%d"),
          diff_mri = as.numeric(difftime(scandate_v2, scandate_v1, units = c("days")))/365.25)
 
-#adding MRI sessions dates to the dataset
-data<-left_join(data_naked, date_mri_long)%>%
-  mutate(DOB = as.Date (DOB, format = "%Y-%m-%d"),
-         age_v1_mri = as.numeric(difftime(scandate_v1, DOB, units= c("days")))/365.25,
-         age_v2_mri = as.numeric(difftime(scandate_v2, DOB, units= c("days")))/365.25)
-
-data_biomarkers<-read_delim("G:/My Drive/Data/ALFA+/biomarkers/biomarkers_CSF_processed.csv", 
+data_biomarkers<-read_delim(paste0(config$alfa_dataset_cleaned, "biomarkers_CSF_processed.csv"), 
     delim = ",", escape_double = FALSE, trim_ws = TRUE)%>%
   filter(Visit == "V1")%>%
   dplyr::select(-Visit)%>%
   mutate(A=factor(A))
 
-data<-left_join(data, data_biomarkers)
-
-data_centiloids_v1<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/bx_ftm_centiloids_ALFA_PET_FTM_20210421_20250703_170207.xlsx")
-
-data_centiloids_v2<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/bx_ftm_centiloids_ALFA_PLUS_V2_PET_20250703_170258.xlsx")
+#adding MRI sessions dates to the dataset
+data<-left_join(data_naked, date_mri_long)%>%
+  mutate(DOB = as.Date (DOB, format = "%Y-%m-%d"),
+         age_v1_mri = as.numeric(difftime(scandate_v1, DOB, units= c("days")))/365.25,
+         age_v2_mri = as.numeric(difftime(scandate_v2, DOB, units= c("days")))/365.25)%>%
+  left_join(., data_biomarkers)
 
 
 ```
 
 ```{r hippocampus_data, include = F}
-ashs1<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/ASHS/bx_ashs_volumes_ALFA_PLUS_V1_20231120_20250702_164509.xlsx")%>%
+ashs1<-read_excel(paste0(config$alfa_dataset_neuroimaging, "ASHS/bx_ashs_volumes_ALFA_PLUS_V1_20231120_20250702_164509.xlsx"))%>%
   dplyr::select(subject, region, side, volume)%>%
   group_by(subject, region) %>%
   summarize(volume = sum(volume), .groups = "drop")%>%
@@ -245,7 +175,7 @@ ashs1<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/ASHS/bx_ashs_volumes_ALFA
   mutate(Visit = 1,
          subject= as.numeric(subject))
 
-ashs1b<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/ASHS/bx_ashs_volumes_ALFA_PLUS_EXP_20250918_161906.xlsx")%>%
+ashs1b<-read_excel(paste0(config$alfa_dataset_neuroimaging, "ASHS/bx_ashs_volumes_ALFA_PLUS_EXP_20250918_161906.xlsx"))%>%
   dplyr::select(subject, region, side, volume)%>%
   group_by(subject, region) %>%
   summarize(volume = sum(volume), .groups = "drop")%>%
@@ -257,7 +187,7 @@ ashs1b<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/ASHS/bx_ashs_volumes_ALF
          subject!= 13368)
   
 
-ashs2<-read_excel("G:/My Drive/Data/ALFA+/neuroimaging/ASHS/bx_ashs_volumes_ALFA_PLUS_V2_20230518_20250702_165801.xlsx")%>%
+ashs2<-read_excel(paste0(config$alfa_dataset_neuroimaging, "ASHS/bx_ashs_volumes_ALFA_PLUS_V2_20230518_20250702_165801.xlsx"))%>%
   dplyr::select(subject, region, side, volume)%>%
   group_by(subject, region) %>%
   summarize(volume = sum(volume), .groups = "drop")%>%
@@ -276,11 +206,11 @@ data_ashs<-ashs1%>%
 ```
 
 ```{r cognition_data, include=F}
-cognition<-read_excel("G:/My Drive/Data/ALFA+/Cognition/PACCv1_to_v3(incomplete).xlsx")%>%
+cognition<-read_excel(paste0(config$alfa_dataset_cognition, "PACCv1_to_v3(incomplete).xlsx"))%>%
   dplyr::select(IdParticipante, Visit, Z_PACC, Z_FCSRTI_RT, Z_aWMS_DR_RS, Z_Wclave_totalscr, Z_FS_totalcnswr, FechaResultado)%>%
   rename(subject = IdParticipante)
 
-time_diff<-read_excel("G:/My Drive/Data/ALFA+/Cognition/PACCv1_to_v3(incomplete).xlsx")%>%
+time_diff<-read_excel(paste0(config$alfa_dataset_cognition, "PACCv1_to_v3(incomplete).xlsx"))%>%
   dplyr::select(IdParticipante, Visit,FechaResultado)%>%
   rename(subject = IdParticipante)%>%
   filter(Visit != 3)%>%
@@ -301,7 +231,7 @@ data_cog_long<- left_join(data, cognition)%>%
 
 ```{r intext_descriptives, include=F}
 
-participants_v1_cog<-read_excel("G:/My Drive/Data/ALFA+/Cognition/PACCv1_to_v3(incomplete).xlsx")%>%
+participants_v1_cog<-read_excel(paste0(config$alfa_dataset_cognition, "PACCv1_to_v3(incomplete).xlsx"))%>%
   dplyr::select(IdParticipante, Visit, Z_PACC)%>%
   rename(subject = IdParticipante)%>%
   filter(Visit == 1)%>%
@@ -310,7 +240,7 @@ participants_v1_cog<-read_excel("G:/My Drive/Data/ALFA+/Cognition/PACCv1_to_v3(i
   drop_na(Z_PACC)%>%
   nrow()
 
-participants_v2_cog<-read_excel("G:/My Drive/Data/ALFA+/Cognition/PACCv1_to_v3(incomplete).xlsx")%>%
+participants_v2_cog<-read_excel(paste0(config$alfa_dataset_cognition, "PACCv1_to_v3(incomplete).xlsx"))%>%
   dplyr::select(IdParticipante, Visit, Z_PACC)%>%
   rename(subject = IdParticipante)%>%
   filter(Visit == 2)%>%
@@ -335,7 +265,7 @@ participants_v2_mri<-data%>%
 ## Descriptive results
 
 ```{r, include = F}
-alfa_participants_v1<-read_delim("G:/My Drive/Data/ALFA+/Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv", delim= ";", col_names = TRUE)%>%
+alfa_participants_v1<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv"), delim= ";", col_names = TRUE)%>%
   rename(subject = IdParticipante)%>%
   right_join(., alfa_subjects)%>%
   filter(sex==2)%>%
@@ -343,7 +273,7 @@ alfa_participants_v1<-read_delim("G:/My Drive/Data/ALFA+/Alfa Plus Long 2025__Al
   drop_na()%>%
   nrow()
 
-alfa_participants_v2<-read_delim("G:/My Drive/Data/ALFA+/Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv", delim= ";", col_names = TRUE)%>%
+alfa_participants_v2<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv"), delim= ";", col_names = TRUE)%>%
   rename(subject = IdParticipante)%>%
   right_join(., alfa_subjects)%>%
   filter(sex==2)%>%
@@ -351,14 +281,14 @@ alfa_participants_v2<-read_delim("G:/My Drive/Data/ALFA+/Alfa Plus Long 2025__Al
   drop_na()%>%
   nrow()
 
-alfa_subjects_dropout<-read_delim("G:/My Drive/Data/ALFA+/Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv", delim= ";", col_names = TRUE)%>%
+alfa_subjects_dropout<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv"), delim= ";", col_names = TRUE)%>%
 rename(subject = IdParticipante)%>%
   right_join(., alfa_subjects)%>%
   filter(sex==2)%>%
   filter(is.na(Age_V2))%>%
   dplyr::select(subject)
 
-dropout<-read_delim("G:/My Drive/Data/ALFA+/Alfa Plus Long 2025_2010_STF_20250304095809(in).csv", delim= ";", skip=1, col_names = TRUE, locale = locale(encoding = "Latin1") )%>%
+dropout<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025_2010_STF_20250304095809(in).csv"), delim= ";", skip=1, col_names = TRUE, locale = locale(encoding = "Latin1") )%>%
   rename(subject = IdParticipante)%>%
   right_join(., alfa_subjects_dropout, join_by(subject))%>%
   dplyr::select(subject, STF_state, STF_reas, STF_reas5, STF_EspeIncumCri)%>%
