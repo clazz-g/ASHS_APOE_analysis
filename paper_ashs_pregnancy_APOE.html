@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -75,9 +109,7 @@ div.csl-indent {
   <li><a href="#cognitive-measures" id="toc-cognitive-measures" class="nav-link" data-scroll-target="#cognitive-measures"><span class="header-section-number">3.3</span> Cognitive measures</a></li>
   <li><a href="#ad-biomarkers" id="toc-ad-biomarkers" class="nav-link" data-scroll-target="#ad-biomarkers"><span class="header-section-number">3.4</span> AD biomarkers</a></li>
   <li><a href="#imaging-data-acquisition-and-preprocessing" id="toc-imaging-data-acquisition-and-preprocessing" class="nav-link" data-scroll-target="#imaging-data-acquisition-and-preprocessing"><span class="header-section-number">3.5</span> Imaging data acquisition and preprocessing</a></li>
-  <li><a href="#covariates" id="toc-covariates" class="nav-link" data-scroll-target="#covariates"><span class="header-section-number">3.6</span> Covariates</a></li>
-  <li><a href="#statistical-analyses" id="toc-statistical-analyses" class="nav-link" data-scroll-target="#statistical-analyses"><span class="header-section-number">3.7</span> Statistical analyses</a></li>
-  <li><a href="#sensitivity-analyses" id="toc-sensitivity-analyses" class="nav-link" data-scroll-target="#sensitivity-analyses"><span class="header-section-number">3.8</span> Sensitivity analyses</a></li>
+  <li><a href="#statistical-analyses" id="toc-statistical-analyses" class="nav-link" data-scroll-target="#statistical-analyses"><span class="header-section-number">3.6</span> Statistical analyses</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">4</span> Results</a>
   <ul class="collapse">
@@ -86,9 +118,7 @@ div.csl-indent {
   <li><a href="#cognitive-trajectory" id="toc-cognitive-trajectory" class="nav-link" data-scroll-target="#cognitive-trajectory"><span class="header-section-number">4.3</span> Cognitive trajectory</a></li>
   <li><a href="#post-hoc-analyses" id="toc-post-hoc-analyses" class="nav-link" data-scroll-target="#post-hoc-analyses"><span class="header-section-number">4.4</span> Post-hoc analyses</a>
   <ul class="collapse">
-  <li><a href="#influence-of-amyloid" id="toc-influence-of-amyloid" class="nav-link" data-scroll-target="#influence-of-amyloid"><span class="header-section-number">4.4.1</span> Influence of Amyloid</a></li>
-  <li><a href="#hippocampal-subfields" id="toc-hippocampal-subfields" class="nav-link" data-scroll-target="#hippocampal-subfields"><span class="header-section-number">4.4.2</span> Hippocampal subfields</a></li>
-  <li><a href="#stratification" id="toc-stratification" class="nav-link" data-scroll-target="#stratification"><span class="header-section-number">4.4.3</span> Stratification</a></li>
+  <li><a href="#hippocampal-subfields" id="toc-hippocampal-subfields" class="nav-link" data-scroll-target="#hippocampal-subfields"><span class="header-section-number">4.4.1</span> Hippocampal subfields</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">5</span> Discussion</a></li>
@@ -96,6 +126,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#mri-data-acquisition" id="toc-mri-data-acquisition" class="nav-link" data-scroll-target="#mri-data-acquisition"><span class="header-section-number">6.1</span> MRI data acquisition</a></li>
   </ul></li>
+  <li><a href="#miscellaneous" id="toc-miscellaneous" class="nav-link" data-scroll-target="#miscellaneous"><span class="header-section-number">7</span> Miscellaneous</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="paper_ashs_pregnancy_APOE.docx"><i class="bi bi-file-word"></i>MS Word</a></li></ul></div></nav>
 </div>
@@ -132,56 +163,46 @@ div.csl-indent {
 </section>
 <section id="introduction" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Introduction</h1>
-<p>Alzheimer’s disease (AD) is a neurodegenerative disorder clinically characteized by progressive memory loss. Ageing, carring the apolipoprotein E E4 (APOE4) and having female chromosomal sex are three established risk factors for the typical late-onset of this disease <span class="citation" data-cites="riedel2016">[<a href="#ref-riedel2016" role="doc-biblioref">1</a>]</span>. Carrying one copy of APOE4 increases AD risk by three to four fold, whilst carrying 2 copies skyrockets that risk to 10 folds <span class="citation" data-cites="corder1993">[<a href="#ref-corder1993" role="doc-biblioref">2</a>]</span>. Women have a higher incidence of late-onset AD dementia <span class="citation" data-cites="beam2018">[<a href="#ref-beam2018" role="doc-biblioref">3</a>]</span> and show faster cognitive decline after diagnosis of MCI or AD dementia <span class="citation" data-cites="sexdiff2018">[<a href="#ref-sexdiff2018" role="doc-biblioref">4</a>]</span>. Amongst APOE4 carriers, women exhibit an increased risk of conversion from healthy ageing to MCI, or from MCI to AD dementia between the ages of 65 to 75 <span class="citation" data-cites="Altmann2014 Neu2017">[<a href="#ref-Altmann2014" role="doc-biblioref">5</a>,<a href="#ref-Neu2017" role="doc-biblioref">6</a>]</span>. Thus to understand sex differences in AD risk it is essential to understand how these non-modifyable risk factors interact.</p>
+<p>Alzheimer’s disease (AD) is a neurodegenerative disorder clinically the accumulation of pathophysiological abnormalities leading to neurodegeneration and progressive cognitive and functional decline. Ageing, carring the apolipoprotein E E4 (APOE4) and having female chromosomal sex are three established risk factors for the typical late-onset of this disease <span class="citation" data-cites="riedel2016">[<a href="#ref-riedel2016" role="doc-biblioref">1</a>]</span>. Carrying one copy of APOE4 increases AD risk by three to four fold, whilst carrying 2 copies skyrockets that risk to 10 folds <span class="citation" data-cites="corder1993">[<a href="#ref-corder1993" role="doc-biblioref">2</a>]</span>. Women have a higher incidence of late-onset AD dementia <span class="citation" data-cites="beam2018">[<a href="#ref-beam2018" role="doc-biblioref">3</a>]</span> and show faster cognitive decline after diagnosis of MCI or AD dementia <span class="citation" data-cites="sexdiff2018">[<a href="#ref-sexdiff2018" role="doc-biblioref">4</a>]</span>. Amongst APOE4 carriers, women exhibit an increased risk of conversion from healthy ageing to MCI, or from MCI to AD dementia between the ages of 65 to 75 <span class="citation" data-cites="Altmann2014 Neu2017">[<a href="#ref-Altmann2014" role="doc-biblioref">5</a>,<a href="#ref-Neu2017" role="doc-biblioref">6</a>]</span>. Thus to understand sex differences in AD risk it is essential to understand how these non-modifyable risk factors interact.</p>
 <p>The hippocampus is one of the first regions affected by AD, and whole hippocampal volume is a hallmark predictor of conversion from MCI to AD <span class="citation" data-cites="apostolova2006">[<a href="#ref-apostolova2006" role="doc-biblioref">7</a>]</span>. one of its particularity resides in its display of continuous neurogenesis throughout adult life <span class="citation" data-cites="boldrini2018">[<a href="#ref-boldrini2018" role="doc-biblioref">8</a>]</span>. ?? The hippocampus is not a homogenous structure, but is divided in anatomical subfields that show different molecular makeup () and a degree of cognitive specialization <span class="citation" data-cites="mueller2011">[<a href="#ref-mueller2011" role="doc-biblioref">9</a>]</span>. Altered neurogenesis is linked to AD related neuropathology and impairments in cognition <span class="citation" data-cites="hollands2017">[<a href="#ref-hollands2017" role="doc-biblioref">10</a>]</span>.</p>
 <p>Pregnancy provokes significant changes to brain structure via major hormonal changes which impact the hippocampus in a lasting way <span class="citation" data-cites="puri2023">[<a href="#ref-puri2023" role="doc-biblioref">11</a>]</span>. Animal models show decreased neurogenesis in the hippocampus during gestation and postpartum period <span class="citation" data-cites="pawluski2007 eid2019">[<a href="#ref-pawluski2007" role="doc-biblioref">12</a>,<a href="#ref-eid2019" role="doc-biblioref">13</a>]</span>. In humans, pregnancy is associated with a total hippocampal volume loss which then recovers in the next two years post partum <span class="citation" data-cites="Hoekzema2017">[<a href="#ref-Hoekzema2017" role="doc-biblioref">14</a>]</span>. Currently, there is a lack of data on how these mid-life changes affect the hippocampus in older adults, and wether they have consequences on cognition.</p>
 <p>Evidence on how previous pregnancies influence ageing and AD risk is conflicting. Previous parity has been linked with less apparent brain ageing <span class="citation" data-cites="de2020">[<a href="#ref-de2020" role="doc-biblioref">15</a>]</span>. But amongst epidemiological studies that explored a potential association between parity and AD, some report a link between multiparity and greater cognitive decline <span class="citation" data-cites="colucci2006">[<a href="#ref-colucci2006" role="doc-biblioref">16</a>]</span>, whilst other report no link or the opposite findings <span class="citation" data-cites="Fox2018 Fox2013 wolfova2024">[<a href="#ref-Fox2018" role="doc-biblioref">17</a>,<a href="#ref-Fox2013" role="doc-biblioref">18</a>.,<a href="#ref-wolfova2024" role="doc-biblioref">19</a>]</span> To our knowledge, only two studies so far have included AD biomarkers as a dependent variable, and whilst one repports a positive relationship between amyloid plaques and parity, the other does not<span class="citation" data-cites="Beeri2009a Jung2020">[<a href="#ref-Beeri2009a" role="doc-biblioref">20</a>,<a href="#ref-Jung2020" role="doc-biblioref">21</a>]</span>. Together, these studies indicate that although a link might exist between parity and AD, it is not well characterized and shows mixed direction of effect.</p>
-<p>Recently, Bee and colleagues (2024) <span class="citation" data-cites="lee2024">[<a href="#ref-lee2024" role="doc-biblioref">22</a>]</span> presented the first evidence for an interaction between APOE4 and parity in animals. Using wildtype and humanized APOE4 knock-in middle aged female rats, they found that whilst parity increased neurogenesis in wildtype rats, it decreased it in APOE4 rats, especially in the ventral dentate gyrus. In addition to this, parous APOE4 rats showed increased use of allocentric strategy instead of spatial when solving spatial memory tasks, suggesting a decreased recruitment of the hippocampus. Importantly, this aligns with previous literature reporting a link between AD dementia and decreased use of spatial strategy in humans <span class="citation" data-cites="parizkova2018">[<a href="#ref-parizkova2018" role="doc-biblioref">23</a>]</span>. To our knowledge, no study has explored this interaction of APOE4 and parity on hippocampal structure in humans.</p>
+<p>Recently, Bee and colleagues (2024) <span class="citation" data-cites="lee2024">[<a href="#ref-lee2024" role="doc-biblioref">22</a>]</span> presented evidence for an interaction between APOE4 and parity in animals. Using wildtype and humanized APOE4 knock-in middle aged female rats, they found that whilst parity increased neurogenesis in wildtype rats, it decreased it in APOE4 rats, especially in the ventral dentate gyrus. In addition to this, parous APOE4 rats showed increased use of allocentric strategy instead of spatial when solving spatial memory tasks, suggesting a decreased recruitment of the hippocampus. Importantly, this aligns with previous literature reporting a link between AD dementia and decreased use of spatial strategy in humans <span class="citation" data-cites="parizkova2018">[<a href="#ref-parizkova2018" role="doc-biblioref">23</a>]</span>. To our knowledge, no study has explored this interaction of APOE4 and parity on hippocampal structure in humans.</p>
 <p>Our objective was to explore potential links and mechanisms through which pregnancy interacts with AD pathology in healthy postmenopausal women at risk of AD. To this end, we used hippocampal volumetry drawn from MRI data, biomarker data, cogntive data and reproductive data from two initial visits from the ALFA+cohort. We hypothesized that parous women would show decreased whole hippocampal volume loss but this relationship would be inversed in APOE4 carriers.</p>
 </section>
 <section id="methods" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Methods</h1>
 <section id="study-population" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="study-population"><span class="header-section-number">3.1</span> Study population</h2>
-<p>This observational cohort study includes postmenopausal women from the ongoing ALFA+ study (Clinicaltrials.gov, NCT01835717) who completed at least the baseline visit. The second visit was included as well when data was available (average time between visits of 3.32 years). ALFA+ is a research cohort of middle-aged cognitively unimpaired participants, many of whom are offspring of AD patients, based in Barcelona, Spain. Participants undergo an extensive battery of tests, questionnaires and measurements every 3 years with the main aim of identifying the earliest pathophysiological changes in the preclinical AD continuum. The study was approved by the Independent Ethics Committee “Parc de Salut Mar”, Barcelona, and all participants gave written informed consent. Baseline visits took place between 2016 and 2019 and the follow-up visit between 2019 and 2022.</p>
-<p>In brief, inclusion criteria were: 1) participants who had previously participated in the 45-65/FPM2012 study (ALFA parent cohort); 2) age between 45 and 75 years at the moment of the inclusion in the cohort; 3) long-term commitment to to undergo all tests and study procedures (MRI, PET, and lumbar puncture). Exclusion criteria included: 1) cognitive impairment (Clinical Dementia Rating [CDR] &gt; 0, Mini-Mental State Examination [MMSE] &lt; 27, semantic fluency &lt; 12); 2) any significant systemic illness or unstable medical condition which could lead to difficulty complying with the protocol; 3) any contraindication to any test or procedure; 4) family history of monogenic AD. In addition, women with a history of cardiovascular-related gestational disease, such as preeclampsia, were excluded from our sample for analysis.</p>
+<p>We included postmenopausal women who completed the baseline and first longitudinal visit (with an average time between visits of 3.32 years) from the ongoing ALFA+ study (Clinicaltrials.gov, NCT01835717). ALFA+ is a research cohort of middle-aged cognitively unimpaired participants, many of whom are offspring of AD patients, who have been deeply characterized by clinical interviews, lifestyle and risk factor questionnaires, cognitive testing, CSF biomarkers, and neuroimaging procedures, including magnetic resonance imaging (MRI), and Aβ positron emission tomography (PET). All of these procedures are repeated every 3 years with the main aim of identifying the earliest pathophysiological changes in the preclinical AD continuum <span class="citation" data-cites="molinuevo2016">[<a href="#ref-molinuevo2016" role="doc-biblioref">24</a>]</span>. Briefly, ALFA+ inclusion criteria were: 1) participants who had previously participated in the 45-65/FPM2012 study (ALFA parent cohort); 2) age between 45 and 75 years at the moment of inclusion in the cohort; 3) long-term commitment to undergo all tests and study procedures (MRI, PET, and lumbar puncture). Exclusion criteria at baseline included: 1) cognitive impairment (Clinical Dementia Rating [CDR] &gt; 0, Mini-Mental State Examination [MMSE] &lt; 26, semantic fluency &lt; 12); 2) any significant systemic illness or unstable medical condition which could lead to difficulty complying with the protocol; 3) any contraindication to any test or procedure; 4) family history of monogenic AD. In addition, women with a history of cardiovascular-related gestational disease, such as preeclampsia, were excluded from our sample for analysis. Sex and menopausal status, defined as absence of menstruations for 12 consecutive months, were self disclosed. Women who reported being premenopausal or perimenopausal were not included in our analysis either.</p>
+<p>The study was approved by the Independent Ethics Committee “Parc de Salut Mar”, Barcelona, and all participants gave written informed consent. Baseline visits took place between 2016 and 2019, and the follow-up visit between 2019 and 2022.</p>
+<p>The sample consisted of 254 participants at baseline visit, and 211 at follow-up (Table 1). Out of the 43 participants who dropped out of the study between visits, 30 withdrew for personal reasons, 3 became unresponsive, 2 died, 5 showed incidental l findings on their structural MRI, and 3 were excluded due to mild cognitive impairment clinical diagnosis.</p>
 </section>
 <section id="reproductive-variables" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="reproductive-variables"><span class="header-section-number">3.2</span> Reproductive variables</h2>
-<p>Parity was defined as the number of biological children and used as a continuous variable in our main analyses. This information was self-reported by individuals during an interview with a clinician at baseline visit.</p>
+<p>Parity was defined as the number of biological children and used as a continuous variable in the main analyses and as a categorical variable in sensitivity analyses. When categorical, parous groups were defined as follows: nulliparous (0 childbirths), primiparous (1 childbirth), and multiparous (2+ childbirths). This information was self-reported by individuals during an interview with a clinician at the baseline visit.</p>
 </section>
 <section id="cognitive-measures" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="cognitive-measures"><span class="header-section-number">3.3</span> Cognitive measures</h2>
-<p>Preclinical Alzheimer’s cognitive composite (PACC) was computed including the Total Paired Recall (TPR) and Total Delayed Free Recall scores of the Memory Binding Test <span class="citation" data-cites="buschke2017">[<a href="#ref-buschke2017" role="doc-biblioref"><strong>buschke2017?</strong></a>]</span>, the Coding subtest of the Wechsler Adult Intelligence Scale-Fourth Edition (WAIS-IV), and semantic fluency, as defined in previous works <span class="citation" data-cites="mormino2017">[<a href="#ref-mormino2017" role="doc-biblioref"><strong>mormino2017?</strong></a>]</span>. Z-scores were computed for Visit 1 and 2.</p>
+<p>A modified Preclinical Alzheimer’s cognitive composite (mPACC) was the main cognitive outcome of this study and was computed, including the Total Paired Recall (TPR) and Total Delayed Free Recall scores of the Memory Binding Test <span class="citation" data-cites="buschke2017">[<a href="#ref-buschke2017" role="doc-biblioref">25</a>]</span>, the Coding subtest of the Wechsler Adult Intelligence Scale-Fourth Edition (WAIS-IV), and semantic fluency, as defined in previous works <span class="citation" data-cites="lópez-martos2025">[<a href="#ref-lópez-martos2025" role="doc-biblioref">26</a>]</span>. Z-scores were computed for Visit 1 and 2 and used in the linear regressions. When using score difference between visit 1 and 2 for the mediation analysis, change was computed by subtracting baseline scores from follow-up.</p>
 </section>
 <section id="ad-biomarkers" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="ad-biomarkers"><span class="header-section-number">3.4</span> AD biomarkers</h2>
-<p>CSF collection, processing, and storage in the ALFA+ study have been described previously <span class="citation" data-cites="Milà-Alomà2020">[<a href="#ref-Milà-Alomà2020" role="doc-biblioref"><strong>Milà-Alomà2020?</strong></a>]</span>. CSF A42 and A40 were measured with the exploratory Roche NeuroToolKit immunoassays (Roche Diagnostics International Ltd, Rotkreuz, Switzerland) on a cobas e 601 module. Measurements were performed at the Clinical Neurochemistry Laboratory, Sahlgrenska University Hospital, Molndal, Sweden. Aß status (Aß+, Aß–) was defined using the cutoff of 0.071 for the ratio Aß42/40 <span class="citation" data-cites="Milà-Alomà2020">[<a href="#ref-Milà-Alomà2020" role="doc-biblioref"><strong>Milà-Alomà2020?</strong></a>]</span>, where any participant below this cutoff was considered to be Aß+.</p>
+<p>CSF collection, processing, and storage in the ALFA+ study have been described previously <span class="citation" data-cites="Milà-Alomà2020">[<a href="#ref-Milà-Alomà2020" role="doc-biblioref">27</a>]</span>. Briefly, CSF Aβ42 and Aβ40 were measured with the exploratory Roche NeuroToolKit immunoassays (Roche Diagnostics International Ltd, Rotkreuz, Switzerland) on a cobas e 601 module. Measurements were performed at the Clinical Neurochemistry Laboratory, Sahlgrenska University Hospital, Molndal, Sweden. Aß status (Aß+, Aß–) was defined using the cutoff of 0.071 for the ratio Aß42/40 <span class="citation" data-cites="Milà-Alomà2020">[<a href="#ref-Milà-Alomà2020" role="doc-biblioref">27</a>]</span>, where any participant below this cutoff was considered to be Aβ+.</p>
 </section>
 <section id="imaging-data-acquisition-and-preprocessing" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="imaging-data-acquisition-and-preprocessing"><span class="header-section-number">3.5</span> Imaging data acquisition and preprocessing</h2>
-<p>Automatic Segmentation of Hippocampal Subfields (ASHS) software <span class="citation" data-cites="Yushkevich2015">[<a href="#ref-Yushkevich2015" role="doc-biblioref">24</a>]</span> was used on the T1, T2 and inversion recovery (IR) images to segment the hippocampal formation in the following sub-regions: Brodmann areas 35 and 36, cornu Ammonis (CA) 1, 2 and 3, dentate gyrus (DG), entorhinal cortex (ERC), parahippocampus (PHC), subiculum (SUB), and sulcus (SUL). All segmentations were visually inspected before proceeding with the statistical analyses.&nbsp;</p>
-<p>Hippocampal values are reported in mm3. Values were collected at baseline and follow-up visit.&nbsp;</p>
+<p>Automatic Segmentation of Hippocampal Subfields (ASHS) software <span class="citation" data-cites="Yushkevich2015">[<a href="#ref-Yushkevich2015" role="doc-biblioref">28</a>]</span> was used on the T1, T2 and inversion recovery (IR) weighted images to segment the hippocampal formation in the following sub-regions: Brodmann areas 35 and 36, cornu Ammonis (CA) 1, 2 and 3, dentate gyrus (DG), entorhinal cortex (ERC), parahippocampal cortex (PHC), subiculum (SUB), and the hippocampal sulcus (SUL). All segmentations were visually inspected before proceeding with the statistical analyses.</p>
+<p>Hippocampal values are reported in cm3 and were obtained at both baseline and follow-up visits.</p>
+<p>Total Intracranial volume (TIV) was estimated using deformation fields obtained during the nonlinear registration of each subject’s T1-weighted MRI to a whole-brain template. The FSL Brain Extraction Tool <span class="citation" data-cites="smith2002">[<a href="#ref-smith2002" role="doc-biblioref">29</a>]</span> was applied to the template to create an intracranial mask, which was warped into each subject’s MRI at native space to obtain the TIV measurement.</p>
 </section>
-<section id="covariates" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="covariates"><span class="header-section-number">3.6</span> Covariates</h2>
-<p>HV analyses were adjusted by total intracranial volume, CSF Aß (dichotomous or continuous?), years of education (continuous) and age at baseline visit (continuous). Cognitive analyses were adjusted for <em>CSF</em> Aß, years of education and age at baseline visit. All analyse estimates, standard errors and p values are reported adjusted for these covariates.</p>
-<ul>
-<li>I lean toward continous CSF ratio because we lose the least amount of info</li>
-</ul>
-</section>
-<section id="statistical-analyses" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="statistical-analyses"><span class="header-section-number">3.7</span> Statistical analyses</h2>
-<p>Analyses were conducted using R version 4.5.1.&nbsp;</p>
-<p>Normality of residuals was checked in all linear models using the base R plot() function on model output. Collinearity was also checked for all models using the vif() function of the car package (v.3.1.3).</p>
-<p>We conducted simple linear regressions to examine cross-sectional associations between parity and Aβ positivity (exposures) on hippocampal volume and PACC score (outcomes) using baseline visit data.&nbsp;Following this, mixed-effects linear models were used to assess longitudinal effects of parity and Aβ positivity (exposures) on hippocampal volume and cognitive change (outcomes) using baseline and follow-up visit data. These models included a three-way interaction term between parity, Aβ positivity, and time (interval between Visit 1 and Visit 2).</p>
-<p>All models used a p-value threshold of p &lt; 0.05.&nbsp;</p>
-<p>Data imputation methods were implemented using the mice package in R (v.3.18.0) on covariates, but not exposure or outcome variables. For continuous variables, predictive mean matching with 5 donors was used. For categorical variables, logistic regression was used.</p>
-</section>
-<section id="sensitivity-analyses" class="level2" data-number="3.8">
-<h2 data-number="3.8" class="anchored" data-anchor-id="sensitivity-analyses"><span class="header-section-number">3.8</span> Sensitivity analyses</h2>
-<p>Analyses that showed a significant effect of parity on the outcome were reproduced using parity as a categorical variable to examine potential non-linear effects. The variable was defined as follows: nulliparous (0 childbirth), primiparous (1 childbirth) and multiparous (2+ childbirths). Because these analyses were underpowered for this group interaction, we also provide group comparison using estimated marginal means to examine specific parity group differences depending on Aβ load.</p>
-<p>Additional linear regressions were also performed to explore the interaction between parity and Aβ positivity on individual hippocampal subfield volumes using baseline data. These analyses can be found in the supplemental materials. Given the exploratory nature of these analyses, results are reported without correction for multiple comparisons.</p>
+<section id="statistical-analyses" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="statistical-analyses"><span class="header-section-number">3.6</span> Statistical analyses</h2>
+<p>We used linear mixed-effects models to assess the joint effects of parity and APOE-e4 (exposures), on HV and cognition (outcomes) over both visits, and test if this association is dependent on time. These models included a three-way interaction term among parity, Aβ positivity, and time (the interval between Visit 1 and Visit 2 in years) and all lower-order interactions. Cognitive analyses were adjusted for years of education, and age at baseline visit. HV analyses were additionally adjusted for scaled TIV.</p>
+<p>Analyses that showed a significant parity x Aβ APOE-e4 interaction were reproduced using parity as a categorical variable to examine if the effect was driven by parity itself or if each additional pregnancy seemed to have a cumulative effect. For all groups we conducted post-hoc comparisons using estimated marginal means. Specifically, pairwise comparisons between parity groups were examined separately within each Aβ status category, with p-values adjusted for multiple comparisons using the Tukey method.</p>
+<p>Additional linear regressions were also performed to explore the interaction between parity and APOE-e4 positivity on individual hippocampal subfield volumes across visits. Given the exploratory nature of these analyses, results are reported without correction for multiple comparisons.</p>
+<p>Statistical significance was set at p &lt; 0.05. Analyses were conducted using R software, version 4.5.1 (The R Foundation for Statistical Computing, Vienna, Austria). The package ‘emmeans’ was used to calculate estimated marginal mean for direct group comparison of predicted effects <span class="citation" data-cites="lenth2017">[<a href="#ref-lenth2017" role="doc-biblioref">30</a>]</span>. The package tidiverse was used for data processing and plotting <span class="citation" data-cites="wickham2019">[<a href="#ref-wickham2019" role="doc-biblioref">31</a>]</span>. The package gtsummary was used for formatting tables <span class="citation" data-cites="sjoberg2021">[<a href="#ref-sjoberg2021" role="doc-biblioref">32</a>]</span>. The package ggeffects was used to extract predicted values from regression models <span class="citation" data-cites="lüdecke2018">[<a href="#ref-lüdecke2018" role="doc-biblioref">33</a>]</span>. The package lme4 was used for performing mixed effect linear regression models <span class="citation" data-cites="bates2015">[<a href="#ref-bates2015" role="doc-biblioref">34</a>]</span>.</p>
+<p>Rates of missing data in exposures (parity, Aβ) or outcome variables (mPACC, HV) at each time point are reported (Table 1).</p>
 </section>
 </section>
 <section id="results" class="level1" data-number="4">
@@ -190,23 +211,23 @@ div.csl-indent {
 <h2 data-number="4.1" class="anchored" data-anchor-id="descriptive-results"><span class="header-section-number">4.1</span> Descriptive results</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="oiywymamgj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#oiywymamgj table {
+<div id="gaewrdzshn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gaewrdzshn table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#oiywymamgj thead, #oiywymamgj tbody, #oiywymamgj tfoot, #oiywymamgj tr, #oiywymamgj td, #oiywymamgj th {
+#gaewrdzshn thead, #gaewrdzshn tbody, #gaewrdzshn tfoot, #gaewrdzshn tr, #gaewrdzshn td, #gaewrdzshn th {
   border-style: none;
 }
 
-#oiywymamgj p {
+#gaewrdzshn p {
   margin: 0;
   padding: 0;
 }
 
-#oiywymamgj .gt_table {
+#gaewrdzshn .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -232,12 +253,12 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_caption {
+#gaewrdzshn .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#oiywymamgj .gt_title {
+#gaewrdzshn .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -249,7 +270,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#oiywymamgj .gt_subtitle {
+#gaewrdzshn .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -261,7 +282,7 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#oiywymamgj .gt_heading {
+#gaewrdzshn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -273,13 +294,13 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_bottom_border {
+#gaewrdzshn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_col_headings {
+#gaewrdzshn .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -294,7 +315,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_col_heading {
+#gaewrdzshn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -314,7 +335,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#oiywymamgj .gt_column_spanner_outer {
+#gaewrdzshn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -326,15 +347,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#oiywymamgj .gt_column_spanner_outer:first-child {
+#gaewrdzshn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#oiywymamgj .gt_column_spanner_outer:last-child {
+#gaewrdzshn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#oiywymamgj .gt_column_spanner {
+#gaewrdzshn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -346,11 +367,11 @@ div.csl-indent {
   width: 100%;
 }
 
-#oiywymamgj .gt_spanner_row {
+#gaewrdzshn .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#oiywymamgj .gt_group_heading {
+#gaewrdzshn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -376,7 +397,7 @@ div.csl-indent {
   text-align: left;
 }
 
-#oiywymamgj .gt_empty_group_heading {
+#gaewrdzshn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -391,15 +412,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#oiywymamgj .gt_from_md > :first-child {
+#gaewrdzshn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#oiywymamgj .gt_from_md > :last-child {
+#gaewrdzshn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#oiywymamgj .gt_row {
+#gaewrdzshn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -418,7 +439,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#oiywymamgj .gt_stub {
+#gaewrdzshn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -431,7 +452,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oiywymamgj .gt_stub_row_group {
+#gaewrdzshn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -445,15 +466,15 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#oiywymamgj .gt_row_group_first td {
+#gaewrdzshn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#oiywymamgj .gt_row_group_first th {
+#gaewrdzshn .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#oiywymamgj .gt_summary_row {
+#gaewrdzshn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -463,16 +484,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oiywymamgj .gt_first_summary_row {
+#gaewrdzshn .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_first_summary_row.thick {
+#gaewrdzshn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#oiywymamgj .gt_last_summary_row {
+#gaewrdzshn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -482,7 +503,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_grand_summary_row {
+#gaewrdzshn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -492,7 +513,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oiywymamgj .gt_first_grand_summary_row {
+#gaewrdzshn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -502,7 +523,7 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_last_grand_summary_row_top {
+#gaewrdzshn .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -512,11 +533,11 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_striped {
+#gaewrdzshn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#oiywymamgj .gt_table_body {
+#gaewrdzshn .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -525,7 +546,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_footnotes {
+#gaewrdzshn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -539,7 +560,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_footnote {
+#gaewrdzshn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -548,7 +569,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oiywymamgj .gt_sourcenotes {
+#gaewrdzshn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -562,7 +583,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oiywymamgj .gt_sourcenote {
+#gaewrdzshn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -570,72 +591,72 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oiywymamgj .gt_left {
+#gaewrdzshn .gt_left {
   text-align: left;
 }
 
-#oiywymamgj .gt_center {
+#gaewrdzshn .gt_center {
   text-align: center;
 }
 
-#oiywymamgj .gt_right {
+#gaewrdzshn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#oiywymamgj .gt_font_normal {
+#gaewrdzshn .gt_font_normal {
   font-weight: normal;
 }
 
-#oiywymamgj .gt_font_bold {
+#gaewrdzshn .gt_font_bold {
   font-weight: bold;
 }
 
-#oiywymamgj .gt_font_italic {
+#gaewrdzshn .gt_font_italic {
   font-style: italic;
 }
 
-#oiywymamgj .gt_super {
+#gaewrdzshn .gt_super {
   font-size: 65%;
 }
 
-#oiywymamgj .gt_footnote_marks {
+#gaewrdzshn .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#oiywymamgj .gt_asterisk {
+#gaewrdzshn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#oiywymamgj .gt_indent_1 {
+#gaewrdzshn .gt_indent_1 {
   text-indent: 5px;
 }
 
-#oiywymamgj .gt_indent_2 {
+#gaewrdzshn .gt_indent_2 {
   text-indent: 10px;
 }
 
-#oiywymamgj .gt_indent_3 {
+#gaewrdzshn .gt_indent_3 {
   text-indent: 15px;
 }
 
-#oiywymamgj .gt_indent_4 {
+#gaewrdzshn .gt_indent_4 {
   text-indent: 20px;
 }
 
-#oiywymamgj .gt_indent_5 {
+#gaewrdzshn .gt_indent_5 {
   text-indent: 25px;
 }
 
-#oiywymamgj .katex-display {
+#gaewrdzshn .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#oiywymamgj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#gaewrdzshn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -672,154 +693,96 @@ N = 8<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic
 <tr class="odd">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Age at first visit, Mean (SD)</td>
 <td class="gt_row gt_center" headers="n">254</td>
-<td class="gt_row gt_center" headers="stat_1">58.6 (55.3, 62.3)</td>
-<td class="gt_row gt_center" headers="stat_2">59.9 (56.7, 63.7)</td>
-<td class="gt_row gt_center" headers="stat_3">62.6 (58.4, 65.1)</td>
-<td class="gt_row gt_center" headers="stat_4">61.2 (58.1, 64.8)</td>
-<td class="gt_row gt_center" headers="stat_5">66.2 (61.5, 68.6)</td>
+<td class="gt_row gt_center" headers="stat_1">58.8 (4.5)</td>
+<td class="gt_row gt_center" headers="stat_2">59.7 (4.9)</td>
+<td class="gt_row gt_center" headers="stat_3">61.5 (4.8)</td>
+<td class="gt_row gt_center" headers="stat_4">61.7 (4.8)</td>
+<td class="gt_row gt_center" headers="stat_5">65.2 (4.2)</td>
 <td class="gt_row gt_center" headers="p.value">&lt;0.001</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Aβ status, Count (%)</td>
 <td class="gt_row gt_center" headers="n">229</td>
-<td class="gt_row gt_center" headers="stat_1"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_2"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_3"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_4"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_5"><br>
-</td>
-<td class="gt_row gt_center" headers="p.value">0.8</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Aβ-</td>
-<td class="gt_row gt_center" headers="n"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_1">23 (70%)</td>
-<td class="gt_row gt_center" headers="stat_2">34 (69%)</td>
-<td class="gt_row gt_center" headers="stat_3">72 (64%)</td>
-<td class="gt_row gt_center" headers="stat_4">19 (70%)</td>
-<td class="gt_row gt_center" headers="stat_5">4 (50%)</td>
-<td class="gt_row gt_center" headers="p.value"><br>
-</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Aβ+</td>
-<td class="gt_row gt_center" headers="n"><br>
-</td>
 <td class="gt_row gt_center" headers="stat_1">10 (30%)</td>
 <td class="gt_row gt_center" headers="stat_2">15 (31%)</td>
 <td class="gt_row gt_center" headers="stat_3">40 (36%)</td>
 <td class="gt_row gt_center" headers="stat_4">8 (30%)</td>
 <td class="gt_row gt_center" headers="stat_5">4 (50%)</td>
-<td class="gt_row gt_center" headers="p.value"><br>
-</td>
+<td class="gt_row gt_center" headers="p.value">0.8</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">APOE-E4 carrier, Count (%)</td>
 <td class="gt_row gt_center" headers="n">254</td>
-<td class="gt_row gt_center" headers="stat_1"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_2"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_3"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_4"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_5"><br>
-</td>
-<td class="gt_row gt_center" headers="p.value">0.4</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Carrier</td>
-<td class="gt_row gt_center" headers="n"><br>
-</td>
 <td class="gt_row gt_center" headers="stat_1">19 (49%)</td>
 <td class="gt_row gt_center" headers="stat_2">23 (43%)</td>
 <td class="gt_row gt_center" headers="stat_3">72 (57%)</td>
 <td class="gt_row gt_center" headers="stat_4">13 (48%)</td>
 <td class="gt_row gt_center" headers="stat_5">3 (38%)</td>
-<td class="gt_row gt_center" headers="p.value"><br>
-</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Non-Carrier</td>
-<td class="gt_row gt_center" headers="n"><br>
-</td>
-<td class="gt_row gt_center" headers="stat_1">20 (51%)</td>
-<td class="gt_row gt_center" headers="stat_2">31 (57%)</td>
-<td class="gt_row gt_center" headers="stat_3">54 (43%)</td>
-<td class="gt_row gt_center" headers="stat_4">14 (52%)</td>
-<td class="gt_row gt_center" headers="stat_5">5 (63%)</td>
-<td class="gt_row gt_center" headers="p.value"><br>
-</td>
+<td class="gt_row gt_center" headers="p.value">0.4</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Education (years), Mean (SD)</td>
 <td class="gt_row gt_center" headers="n">254</td>
-<td class="gt_row gt_center" headers="stat_1">17.0 (12.0, 18.0)</td>
-<td class="gt_row gt_center" headers="stat_2">12.0 (10.0, 15.0)</td>
-<td class="gt_row gt_center" headers="stat_3">12.0 (10.0, 16.0)</td>
-<td class="gt_row gt_center" headers="stat_4">13.0 (10.0, 18.0)</td>
-<td class="gt_row gt_center" headers="stat_5">11.0 (8.0, 12.0)</td>
+<td class="gt_row gt_center" headers="stat_1">14.6 (3.7)</td>
+<td class="gt_row gt_center" headers="stat_2">12.7 (3.2)</td>
+<td class="gt_row gt_center" headers="stat_3">12.6 (3.6)</td>
+<td class="gt_row gt_center" headers="stat_4">13.6 (3.8)</td>
+<td class="gt_row gt_center" headers="stat_5">10.9 (3.1)</td>
 <td class="gt_row gt_center" headers="p.value">0.013</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Baseline Total Intracranial Volume (cm3), Mean (SD)</td>
 <td class="gt_row gt_center" headers="n">221</td>
-<td class="gt_row gt_center" headers="stat_1">1,248,730 (1,192,260, 1,320,610)</td>
-<td class="gt_row gt_center" headers="stat_2">1,212,390 (1,158,220, 1,286,890)</td>
-<td class="gt_row gt_center" headers="stat_3">1,251,265 (1,196,015, 1,321,960)</td>
-<td class="gt_row gt_center" headers="stat_4">1,266,360 (1,199,030, 1,294,720)</td>
-<td class="gt_row gt_center" headers="stat_5">1,234,990 (1,200,440, 1,320,140)</td>
+<td class="gt_row gt_center" headers="stat_1">1,254,559 (84,602)</td>
+<td class="gt_row gt_center" headers="stat_2">1,221,695 (92,770)</td>
+<td class="gt_row gt_center" headers="stat_3">1,259,432 (95,993)</td>
+<td class="gt_row gt_center" headers="stat_4">1,257,245 (106,191)</td>
+<td class="gt_row gt_center" headers="stat_5">1,250,573 (84,837)</td>
 <td class="gt_row gt_center" headers="p.value">0.3</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Baseline Hippocampal volume, Mean (SD)</td>
 <td class="gt_row gt_center" headers="n">221</td>
-<td class="gt_row gt_center" headers="stat_1">5,347 (5,024, 5,675)</td>
-<td class="gt_row gt_center" headers="stat_2">5,249 (4,890, 5,629)</td>
-<td class="gt_row gt_center" headers="stat_3">5,325 (5,009, 5,771)</td>
-<td class="gt_row gt_center" headers="stat_4">5,433 (5,033, 5,846)</td>
-<td class="gt_row gt_center" headers="stat_5">5,007 (4,733, 5,413)</td>
+<td class="gt_row gt_center" headers="stat_1">5,364 (500)</td>
+<td class="gt_row gt_center" headers="stat_2">5,258 (525)</td>
+<td class="gt_row gt_center" headers="stat_3">5,418 (514)</td>
+<td class="gt_row gt_center" headers="stat_4">5,446 (522)</td>
+<td class="gt_row gt_center" headers="stat_5">4,982 (790)</td>
 <td class="gt_row gt_center" headers="p.value">0.4</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Follow-up Hippocampal volume, Mean (SD)</td>
 <td class="gt_row gt_center" headers="n">203</td>
-<td class="gt_row gt_center" headers="stat_1">5,259 (4,864, 5,493)</td>
-<td class="gt_row gt_center" headers="stat_2">5,160 (4,803, 5,440)</td>
-<td class="gt_row gt_center" headers="stat_3">5,239 (4,889, 5,587)</td>
-<td class="gt_row gt_center" headers="stat_4">5,196 (4,756, 5,694)</td>
-<td class="gt_row gt_center" headers="stat_5">4,980 (4,849, 5,223)</td>
+<td class="gt_row gt_center" headers="stat_1">5,209 (497)</td>
+<td class="gt_row gt_center" headers="stat_2">5,138 (498)</td>
+<td class="gt_row gt_center" headers="stat_3">5,267 (563)</td>
+<td class="gt_row gt_center" headers="stat_4">5,235 (561)</td>
+<td class="gt_row gt_center" headers="stat_5">5,075 (363)</td>
 <td class="gt_row gt_center" headers="p.value">0.7</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Baseline PACC z-score, Mean (SD)</td>
 <td class="gt_row gt_center" headers="n">234</td>
-<td class="gt_row gt_center" headers="stat_1">0.31 (-0.34, 0.69)</td>
-<td class="gt_row gt_center" headers="stat_2">0.05 (-0.51, 0.47)</td>
-<td class="gt_row gt_center" headers="stat_3">-0.11 (-0.56, 0.33)</td>
-<td class="gt_row gt_center" headers="stat_4">0.27 (-0.52, 0.76)</td>
-<td class="gt_row gt_center" headers="stat_5">0.07 (-0.55, 0.57)</td>
+<td class="gt_row gt_center" headers="stat_1">0.18 (0.79)</td>
+<td class="gt_row gt_center" headers="stat_2">-0.04 (0.67)</td>
+<td class="gt_row gt_center" headers="stat_3">-0.10 (0.68)</td>
+<td class="gt_row gt_center" headers="stat_4">0.04 (0.89)</td>
+<td class="gt_row gt_center" headers="stat_5">-0.02 (0.73)</td>
 <td class="gt_row gt_center" headers="p.value">0.2</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="label" style="font-weight: bold">Follow-up PACC z-score, Mean (SD)</td>
 <td class="gt_row gt_center" headers="n">203</td>
-<td class="gt_row gt_center" headers="stat_1">0.21 (0.01, 0.62)</td>
-<td class="gt_row gt_center" headers="stat_2">0.06 (-0.46, 0.55)</td>
-<td class="gt_row gt_center" headers="stat_3">-0.01 (-0.41, 0.42)</td>
-<td class="gt_row gt_center" headers="stat_4">0.43 (-0.25, 0.71)</td>
-<td class="gt_row gt_center" headers="stat_5">-0.73 (-1.21, 0.41)</td>
+<td class="gt_row gt_center" headers="stat_1">0.19 (0.82)</td>
+<td class="gt_row gt_center" headers="stat_2">-0.08 (0.88)</td>
+<td class="gt_row gt_center" headers="stat_3">-0.02 (0.68)</td>
+<td class="gt_row gt_center" headers="stat_4">0.28 (0.80)</td>
+<td class="gt_row gt_center" headers="stat_5">-0.57 (0.96)</td>
 <td class="gt_row gt_center" headers="p.value">0.050</td>
 </tr>
 </tbody><tfoot class="gt_footnotes">
 <tr class="odd">
-<td colspan="8" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> Median (Q1, Q3); n (%)</td>
+<td colspan="8" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> Mean (SD); n (%)</td>
 </tr>
 <tr class="even">
 <td colspan="8" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>2</sup></span> Kruskal-Wallis rank sum test; Fisher’s exact test</td>
@@ -831,66 +794,42 @@ N = 8<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic
 </div>
 </div>
 </div>
-<p>254 female participants from the ALFA+ project were included in our analyses at Visit 1, and 211 at visit 2. Out of the 43 participants who dropped out of the study between both visits, 30 oficially withdrew for personal reasons, 3 became unresponsive, 2 died, 5 showed accidental findings on their structural MRI and 3 showed altered cognitive states. Visit 1 included MRI data from 241 participants and cognitive testing from 234 participants. Visit 2 included MRI data from 203 participants and cognitive testing from 203 participants. Average time between visits was 3.32 years.</p>
+<p>254 female participants from the ALFA+ project were included in our analyses at Visit 1, and 211 at visit 2. Out of the 43 participants who dropped out of the study between both visits, 30 oficially withdrew for personal reasons, 3 became unresponsive, 2 died, 5 showed accidental findings on their structural MRI and 3 showed altered cognitive states.</p>
 <p>15.35% of our participants have no previous childbirths, 21.25% have 1, 49.6 have 2, 10.6 have 3 and 3.14 have 4 or more. Participants with higher parity were significantly older. No difference was observed between groups regarding Aβ status and APOE-ε4 carrier status (Table 1).</p>
 </section>
 <section id="whole-hippocampal-volume" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="whole-hippocampal-volume"><span class="header-section-number">4.2</span> Whole Hippocampal volume</h2>
-<p>We found no significant independent effect of parity on whole hippocampal volume. However, a highly significant parity, APOE-E4 and time interaction was found (β = -34.656, SE = 8.446, p = 6.06^{-5}), such that over time, homozygote APOE-E4 carrier women showed a negative relationship between parity and hippocampal volume, whilst non-carriers women showed the opposite. When grouping the variable by nulliparous, primiparous or multiparous, that same three-way interaction was stronger and only significant for multiparous women (β = 2.84, SE = 18.515, p = 0.878) (Figure X).</p>
+<p>The 3-way interaction between parity, APOE-E4 and time interaction was significantly associated with HV change (β = -18.681, SE = 5.781, p = 0.001), such that over time, homozygote APOE-E4 carrier women showed a negative relationship between parity and hippocampal volume, whilst non-carriers women showed the opposite.When stratifying by APOE-e4 status, only the carrier group showed a significant 3 way interaction (β = -12.445, SE = 3.523, p = 0.001)</p>
+<p>Reproducing the analysis using our 3 parity groups showed that the direction of the interaction was present in both primiparous and multiparous groups, but only significant in the latter (β = -41.878, SE = 15.938, p = 0.009)(Figure X). Direct group estimate comparison using estimated marginal means also showed that the APOE4 carriership groups were only significantly different in the multiparous groups (Figure X)</p>
+<p>include parous group analysis?</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="paper_ashs_pregnancy_APOE_files/figure-html/graph%20whole%20hippocampus-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_ashs_pregnancy_APOE_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="paper_ashs_pregnancy_APOE_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>No main effect of parity or interaction with APOE-E4 carriership was found in men.</p>
 </section>
 <section id="cognitive-trajectory" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="cognitive-trajectory"><span class="header-section-number">4.3</span> Cognitive trajectory</h2>
-<p>The interaction between time, APOE4 and parity was not significant. However, the interaction between parity and APOE4 yielded a weak trend (ß = -0.156, SE= 0.093, p= 0.094). In comparison, using parous group as an interaction term did no yield any significant results.</p>
-<p>No significant effect was found in men.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="paper_ashs_pregnancy_APOE_files/figure-html/graph%20cog-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<p>The interaction between time, APOE4 and parity was not significant.</p>
 </section>
 <section id="post-hoc-analyses" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="post-hoc-analyses"><span class="header-section-number">4.4</span> Post-hoc analyses</h2>
-<section id="influence-of-amyloid" class="level3" data-number="4.4.1">
-<h3 data-number="4.4.1" class="anchored" data-anchor-id="influence-of-amyloid"><span class="header-section-number">4.4.1</span> Influence of Amyloid</h3>
-</section>
-<section id="hippocampal-subfields" class="level3" data-number="4.4.2">
-<h3 data-number="4.4.2" class="anchored" data-anchor-id="hippocampal-subfields"><span class="header-section-number">4.4.2</span> Hippocampal subfields</h3>
-<p>Similarly, no significant main effect of parity was found in any of the subfields. However, the 3-way interaction between APOE-E4 carrership, time and parity showed a significant effect on the CA1 volume (β = -14.645, SE = 5.378, p = 0.007), CA2 (β = -0.776, SE = 0.245, p = 0.002), subiculum (β = -4.45, SE = 1.783, p = 0.013), entorhinal cortex (β = -9.564, SE = 4.17, p = 0.023), and a trend in the dentate gyrus (β = -13.085, SE = 4.252, p = 0.002). The direction of the effect followed the same as for the whole hippocampus, where Aβ- women showed a positive relationship between parity and hippocampal volume over time, whilst Aβ- women showed the opposite (Figure X) - should I include the parous gorup results too? or adds too much complexity?</p>
+<section id="hippocampal-subfields" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="hippocampal-subfields"><span class="header-section-number">4.4.1</span> Hippocampal subfields</h3>
+<p>The 3-way interaction was present in the CA2 (β= 0.969, p= 0.019) and dentage gyrus (DG) (β= 14.106, p= 0.019), where APOE-E4 carriers showed a negative relationship between higher parity and hippocampal volume change in APOE-E4 carriers.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="paper_ashs_pregnancy_APOE_files/figure-html/graph%20subfields-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="paper_ashs_pregnancy_APOE_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-</section>
-<section id="stratification" class="level3" data-number="4.4.3">
-<h3 data-number="4.4.3" class="anchored" data-anchor-id="stratification"><span class="header-section-number">4.4.3</span> Stratification</h3>
 </section>
 </section>
 </section>
@@ -901,9 +840,8 @@ N = 8<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic
 <p>The AFLFA+ cohort is an ideal cohort to test this interaction, given the participants are enriched in genetic AD risk, As such, about 40% of our cohort is a carrier of the APOE4 allele, meaning group interactions are very balanced statistically.</p>
 <p>Our findings reproduce the ones found by Bee and colleagues. Similarly, APOE4 carriers show detrimental effects of parity on hhippocampal volume trajectory. Although we did not replicate their findings on memory, this could be due to the relative short amount of time between both visits, on 3 years in average. However, another hypothesis could be that there are intricate social factors at play in humans revolving around parity, which could be influencing cognitive resilience. A previous study done with the UK biobank also finds no effect of the interaction between APOE4 and parity on cognitive score (lindseth et al 2023), although their battery of test is limited.</p>
 <p>Our post-hoc analysis of hippocampal subfields shows the most affected regions are the CA1, CA2, subiculum and enthorinal cortex, and a trend in the dentate gyrus. Given Bee’s results, one could expect a stornger effect in the dentate gyrus, given most of the effect of parity in neurogenesis would reside in this subfield. The strong effect on parts of the cornu ammonis also reveals ageing mechanism.</p>
-<p>Subiculum linked with early AD apthology. and ERC?</p>
-<p>Older EPOE4 carriers show reduced hippocampal volume compared with non-carriers, especially in the CA1 and subiculum tissue <span class="citation" data-cites="pievani2011">[<a href="#ref-pievani2011" role="doc-biblioref">25</a>]</span>.</p>
-<p>A limitation of this study is the lack of a third timepoint, to examine potential non linear effects throuhg time. Some preliminary evidence suggests that during pregnancy, hippocampal reduction pattern might follow different progresison curves depending on the subfield, with the CA showing a U-curved shaped loss pattern and the para-hippocampal cortex (PHC) a linear pattern <span class="citation" data-cites="pritschet2024">[<a href="#ref-pritschet2024" role="doc-biblioref">26</a>]</span>.</p>
+<p>Older EPOE4 carriers show reduced hippocampal volume compared with non-carriers, especially in the CA1 and subiculum tissue <span class="citation" data-cites="pievani2011">[<a href="#ref-pievani2011" role="doc-biblioref">35</a>]</span>.</p>
+<p>A limitation of this study is the lack of a third timepoint, to examine potential non linear effects throuhg time. Some preliminary evidence suggests that during pregnancy, hippocampal reduction pattern might follow different progresison curves depending on the subfield, with the CA showing a U-curved shaped loss pattern and the para-hippocampal cortex (PHC) a linear pattern <span class="citation" data-cites="pritschet2024">[<a href="#ref-pritschet2024" role="doc-biblioref">36</a>]</span>.</p>
 <p>Another limitation is statistical power. Although the ALFA+ cohort draws its strenght in the richness of the information collected form its participants, but its size remains limites for complex analyses. The stratification of analyses by gender already reduces our sample by half, and gorup interaction by APOE4 splits it further.</p>
 <p>Another limitation is that the ALFA+ cohort is very homogeneous: participants are majoritarily caucasian whites, from middle and upper-middle class background, who were selected due to their impeccable health records. Therefore, we must use cuation when generalising our results to a wider population. Additionally, our sample lacked highly multiparous individuals. Previous studies on the effect of parity on cognition and neurodegeneration have found an inverted u-shaped relation between parity and outcome measures, indicating that our lack of women having had more than 4 children might be leading to an incomplete picture of the phenomenon.</p>
 </section>
@@ -911,9 +849,71 @@ N = 8<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic
 <h1 data-number="6"><span class="header-section-number">6</span> Appendix</h1>
 <section id="mri-data-acquisition" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="mri-data-acquisition"><span class="header-section-number">6.1</span> MRI data acquisition</h2>
-<p>MRI scans were acquired on a in-house 3.0 T scanner (GE Discovery MR750 W 3 T) using the same protocol for all participants, which included one T1- and three T2- weighted sequences. The 3D-T1w sequence was designed with an isotropic voxel size of1mm3 and a matrix size of256x256x160 (TR/TE/TI = 8.0/3.7/450 ms, NSA = 1, flip angle = 8°). Three 3D-T2w sequences, with a voxel size of1 mm× 1 mm× 3 mm, were also used: fluid attenuation inversion recovery (FLAIR: TR/TE/ TI = 11,000/90/2600 ms, flip angle = 160°), fast spin echo (FSE: TR/TE = 5000/85 ms, flip angle = 110°) and, gradient echo (GRE: TR/TE = 1300/23 ms, flip angle = 15°). All scans were visually assessed to verify their quality and to detect incidental findings by a trained neuroradiologist and have been reported elsewhere (Brugulat-Serrat et al.&nbsp;2017). At visit 1, ten participants were excluded due to the presence of a meningioma, as well as 37 participants due to susceptibility, motion artefacts or segmentation problems, resulting in a total of 561 images available for subsequent analysis. At Visit 2, … The medial temporal lobe atrophy was assessed by Medial Temporal Atrophy scale <span class="citation" data-cites="scheltens1992a">[<a href="#ref-scheltens1992a" role="doc-biblioref">27</a>]</span>.</p>
-
+<p>MRI scans were acquired on a in-house 3.0 T scanner (GE Discovery MR750 W 3 T) using the same protocol for all participants, which included one T1- and three T2- weighted sequences. The 3D-T1w sequence was designed with an isotropic voxel size of1mm3 and a matrix size of256x256x160 (TR/TE/TI = 8.0/3.7/450 ms, NSA = 1, flip angle = 8°). Three 3D-T2w sequences, with a voxel size of1 mm× 1 mm× 3 mm, were also used: fluid attenuation inversion recovery (FLAIR: TR/TE/ TI = 11,000/90/2600 ms, flip angle = 160°), fast spin echo (FSE: TR/TE = 5000/85 ms, flip angle = 110°) and, gradient echo (GRE: TR/TE = 1300/23 ms, flip angle = 15°). All scans were visually assessed to verify their quality and to detect incidental findings by a trained neuroradiologist and have been reported elsewhere (Brugulat-Serrat et al.&nbsp;2017). At visit 1, ten participants were excluded due to the presence of a meningioma, as well as 37 participants due to susceptibility, motion artefacts or segmentation problems, resulting in a total of 561 images available for subsequent analysis. At Visit 2, … The medial temporal lobe atrophy was assessed by Medial Temporal Atrophy scale <span class="citation" data-cites="scheltens1992a">[<a href="#ref-scheltens1992a" role="doc-biblioref">37</a>]</span>.</p>
 </section>
+</section>
+<section id="miscellaneous" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Miscellaneous</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>preds_ashs <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(mod_ashs_APOE, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"diff_mri"</span>, <span class="st">"kids_total"</span>, <span class="st">"APOE_binary"</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>preds_ashs_A0<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(preds_ashs)<span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">kids_total_factor =</span> group,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">APOE_binary=</span>facet)<span class="sc">%&gt;%</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(APOE_binary<span class="sc">==</span><span class="dv">0</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">APOE_binary =</span> <span class="st">"Non-Carrier"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">kids_total_factor=</span> <span class="fu">ifelse</span>(<span class="fu">as.character</span>(kids_total_factor)<span class="sc">==</span><span class="dv">4</span>, <span class="st">"4+"</span>, <span class="fu">as.character</span>(kids_total_factor)))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>preds_ashs_A1<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(preds_ashs)<span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">kids_total_factor =</span> group,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">APOE_binary=</span>facet)<span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(APOE_binary<span class="sc">==</span><span class="dv">1</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">APOE_binary =</span> <span class="st">"Carrier"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">kids_total_factor=</span> <span class="fu">ifelse</span>(<span class="fu">as.character</span>(kids_total_factor)<span class="sc">==</span><span class="dv">4</span>, <span class="st">"4+"</span>, <span class="fu">as.character</span>(kids_total_factor)))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a combined factor for color mapping</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>data_plot <span class="ot">&lt;-</span> data_ashs <span class="sc">%&gt;%</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="dv">2</span>, <span class="sc">!</span><span class="fu">is.na</span>(APOE_binary)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">kids_total_factor =</span> <span class="fu">ifelse</span>(kids_total<span class="sc">==</span><span class="dv">4</span>, <span class="st">"4+"</span>, kids_total),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">APOE_binary =</span> <span class="fu">factor</span>(APOE_binary, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-Carrier"</span>, <span class="st">"Carrier"</span>)),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">color_group =</span> <span class="fu">paste</span>(APOE_binary, kids_total_factor, <span class="at">sep =</span> <span class="st">"_"</span>))</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>preds_ashs_A0 <span class="ot">&lt;-</span> preds_ashs_A0 <span class="sc">%&gt;%</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">color_group =</span> <span class="fu">paste</span>(<span class="st">"Non-Carrier"</span>, kids_total_factor, <span class="at">sep =</span> <span class="st">"_"</span>))</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>preds_ashs_A1 <span class="ot">&lt;-</span> preds_ashs_A1 <span class="sc">%&gt;%</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">color_group =</span> <span class="fu">paste</span>(<span class="st">"Carrier"</span>, kids_total_factor, <span class="at">sep =</span> <span class="st">"_"</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Define color palettes</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>color_values <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Non-Carrier_0"</span> <span class="ot">=</span> <span class="st">"#4DD0E1"</span>, <span class="st">"Non-Carrier_1"</span> <span class="ot">=</span> <span class="st">"#1CA8B7"</span>, <span class="st">"Non-Carrier_2"</span> <span class="ot">=</span> <span class="st">"#1E8895"</span>, <span class="st">"Non-Carrier_3"</span> <span class="ot">=</span> <span class="st">"#0D707B"</span>, <span class="st">"Non-Carrier_4+"</span> <span class="ot">=</span> <span class="st">"#0F565E"</span>,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Carrier_0"</span> <span class="ot">=</span> <span class="st">"#FF8A65"</span>, <span class="st">"Carrier_1"</span> <span class="ot">=</span> <span class="st">"#FF7043"</span>, <span class="st">"Carrier_2"</span> <span class="ot">=</span> <span class="st">"#FF5722"</span>, <span class="st">"Carrier_3"</span> <span class="ot">=</span> <span class="st">"#F4511E"</span>, <span class="st">"Carrier_4+"</span> <span class="ot">=</span> <span class="st">"#BF360C"</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_plot, <span class="fu">aes</span>(<span class="at">x =</span> diff_mri, <span class="at">y =</span> vol_HIPP, <span class="at">color =</span> color_group)) <span class="sc">+</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> preds_ashs_A0, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>predicted, <span class="at">group=</span>kids_total_factor, <span class="at">color=</span>color_group), <span class="at">size=</span><span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> preds_ashs_A1, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>predicted, <span class="at">group=</span>kids_total_factor, <span class="at">color=</span>color_group), <span class="at">size=</span><span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> preds_ashs_A0, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">ymin=</span>conf.low, <span class="at">ymax=</span>conf.high, </span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">group=</span>kids_total_factor, <span class="at">fill=</span>color_group), </span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>              <span class="at">inherit.aes =</span> F, <span class="at">alpha=</span>.<span class="dv">15</span>)<span class="sc">+</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> preds_ashs_A1, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">ymin=</span>conf.low, <span class="at">ymax=</span>conf.high, </span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">group=</span>kids_total_factor, <span class="at">fill=</span>color_group), </span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>              <span class="at">inherit.aes =</span> F, <span class="at">alpha=</span>.<span class="dv">15</span>)<span class="sc">+</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>APOE_binary) <span class="sc">+</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> color_values, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4+"</span>, <span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4+"</span>)) <span class="sc">+</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> color_values, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4+"</span>, <span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4+"</span>)) <span class="sc">+</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time difference (days)"</span>, </span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"PACC Z-score"</span>, </span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Number of childbirths"</span>,</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Number of childbirths"</span>)<span class="sc">+</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  th</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
@@ -986,17 +986,47 @@ N = 8<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic
 <div id="ref-parizkova2018" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[23] </div><div class="csl-right-inline">Parizkova M, Lerch O, Moffat SD, Andel R, Mazancova AF, Nedelska Z, et al. The effect of Alzheimer’s disease on spatial navigation strategies. Neurobiology of Aging 2018;64:107–15. <a href="https://doi.org/10.1016/j.neurobiolaging.2017.12.019">https://doi.org/10.1016/j.neurobiolaging.2017.12.019</a>.</div>
 </div>
+<div id="ref-molinuevo2016" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[24] </div><div class="csl-right-inline">Molinuevo JL, Gramunt N, Gispert JD, Fauria K, Esteller M, Minguillon C, et al. The ALFA project: A research platform to identify early pathophysiological features of Alzheimer’s disease. Alzheimer’s &amp; Dementia: Translational Research &amp; Clinical Interventions 2016;2:82–92. <a href="https://doi.org/10.1016/j.trci.2016.02.003">https://doi.org/10.1016/j.trci.2016.02.003</a>.</div>
+</div>
+<div id="ref-buschke2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[25] </div><div class="csl-right-inline">Buschke H, Mowrey WB, Ramratan WS, Zimmerman ME, Loewenstein DA, Katz MJ, et al. Memory Binding Test Distinguishes Amnestic Mild Cognitive Impairment and Dementia from Cognitively Normal Elderly. Archives of Clinical Neuropsychology 2017;32:29–39. <a href="https://doi.org/10.1093/arclin/acw083">https://doi.org/10.1093/arclin/acw083</a>.</div>
+</div>
+<div id="ref-lópez-martos2025" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[26] </div><div class="csl-right-inline">López-Martos D, Suárez-Calvet M, Milà-Alomà M, Gispert JD, Salvadó G, Brugulat-Serrat A, et al. Longitudinal Associations of Multimodal Core 1 Alzheimer Disease Biomarkers With Cognition in Aging and Preclinical Alzheimer Disease. Neurology 2025;105. <a href="https://doi.org/10.1212/wnl.0000000000214308">https://doi.org/10.1212/wnl.0000000000214308</a>.</div>
+</div>
+<div id="ref-Milà-Alomà2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[27] </div><div class="csl-right-inline">Milà-Alomà M, Salvadó G, Gispert JD, Vilor-Tejedor N, Grau-Rivera O, Sala-Vila A, et al. Amyloid beta, tau, synaptic, neurodegeneration, and glial biomarkers in the preclinical stage of the Alzheimer’s <span><em>continuum</em></span>. Alzheimer’s &amp; Dementia 2020;16:1358–71. <a href="https://doi.org/10.1002/alz.12131">https://doi.org/10.1002/alz.12131</a>.</div>
+</div>
 <div id="ref-Yushkevich2015" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[24] </div><div class="csl-right-inline">Yushkevich PA, Pluta JB, Wang H, Xie L, Ding S-L, Gertje EC, et al. Automated volumetry and regional thickness analysis of hippocampal subfields and medial temporal cortical structures in mild cognitive impairment. Human Brain Mapping 2014;36:258–87. <a href="https://doi.org/10.1002/hbm.22627">https://doi.org/10.1002/hbm.22627</a>.</div>
+<div class="csl-left-margin">[28] </div><div class="csl-right-inline">Yushkevich PA, Pluta JB, Wang H, Xie L, Ding S-L, Gertje EC, et al. Automated volumetry and regional thickness analysis of hippocampal subfields and medial temporal cortical structures in mild cognitive impairment. Human Brain Mapping 2014;36:258–87. <a href="https://doi.org/10.1002/hbm.22627">https://doi.org/10.1002/hbm.22627</a>.</div>
+</div>
+<div id="ref-smith2002" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[29] </div><div class="csl-right-inline">Smith SM. Fast robust automated brain extraction. Human Brain Mapping 2002;17:143–55. <a href="https://doi.org/10.1002/hbm.10062">https://doi.org/10.1002/hbm.10062</a>.</div>
+</div>
+<div id="ref-lenth2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[30] </div><div class="csl-right-inline">Lenth RV, Piaskowski J. Emmeans: Estimated marginal means, aka least-squares means 2017. <a href="https://doi.org/10.32614/cran.package.emmeans">https://doi.org/10.32614/cran.package.emmeans</a>.</div>
+</div>
+<div id="ref-wickham2019" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[31] </div><div class="csl-right-inline">Wickham H, Averick M, Bryan J, Chang W, McGowan L, François R, et al. Welcome to the tidyverse. Journal of Open Source Software 2019;4:1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.</div>
+</div>
+<div id="ref-sjoberg2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[32] </div><div class="csl-right-inline">Sjoberg Daniel,D, Whiting K, Curry M, Lavery Jessica,A, Larmarange J. Reproducible Summary Tables with the gtsummary Package. The R Journal 2021;13:570. <a href="https://doi.org/10.32614/rj-2021-053">https://doi.org/10.32614/rj-2021-053</a>.</div>
+</div>
+<div id="ref-lüdecke2018" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[33] </div><div class="csl-right-inline">Lüdecke D. Ggeffects: Tidy data frames of marginal effects from regression models. Journal of Open Source Software 2018;3:772. <a href="https://doi.org/10.21105/joss.00772">https://doi.org/10.21105/joss.00772</a>.</div>
+</div>
+<div id="ref-bates2015" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[34] </div><div class="csl-right-inline">Bates D, Mächler M, Bolker B, Walker S. Fitting Linear Mixed-Effects Models Using<span><strong>lme4</strong></span>. Journal of Statistical Software 2015;67. <a href="https://doi.org/10.18637/jss.v067.i01">https://doi.org/10.18637/jss.v067.i01</a>.</div>
 </div>
 <div id="ref-pievani2011" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[25] </div><div class="csl-right-inline">Pievani M, Galluzzi S, Thompson PM, Rasser PE, Bonetti M, Frisoni GB. APOE4 is associated with greater atrophy of the hippocampal formation in Alzheimer’s disease. NeuroImage 2011;55:909–19. <a href="https://doi.org/10.1016/j.neuroimage.2010.12.081">https://doi.org/10.1016/j.neuroimage.2010.12.081</a>.</div>
+<div class="csl-left-margin">[35] </div><div class="csl-right-inline">Pievani M, Galluzzi S, Thompson PM, Rasser PE, Bonetti M, Frisoni GB. APOE4 is associated with greater atrophy of the hippocampal formation in Alzheimer’s disease. NeuroImage 2011;55:909–19. <a href="https://doi.org/10.1016/j.neuroimage.2010.12.081">https://doi.org/10.1016/j.neuroimage.2010.12.081</a>.</div>
 </div>
 <div id="ref-pritschet2024" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[26] </div><div class="csl-right-inline">Pritschet L, Taylor CM, Cossio D, Faskowitz J, Santander T, Handwerker DA, et al. Neuroanatomical changes observed over the course of a human pregnancy. Nature Neuroscience 2024;27:2253–60. <a href="https://doi.org/10.1038/s41593-024-01741-0">https://doi.org/10.1038/s41593-024-01741-0</a>.</div>
+<div class="csl-left-margin">[36] </div><div class="csl-right-inline">Pritschet L, Taylor CM, Cossio D, Faskowitz J, Santander T, Handwerker DA, et al. Neuroanatomical changes observed over the course of a human pregnancy. Nature Neuroscience 2024;27:2253–60. <a href="https://doi.org/10.1038/s41593-024-01741-0">https://doi.org/10.1038/s41593-024-01741-0</a>.</div>
 </div>
 <div id="ref-scheltens1992a" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[27] </div><div class="csl-right-inline">Scheltens P, Weinstein HC, Leys D. Neuro-imaging in the diagnosis of Alzheimer’s disease I. Computer tomography and magnetic resonance imaging. Clinical Neurology and Neurosurgery 1992;94:277–89. <a href="https://doi.org/10.1016/0303-8467(92)90175-3">https://doi.org/10.1016/0303-8467(92)90175-3</a>.</div>
+<div class="csl-left-margin">[37] </div><div class="csl-right-inline">Scheltens P, Weinstein HC, Leys D. Neuro-imaging in the diagnosis of Alzheimer’s disease I. Computer tomography and magnetic resonance imaging. Clinical Neurology and Neurosurgery 1992;94:277–89. <a href="https://doi.org/10.1016/0303-8467(92)90175-3">https://doi.org/10.1016/0303-8467(92)90175-3</a>.</div>
 </div>
 </div></section></div></main>
 <!-- /main column -->
