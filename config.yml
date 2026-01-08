@@ -1,0 +1,6 @@
+default:
+  alfa_dataset_cleaned: "G:/My Drive/Data/ALFA+/data_cleaned/"
+  alfa_dataset_neuroimaging: "G:/My Drive/Data/ALFA+/data_raw/neuroimaging/"
+  alfa_dataset_cognition: "G:/My Drive/Data/ALFA+/data_raw/cognition/"
+  alfa_dataset_raw: "G:/My Drive/Data/ALFA+/data_raw/"
+  wrap_dataset_cleaned: "G:/My Drive/Data/WRAP/data_cleaned/"
