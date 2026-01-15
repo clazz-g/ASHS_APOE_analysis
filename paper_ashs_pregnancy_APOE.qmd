@@ -143,9 +143,9 @@ data_ashs_long<-ashs1%>%
   right_join(., data_naked)%>%
   filter(subject!= 21136, #this is a very big outlier that increases 1cm3 of HV over visits
          subject!= 12560, #this is a very big outlier that increases 1cm3 of HV over visits
-         subject!= 55854, #cooks distance > 1
-         subject != 12186, #cooks distance > 1
-         subject != 11154 )#cooks distance > 1
+         #subject!= 55854, #cooks distance > 1
+         subject != 12186) #is missing CA2 and CA3 values in V1
+         #subject != 11154 )#cooks distance > 1
  
 
 
@@ -287,7 +287,7 @@ Total Intracranial volume (TIV) was estimated using deformation fields obtained 
 
 ## Statistical analyses
 
-We used linear mixed-effects models to assess the joint effects of parity and APOE-e4 (exposures), on HV and cognition z-score (outcomes) over both visits, and test if this association is dependent on time. These models included a three-way interaction term among parity, APOE4, and time (the interval between Visit 1 and Visit 2 in years) and all lower-order interactions. Cognitive analyses were adjusted for years of education, and age at baseline visit. HV analyses were additionally adjusted for TIV. Cook´s distance was used to assess the influence of individual observations on the regression model, and any observation with a value greater than one was discarded (eMethods X).
+We used linear mixed-effects models to assess the joint effects of parity and APOE-e4 (exposures), on HV and cognition z-score (outcomes) over both visits, and test if this association is dependent on time. These models included a three-way interaction term among parity, APOE4, and time (the interval between Visit 1 and Visit 2 in years) and all lower-order interactions. Cognitive analyses were adjusted for years of education, and age at baseline visit. HV analyses were additionally adjusted for TIV. 
 
 Analyses that showed a significant parity x APOE-e4 interaction were reproduced adding Aβ load as a covariate to ivestigate potential contribution of AD pathology to the effect. Given the high correlation between Aβ load and APOE4 variables, collinearity was tested for each model and cna be found in the suppplementary materials.
 
@@ -336,15 +336,31 @@ dropout<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025_2010_ST
   mutate(STF_reas = factor(STF_reas, levels = c("1", "2", "3", "4", "5", "6", "7"), labels = c("Death", "No response", "Participant withdrawal", "Clinician decision", "Promotor decision", "Protocol issue", "Other")),
          STF_state = factor(STF_state, levels = c("1", "2", "3", "4"), labels = c("Completed", "Failed preescreening", "Failed screening", "Discontinued")))
 
-cognition_wide<-read_excel(paste0(config$alfa_dataset_cognition, "PACCv1_to_v3(incomplete).xlsx"))%>%
-  rename(subject = IdParticipante)%>%
-  dplyr::select(subject, Visit, Z_PACC, FechaResultado)%>%
-  pivot_wider(values_from = c(Z_PACC, FechaResultado), names_from = Visit, names_prefix = "V")%>%
-  mutate(Z_PACC_diff = Z_PACC_V2-Z_PACC_V1,
-         FechaResultado_V1= as.Date(FechaResultado_V1, format = "%Y-%m-%d"),
-         FechaResultado_V2= as.Date(FechaResultado_V2, format = "%Y-%m-%d"),
-         cog_diff= as.numeric(FechaResultado_V2-FechaResultado_V1)/365.25)%>%
-  dplyr::select(subject, Z_PACC_diff, cog_diff, Z_PACC_V2, Z_PACC_V1)
+cognition1<-read_excel(paste0(config$alfa_dataset_cognition, "Visit 1 - Cognition Z Scores.xlsx"))%>%
+  dplyr::select(-Gender, -Age_V1S1, -Years_Edu, -V1S1_dt, -Z_PACC_Composite_1.2._v1)%>%
+  rename(memory = Z_Memory_Composite_v1, 
+         attention = Z_Attention_Composite_v1,
+         executive = Z_Executive_Composite_v1,
+         language = Z_Language_Composite_v1,
+         visual = Z_Visual_Composite_v1,
+         subject = IdParticipante)%>%
+  mutate(Visit=1)
+
+cognition2<-read_excel(paste0(config$alfa_dataset_cognition, "Visit 2 - Cognition Z Scores.xlsx"))%>%
+  dplyr::select(-Gender, -Age_V1S1, -Years_Edu, -V2S1_dt, -V1S1_dt, -Z_PACC_Composite_1.2._V2)%>%
+  rename(memory = Z_Memory_Composite_V2, 
+         attention = Z_Attention_Composite_V2,
+         executive = Z_Executive_Composite_V2,
+         language = Z_Language_Composite_V2,
+         visual = Z_Visual_Composite_V2,
+         subject = IdParticipante)%>%
+   mutate(Visit=2)
+
+cognition_wide<-bind_rows(cognition1, cognition2)%>%
+  pivot_wider(values_from = c(attention, executive, memory, language, visual), names_from = Visit, names_prefix = "V")%>%
+  dplyr::select(subject, ends_with("_V1"), ends_with("_V2"))%>%
+  mutate(subject= as.numeric(subject))
+  
 
 ashs_wide<-ashs1%>%
   bind_rows(ashs1b)%>%
@@ -354,9 +370,7 @@ ashs_wide<-ashs1%>%
   dplyr::select(-diff_mri)%>%
   filter(subject!= 21136,
          subject!= 12560,
-         subject!= 55854,
-         subject!= 12186,
-         subject!= 11154)%>%
+         subject!= 12186)%>%
   pivot_wider(names_from = Visit, values_from = c(starts_with("vol_")))
 
 biomarkers_wide<-biomarkers%>%
@@ -370,15 +384,18 @@ data_table<-data_naked%>%
          vol_HIPP_2 = ifelse(is.na(vol_HIPP_1), NA, vol_HIPP_2),
          vol_tiv_1 =  ifelse(is.na(vol_HIPP_2), NA, vol_tiv_1))%>%
   left_join(.,cognition_wide)%>%
-  mutate(Z_PACC_V1 = ifelse(is.na(Z_PACC_V2), NA, Z_PACC_V1),
-         Z_PACC_V2 = ifelse(is.na(Z_PACC_V1), NA, Z_PACC_V2))%>%
+  mutate(attention_V1 = ifelse(is.na(attention_V2), NA, attention_V1),
+         executive_V1 = ifelse(is.na(executive_V2), NA, executive_V1),
+         memory_V1 = ifelse(is.na(memory_V2), NA, memory_V1),
+         language_V1 = ifelse(is.na(language_V2), NA, language_V1),
+         visual_V1 = ifelse(is.na(visual_V2), NA, visual_V1),)%>%
   left_join(.,biomarkers_wide)%>%
-  dplyr::select(age_v1, kids_total, APOE_binary, education, vol_tiv_1, vol_HIPP_1, vol_HIPP_2, , Z_PACC_V1, Z_PACC_V2, CSF_Abeta_ratio_V1, subject)%>%
+  dplyr::select(age_v1, kids_total, APOE_binary, education, vol_tiv_1, vol_HIPP_1, vol_HIPP_2, attention_V1, attention_V2, executive_V1, executive_V2, memory_V1, memory_V2, language_V1, language_V2, visual_V1, visual_V2, CSF_Abeta_ratio_V1, subject)%>%
   mutate(kids_total= ifelse(kids_total==4, "4+", as.character(kids_total)),
          vol_tiv_1 = vol_tiv_1/1000,
          vol_HIPP_1=vol_HIPP_1/1000,
          vol_HIPP_2=vol_HIPP_2/1000)%>%
-  dplyr::select(age_v1, kids_total, education, APOE_binary, CSF_Abeta_ratio_V1, vol_HIPP_1, vol_HIPP_2,  Z_PACC_V1, Z_PACC_V2, vol_tiv_1)
+  dplyr::select(age_v1, kids_total, education, APOE_binary, CSF_Abeta_ratio_V1, vol_HIPP_1, vol_HIPP_2, attention_V1, attention_V2, executive_V1, executive_V2, memory_V1, memory_V2, language_V1, language_V2, visual_V1, visual_V2, vol_tiv_1)
 
 desc_table<-tbl_summary(data_table,
                         statistic = list(all_continuous() ~ "{mean} ({sd})"),
@@ -391,9 +408,17 @@ desc_table<-tbl_summary(data_table,
                      education = "Education (years), Mean (SD)",
                      vol_HIPP_1 = "Baseline Hippocampal volume (cm3), Mean (SD)",
                      vol_HIPP_2 = "Follow-up Hippocampal volume (cm3), Mean (SD)",
-                     CSF_Abeta_ratio_V1 = "CSF Aβ42/40 ratio pg/ml, Mean (SD)",
-                     Z_PACC_V1 = "Baseline mPACC z-score, Mean (SD)", 
-                     Z_PACC_V2 = "Follow-up mPACC z-score, Mean (SD)"),
+                     attention_V1 = "Baseline composite attention score, Mean (SD)",
+                     attention_V2 = "Follow-up composite attention score, Mean (SD)",
+                     executive_V1 = "Baseline composite executive score, Mean (SD)",
+                     executive_V2 = "Follow-up composite executive score, Mean (SD)",
+                     memory_V1 = "Baseline composite memory score, Mean (SD)",
+                     memory_V2 = "Follow-up composite memory score, Mean (SD)",
+                     language_V1 = "Baseline composite language score, Mean (SD)",
+                     language_V2 = "Follow-up composite language score, Mean (SD)",
+                     visual_V1 = "Baseline composite visual score, Mean (SD)",
+                     visual_V2 = "Follow-up composite visual score, Mean (SD)",
+                     CSF_Abeta_ratio_V1 = "CSF Aβ42/40 ratio pg/ml, Mean (SD)"),
             value = list(APOE_binary= "1",
                          A= "1"))%>%
   add_n()%>%
@@ -409,7 +434,7 @@ desc_table<-tbl_summary(data_table,
 desc_table
 ```
 
-As shown in Table 1, 39 (15.3%) participants had no previous childbirths, 54 (21.2%) had one previous childbirth, 126 (49.6%) had 2, 27 (10.6%) had 3, and only 8 (3%) had 4 or more. Age significantly differed depending on parity. No differences were observed among groups for Aβ, APOE-ε4 carrier status, or HV. 
+As shown in Table 1, 39 (15.3%) participants had no previous childbirths, 54 (21.2%) had one previous childbirth, 126 (49.6%) had 2, 27 (10.6%) had 3, and only 8 (3%) had 4 or more. Age, education and follow-up executive composite score significantly differed depending on parity. No differences were observed among groups for Aβ, APOE-ε4 carrier status, or HV. 
 
 Carriers of APOE-E4 had significantly higher CSF Aβ42/40 load compared with non carriers (t = 5, df = 191, p < 0.001).
 
@@ -432,6 +457,7 @@ data_ashs_female<-data_ashs_long%>%
 
 mod_ashs_APOE<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + education  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_APOE)
+plot(mod_ashs_APOE)
 influenceIndexPlot(mod_ashs_APOE)
 
 #-> Get all imputed datasets in long format
@@ -632,26 +658,6 @@ p1/p2+
 
 ```{r, include=F}
 
-cognition1<-read_excel(paste0(config$alfa_dataset_cognition, "Visit 1 - Cognition Z Scores.xlsx"))%>%
-  dplyr::select(-Gender, -Age_V1S1, -Years_Edu, -V1S1_dt, -Z_PACC_Composite_1.2._v1)%>%
-  rename(memory = Z_Memory_Composite_v1, 
-         attention = Z_Attention_Composite_v1,
-         executive = Z_Executive_Composite_v1,
-         language = Z_Language_Composite_v1,
-         visual = Z_Visual_Composite_v1,
-         subject = IdParticipante)%>%
-  mutate(Visit=1)
-
-cognition2<-read_excel(paste0(config$alfa_dataset_cognition, "Visit 2 - Cognition Z Scores.xlsx"))%>%
-  dplyr::select(-Gender, -Age_V1S1, -Years_Edu, -V2S1_dt, -V1S1_dt, -Z_PACC_Composite_1.2._V2)%>%
-  rename(memory = Z_Memory_Composite_V2, 
-         attention = Z_Attention_Composite_V2,
-         executive = Z_Executive_Composite_V2,
-         language = Z_Language_Composite_V2,
-         visual = Z_Visual_Composite_V2,
-         subject = IdParticipante)%>%
-   mutate(Visit=2)
-
 data_cog_composites<-bind_rows(cognition1, cognition2)%>%
   mutate(subject=as.numeric(subject),
          Visit=as.character(Visit))%>%
@@ -662,62 +668,43 @@ data_cog_composites<-bind_rows(cognition1, cognition2)%>%
   mutate(Visit=as.numeric(Visit))%>%
   left_join(., A_long)
 
+#subject!=21136
+
 fit_cog_att<-lmer(attention ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
 summary(fit_cog_att)
+influenceIndexPlot(fit_cog_att)
+plot(fit_cog_att)
+#chose not to remove because appart from cook's distance everything seems fine.. fine in other domains too. But she is driving the results a lot so could report with and without?
+
+ggplot(data_cog_composites, aes(x= time_diff, y= attention, group = subject, colour = APOE_binary))+
+  geom_line()+
+  facet_wrap(~kids_total)
+
 
 fit_cog_ex<-lmer(executive ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
 summary(fit_cog_ex)
+influenceIndexPlot(fit_cog_ex)
 
 fit_cog_mem<-lmer(memory ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
 summary(fit_cog_mem)
+influenceIndexPlot(fit_cog_mem)
 
 fit_cog_lang<-lmer(language ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
 summary(fit_cog_lang)
+influenceIndexPlot(fit_cog_lang)
 
 fit_cog_vis<-lmer(visual ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
 summary(fit_cog_vis)
+influenceIndexPlot(fit_cog_vis)
 
 
 ```
 
-Only trend between parity and time, and parity and APOE but no 3 way interaction, in attention. Nothing in the rest.
+need to check if I should include outlier or not.
 
 ## Exploratory analysis of hippocampal subfields
 need to recheck model residuals
 ```{r, include = F, warning=FALSE}
-
-mod_ashs_CA1<-lmer(vol_CA1 ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_CA1)
-influenceIndexPlot(mod_ashs_CA1)
-
-
-mod_ashs_CA2<-lmer(vol_CA2 ~ kids_total*diff_mri*APOE_binary + age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_CA2)
-influenceIndexPlot(mod_ashs_CA2)
-
-mod_ashs_CA3<-lmer(vol_CA3 ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_CA3)
-influenceIndexPlot(mod_ashs_CA3)
-
-
-mod_ashs_DG<-lmer(vol_DG ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education + (1|subject), data = data_ashs_female)
-summary(mod_ashs_DG)
-influenceIndexPlot(mod_ashs_DG)
-
-mod_ashs_SUB<-lmer(vol_SUB ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_SUB)
-influenceIndexPlot(mod_ashs_SUB)
-
-
-```
-
-
-The 3-way interaction between parity, APOE4 and time was significant in the CA2  (β= `r tidy(mod_ashs_CA2)$estimate[11]`, SE = `r tidy(mod_ashs_CA2)$std.error[11]`, p= `r tidy(mod_ashs_CA2)$p.value[11]`) and near significant in the DG (β= `r tidy(mod_ashs_DG)$estimate[11]`, SE = `r tidy(mod_ashs_DG)$std.error[11]`, p= `r tidy(mod_ashs_DG)$p.value[11]`). Similarly, parity was associated with steeper HV decline in APOE-E4 carriers.
-
-
-```{r, echo=F, warning=F}
-# Standardize outcome variables based on visit 1 values
-# First, calculate mean and SD from visit 1 only
 
 CA1_mean<-mean(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
 CA1_sd<-sd(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
@@ -736,6 +723,39 @@ data_ashs_female<-data_ashs_female%>%
          vol_CA3_std = (vol_CA3 - CA3_mean) / CA3_sd,
          vol_DG_std = (vol_DG - DG_mean) / DG_sd,
          vol_SUB_std = (vol_SUB - SUB_mean) / SUB_sd)
+
+mod_ashs_CA1<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA1)
+influenceIndexPlot(mod_ashs_CA1)
+
+mod_ashs_CA2<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA2)
+influenceIndexPlot(mod_ashs_CA2)
+
+mod_ashs_CA3<-lmer(vol_CA3_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA3)
+influenceIndexPlot(mod_ashs_CA3)
+
+mod_ashs_DG<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education + (1|subject), data = data_ashs_female)
+summary(mod_ashs_DG)
+influenceIndexPlot(mod_ashs_DG)
+
+mod_ashs_SUB<-lmer(vol_SUB_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_SUB)
+influenceIndexPlot(mod_ashs_SUB)
+
+
+```
+
+
+The 3-way interaction between parity, APOE4 and time was significant in the CA1 (β= `r tidy(mod_ashs_CA1)$estimate[11]`, SE = `r tidy(mod_ashs_CA1)$std.error[11]`, p= `r tidy(mod_ashs_CA1)$p.value[11]`), CA2  (β= `r tidy(mod_ashs_CA2)$estimate[11]`, SE = `r tidy(mod_ashs_CA2)$std.error[11]`, p= `r tidy(mod_ashs_CA2)$p.value[11]`) and in the DG (β= `r tidy(mod_ashs_DG)$estimate[11]`, SE = `r tidy(mod_ashs_DG)$std.error[11]`, p= `r tidy(mod_ashs_DG)$p.value[11]`). Similarly, parity was associated with steeper HV decline in APOE-E4 carriers.
+
+
+```{r, echo=F, warning=F}
+# Standardize outcome variables based on visit 1 values
+# First, calculate mean and SD from visit 1 only
+
+
 
 # Fit models with standardized outcomes - APOE = 0
 models_apoe0 <- list(
@@ -808,26 +828,6 @@ ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
   th
 ```
 ```{r, echo=F, warning=F}
-# Standardize outcome variables based on visit 1 values
-# First, calculate mean and SD from visit 1 only
-
-CA1_mean<-mean(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
-CA1_sd<-sd(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
-CA2_mean<-mean(data_ashs_female$vol_CA2[data_ashs_female$Visit==1], na.rm=T)
-CA2_sd<-sd(data_ashs_female$vol_CA2[data_ashs_female$Visit==1], na.rm=T)
-CA3_mean<-mean(data_ashs_female$vol_CA3[data_ashs_female$Visit==1], na.rm=T)
-CA3_sd<-sd(data_ashs_female$vol_CA3[data_ashs_female$Visit==1], na.rm=T)
-DG_mean<-mean(data_ashs_female$vol_DG[data_ashs_female$Visit==1], na.rm=T)
-DG_sd<-sd(data_ashs_female$vol_DG[data_ashs_female$Visit==1], na.rm=T)
-SUB_mean<-mean(data_ashs_female$vol_SUB[data_ashs_female$Visit==1], na.rm=T)
-SUB_sd<-sd(data_ashs_female$vol_SUB[data_ashs_female$Visit==1], na.rm=T)
-
-data_ashs_female<-data_ashs_female%>%
-  mutate(vol_CA1_std = (vol_CA1 - CA1_mean) / CA1_sd,
-         vol_CA2_std = (vol_CA2 - CA2_mean) / CA2_sd,
-         vol_CA3_std = (vol_CA3 - CA3_mean) / CA3_sd,
-         vol_DG_std = (vol_DG - DG_mean) / DG_sd,
-         vol_SUB_std = (vol_SUB - SUB_mean) / SUB_sd)
 
 # Fit models with standardized outcomes - APOE = 0
 models_apoe0 <- list(
