@@ -4,9 +4,9 @@ author: "Clazz"
 toc: true
 number-sections: true
 format: 
-  docx:
+  html:
     code-fold: true
-editor: visual
+editor: source
 bibliography: references.bib
 csl: elsevier-vancouver.csl
 ---
@@ -74,7 +74,8 @@ data_naked<-read_delim(paste0(config$alfa_dataset_cleaned, "ALFA_dataset_basic.c
          kids_dicho=factor(kids_dicho),
          kids_total2 = ifelse(kids_total==4, 3, kids_total))%>%
   dplyr::select(-TIV)%>%
-  left_join(., apoe2)
+  left_join(., apoe2)%>%
+  mutate(kids_total = ifelse(kids_total ==5, 4, kids_total))
   
 
 alfa_subjects<-data_naked%>%
@@ -177,7 +178,7 @@ data_ashs_long<-ashs1%>%
 #   th
 ```
 
-```{r, biomarkers}
+```{r, biomarkers, include=F}
 
 biomarkers<-read_delim(paste0(config$alfa_dataset_cleaned, "biomarkers_CSF_processed.csv"), 
     delim = ",", escape_double = FALSE, trim_ws = TRUE)%>%
@@ -267,7 +268,7 @@ The sample consisted of 254 participants at baseline visit, and 211 at follow-up
 
 ## Reproductive variables
 
-Parity was defined as the number of biological children and used as a continuous and dichotomous [parous vs nulliparous] variable in the main analyses. This information was self-reported by individuals during an interview with a clinician at the baseline visit.
+Parity was defined as the number of biological children and used as a continuous and dichotomous [parous vs nulliparous] variable in the main analyses. Due to the small number of grand multiparous participants, anyone with 4 or more biological children was grouped together. Hormonal Replacement Therapy (HRT) use was defined as a binary variable [currently using vs not currently using]. Cause of menopause was also defined as a binary variable [natural vs non-natural]. Reproductive span was calculated by subtracting age at menarche from age at menopause. Early menopause was defined as a binary variable [age at menopause> 45 vs age at menopause≤ 45]. These informations were self-reported by participants during an interview with a clinician at the baseline visit. When asking about age at menopause, participants were asked to report their age 6(?) months after their last period.
 
 ## Cognitive measures
 
@@ -275,7 +276,10 @@ Cognition was defined using 5 composite scores that measured sparate congitive d
 
 ## AD biomarkers
 
-CSF collection, processing, and storage in the ALFA+ study have been described previously @Milà-Alomà2020. Briefly, CSF Aβ42 and Aβ40 were measured with the exploratory Roche NeuroToolKit immunoassays (Roche Diagnostics International Ltd, Rotkreuz, Switzerland) on a cobas e 601 module. Measurements were performed at the Clinical Neurochemistry Laboratory, Sahlgrenska University Hospital, Molndal, Sweden. Aß accumulation (Aß+, Aß–) was estimated using CSF Aß42/40.
+CSF collection, processing, and storage in the ALFA+ study have been described previously @Milà-Alomà2020. Briefly, CSF Aβ42 and Aβ40 were measured with the exploratory Roche NeuroToolKit immunoassays (Roche Diagnostics International Ltd, Rotkreuz, Switzerland) on a cobas e 601 module. Measurements were performed at the Clinical Neurochemistry Laboratory, Sahlgrenska University Hospital, Molndal, Sweden. Aß accumulation (Aß+, Aß–) was estimated using CSF Aß42/40. Aß status (Aß+, Aß–) was defined using the cutoff of 0.071 for the ratio Aß42/40 [23], where any participant below this cutoff was considered to be Aβ+.
+
+- add other inflammation biomarkers
+
 
 ## Imaging data acquisition and preprocessing
 
@@ -283,15 +287,21 @@ Automatic Segmentation of Hippocampal Subfields (ASHS) software @Yushkevich2015 
 
 Hippocampal values are reported in cm3 and were obtained at both baseline and follow-up visits.
 
+Gray matter volume was obtained using Freesurfer7.
+
 Total Intracranial volume (TIV) was estimated using deformation fields obtained during the nonlinear registration of each subject’s T1-weighted MRI to a whole-brain template. The FSL Brain Extraction Tool @smith2002 was applied to the template to create an intracranial mask, which was warped into each subject’s MRI at native space to obtain the TIV measurement.
 
 ## Statistical analyses
 
 We used linear mixed-effects models to assess the joint effects of parity and APOE-e4 (exposures), on HV and cognition z-score (outcomes) over both visits, and test if this association is dependent on time. These models included a three-way interaction term among parity, APOE4, and time (the interval between Visit 1 and Visit 2 in years) and all lower-order interactions. Cognitive analyses were adjusted for years of education, and age at baseline visit. HV analyses were additionally adjusted for TIV. 
 
-Analyses that showed a significant parity x APOE-e4 interaction were reproduced adding Aβ load as a covariate to ivestigate potential contribution of AD pathology to the effect. Given the high correlation between Aβ load and APOE4 variables, collinearity was tested for each model and cna be found in the suppplementary materials.
+Analyses that showed a significant parity x APOE-e4 interaction were reproduced adding Aβ load as a covariate to disentangle the neuropathological contributions of Aβ accumulation from the phenogenetic contributions of APOE4. Given the high correlation between Aβ load and APOE4 variables, collinearity was tested for each model and can be found in the suppplementary materials. In addition to this, we reproduced the analysis in Aβ-negative participants only.
 
-Additional linear regressions were also performed to explore the interaction between parity and APOE-e4 positivity on hippocampal subfield volumes across visits. Subfields values are standardized. Given the exploratory nature of these analyses, results are reported without correction for multiple comparisons.
+Specificity of the results was tested by testing the 3-way interaction between parity, APOE4 and time on gray matter volume changes in the calcarine cortex.
+
+Sensitivity analyses were performed to explore the impact of additional reproductive variables on HV in the context of the 3-way interaction between parity APOE4 and time. These regressions were further adjusted by HRT, early menopause, reproductive span and cause of menopause.
+
+Additional exploratory linear regressions were also performed to explore the interaction between parity and APOE-e4 positivity on hippocampal subfield volumes across visits. Subfields values are standardized. Given the exploratory nature of these analyses, results are reported without correction for multiple comparisons.
 
 Multiple imputation was used on covariates with missing data in order to avoid imcomplete case deletion.
 
@@ -299,7 +309,9 @@ Statistical significance was set at p \< 0.05. Analyses were conducted using R s
 
 Rates of missing data in exposures or outcome variables at each time point are reported (Table 1). 
 
--   why lump together people with 3+ pregnancies instead of doing like in my previous paper?
+- cognitive subfield analyses are given standardized 
+- analysis with biomarker as outcome were normalised using box-cox regression
+
 
 # Results
 
@@ -522,6 +534,298 @@ Stratifying by APOE-ε4 status yielded a significant interaction between parity 
 
 Reproducing the analysis using parity as a dichotomous variable reduced the 3-way interaction estimate and significance of the effect (β = `r tidy(mod_ashs_APOE_dicho)$estimate[11]`, SE = `r tidy(mod_ashs_APOE_dicho)$std.error[11]`, p = `r tidy(mod_ashs_APOE_dicho)$p.value[11]`).
 
+```{r, include = F}
+tiv_freesurfer<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
+  filter(region=="eTIV")%>%
+  dplyr::select(subject, value)%>%
+  unique()%>%
+  mutate(subject=as.numeric(subject),
+         value=as.numeric(value))%>%
+  rename(tiv = value)
+
+gray_v1<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
+  filter(measurement== "GrayVol")%>%
+  dplyr::select(-ID, -measurement)%>%
+  pivot_wider(names_from = region, values_from = value, names_prefix = "vol_")%>%
+  mutate(across(starts_with("vol_"), ~as.numeric(.)))%>%
+  group_by(subject)%>%
+  summarise(across(starts_with("vol_"), sum))%>%
+  mutate(Visit= "1",
+         subject=as.numeric(subject),
+         diff_mri= 0)
+
+gray_v2<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V2_20230518_20250703_111331.xlsx"))%>%
+  filter(measurement== "GrayVol")%>%
+  dplyr::select(-ID, -measurement)%>%
+  pivot_wider(names_from = region, values_from = value, names_prefix = "vol_")%>%
+  mutate(across(starts_with("vol_"), ~as.numeric(.)))%>%
+  group_by(subject)%>%
+  summarise(across(starts_with("vol_"), sum))%>%
+  mutate(Visit= "2",
+         subject=as.numeric(subject))%>%
+  left_join(., diff_mri)
+
+gray_all<-bind_rows(gray_v1, gray_v2)
+
+data_gray<-left_join(data_naked, gray_all)%>%
+  filter(sex==2)%>%
+  left_join(., tiv_freesurfer)%>%
+  group_by(subject)%>%
+  filter(n()==2)%>%
+  ungroup()%>%
+  group_by(subject)%>%
+  mutate(gray_all = rowSums(across(starts_with("vol_"))))
+
+mod_cal<-lmer(vol_pericalcarine ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(tiv) + education  +(1|subject), data = data_gray)
+summary(mod_cal)
+
+```
+
+The 3-way interaction between APOE4 parity and time was not associated with GMV in the calcarine cortical area.
+
+## Sensitivity analysis with hormonal variables
+```{r, include=F}
+data_ashs_female<-data_ashs_female%>%
+  mutate(early_men = ifelse(age_menopause<45, 1, 0))
+
+mod_ashs_APOE_horm<-lmer(vol_HIPP ~  kids_total2*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + education  + repro_span+ early_men+ HRT+ CSF_Abeta_ratio+ cause_menopause +(1|subject), data = data_ashs_female)
+summary(mod_ashs_APOE_horm)
+```
+
+Adding other reproductive variables to our main analysis did not have an effect on the 3-way estimate.
+
+
+
+
+## Cognitive trajectory 
+
+```{r, include=F}
+
+data_cog_composites<-bind_rows(cognition1, cognition2)%>%
+  mutate(subject=as.numeric(subject),
+         Visit=as.character(Visit))%>%
+  right_join(., data_cog_long)%>%
+  filter(sex==2)%>%
+  group_by(subject)%>%
+  filter(n()>1)%>%
+  mutate(Visit=as.numeric(Visit))%>%
+  left_join(., A_long)
+
+#subject!=21136
+
+fit_cog_att<-lmer(attention ~ time_diff*kids_total*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
+summary(fit_cog_att)
+influenceIndexPlot(fit_cog_att)
+plot(fit_cog_att)
+plot_model(fit_cog_att, type = "int")
+
+fit_cog_att_a0<-lmer(attention ~ time_diff*kids_total +age_v1  +education +(1 | subject), data_cog_composites[data_cog_composites$APOE_binary==0,])
+plot_model(fit_cog_att_a0, type = "int")
+#chose not to remove because appart from cook's distance everything seems fine.. fine in other domains too. But she is driving the results a lot so could report with and without?
+
+ggplot(data_cog_composites, aes(x= time_diff, y= attention, group = subject, colour = APOE_binary))+
+  geom_line()+
+  facet_wrap(~kids_total)
+
+
+fit_cog_ex<-lmer(executive ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
+summary(fit_cog_ex)
+influenceIndexPlot(fit_cog_ex)
+
+fit_cog_mem<-lmer(memory ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
+summary(fit_cog_mem)
+influenceIndexPlot(fit_cog_mem)
+
+fit_cog_lang<-lmer(language ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
+summary(fit_cog_lang)
+influenceIndexPlot(fit_cog_lang)
+
+fit_cog_vis<-lmer(visual ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
+summary(fit_cog_vis)
+influenceIndexPlot(fit_cog_vis)
+
+
+```
+The interaction between parity, APOE4 and time yielded a weak trend which was not present after FDR correction. (not same direction so not sure if worth mentioning)
+
+- talk about lower order interaction if present? they are a bit weird direction!
+
+
+## Exploratory analysis of hippocampal subfields
+
+```{r, include = F, warning=FALSE}
+
+CA1_mean<-mean(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
+CA1_sd<-sd(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
+CA2_mean<-mean(data_ashs_female$vol_CA2[data_ashs_female$Visit==1], na.rm=T)
+CA2_sd<-sd(data_ashs_female$vol_CA2[data_ashs_female$Visit==1], na.rm=T)
+CA3_mean<-mean(data_ashs_female$vol_CA3[data_ashs_female$Visit==1], na.rm=T)
+CA3_sd<-sd(data_ashs_female$vol_CA3[data_ashs_female$Visit==1], na.rm=T)
+DG_mean<-mean(data_ashs_female$vol_DG[data_ashs_female$Visit==1], na.rm=T)
+DG_sd<-sd(data_ashs_female$vol_DG[data_ashs_female$Visit==1], na.rm=T)
+SUB_mean<-mean(data_ashs_female$vol_SUB[data_ashs_female$Visit==1], na.rm=T)
+SUB_sd<-sd(data_ashs_female$vol_SUB[data_ashs_female$Visit==1], na.rm=T)
+
+data_ashs_female<-data_ashs_female%>%
+  mutate(vol_CA1_std = (vol_CA1 - CA1_mean) / CA1_sd,
+         vol_CA2_std = (vol_CA2 - CA2_mean) / CA2_sd,
+         vol_CA3_std = (vol_CA3 - CA3_mean) / CA3_sd,
+         vol_DG_std = (vol_DG - DG_mean) / DG_sd,
+         vol_SUB_std = (vol_SUB - SUB_mean) / SUB_sd)
+
+mod_ashs_CA1<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA1)
+influenceIndexPlot(mod_ashs_CA1)
+mod_ashs_CA1_ab<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + CSF_Abeta_ratio+ scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA1_ab)
+
+mod_ashs_CA2<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA2)
+influenceIndexPlot(mod_ashs_CA2)
+mod_ashs_CA2_ab<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + scale(vol_tiv) + CSF_Abeta_ratio+  education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA2_ab)
+
+mod_ashs_CA3<-lmer(vol_CA3_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_CA3)
+influenceIndexPlot(mod_ashs_CA3)
+
+mod_ashs_DG<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education + (1|subject), data = data_ashs_female)
+summary(mod_ashs_DG)
+influenceIndexPlot(mod_ashs_DG)
+mod_ashs_DG_ab<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education + CSF_Abeta_ratio+ (1|subject), data = data_ashs_female)
+summary(mod_ashs_DG_ab)
+
+mod_ashs_SUB<-lmer(vol_SUB_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
+summary(mod_ashs_SUB)
+influenceIndexPlot(mod_ashs_SUB)
+
+
+```
+
+
+The 3-way interaction between parity, APOE4 and time was significant in the CA1 (β= `r tidy(mod_ashs_CA1)$estimate[11]`, SE = `r tidy(mod_ashs_CA1)$std.error[11]`, p= `r tidy(mod_ashs_CA1)$p.value[11]`), CA2  (β= `r tidy(mod_ashs_CA2)$estimate[11]`, SE = `r tidy(mod_ashs_CA2)$std.error[11]`, p= `r tidy(mod_ashs_CA2)$p.value[11]`) and in the DG (β= `r tidy(mod_ashs_DG)$estimate[11]`, SE = `r tidy(mod_ashs_DG)$std.error[11]`, p= `r tidy(mod_ashs_DG)$p.value[11]`). Similarly, parity was associated with steeper HV decline in APOE-E4 carriers.
+
+Adjusting by AB....
+
+## Exploratory analysis of inflammatory biomarkers
+
+```{r, include=F}
+data_biomarkers_long_female<-data_biomarkers_long%>%
+  filter(sex==2)%>%
+  group_by(subject)%>%
+  filter(n()>1)
+#not sure you are removing people who don't have more than 1 here
+
+library(fitdistrplus)
+
+
+gfap<-lmer(CSF_GFAP ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+
+summary(gfap) 
+
+resid_gfap<-residuals(gfap)
+fitted_gfap <- fitted(gfap)
+
+bc_gfap <- MASS::boxcox(fitted_gfap + resid_gfap ~ 1)
+lambda_gfap <- bc_gfap$x[which.max(bc_gfap$y)]
+
+data_biomarkers_long_female$CSF_GFAP_transformed <- (data_biomarkers_long_female$CSF_GFAP^lambda_gfap - 1) / lambda_gfap
+
+gfap2<-lmer(CSF_GFAP_transformed ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+summary(gfap2) 
+plot(gfap2)
+qqnorm(residuals(gfap2))
+
+##########
+
+strem<-lmer( CSF_sTREM2 ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+
+resid_strem<-residuals(strem)
+fitted_strem <- fitted(strem)
+
+bc_strem <- MASS::boxcox(fitted_strem + resid_strem ~ 1)
+lambda_strem <- bc_strem$x[which.max(bc_strem$y)]
+
+data_biomarkers_long_female$CSF_sTREM2_transformed <- (data_biomarkers_long_female$CSF_sTREM2^lambda_strem - 1) / lambda_strem
+
+strem2<-lmer(CSF_sTREM2_transformed ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+summary(strem2) 
+plot(strem2)
+qqnorm(residuals(strem2))
+
+######
+il6<-lmer( `CSF_IL-6` ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+
+resid_il6<-residuals(il6)
+fitted_il6 <- fitted(il6)
+
+bc_il6 <- MASS::boxcox(fitted_il6 + resid_il6 ~ 1)
+lambda_il6 <- bc_il6$x[which.max(bc_il6$y)]
+
+data_biomarkers_long_female$`CSF_IL-6_transformed` <- (data_biomarkers_long_female$`CSF_IL-6`^lambda_il6 - 1) / lambda_il6
+
+il62<-lmer(`CSF_IL-6_transformed` ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+summary(il62) 
+plot(il62)
+qqnorm(residuals(il62))
+
+####
+
+yk40<-lmer( CSF_YKL40 ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+
+resid_yk40<-residuals(yk40)
+fitted_yk40 <- fitted(yk40)
+
+bc_yk40 <- MASS::boxcox(fitted_yk40 + resid_yk40 ~ 1)
+lambda_yk40 <- bc_yk40$x[which.max(bc_yk40$y)]
+
+data_biomarkers_long_female$CSF_YKL40_transformed <- (data_biomarkers_long_female$CSF_YKL40^lambda_yk40 - 1) / lambda_yk40
+
+yk402<-lmer(CSF_YKL40_transformed ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+summary(yk402) 
+plot(yk402)
+qqnorm(residuals(yk402))
+
+#######
+
+s100<-lmer( CSF_S100 ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+
+resid_s100<-residuals(s100)
+fitted_s100 <- fitted(s100)
+
+bc_s100 <- MASS::boxcox(fitted_s100 + resid_s100 ~ 1)
+lambda_s100 <- bc_s100$x[which.max(bc_s100$y)]
+
+data_biomarkers_long_female$CSF_S100_transformed <- (data_biomarkers_long_female$CSF_S100^lambda_s100 - 1) / lambda_s100
+
+s1002<-lmer(CSF_S100_transformed ~ kids_total*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
+summary(s1002) 
+plot(s1002)
+qqnorm(residuals(s1002))
+
+```
+
+There was no association with any of the biomarkers assessed.
+
+
+# Discussion
+
+Our study aimed to investigate the impact of parity on hippocampal subfield volumes and relation to the APOE4 allele in post-menopausal women at risk of AD. Our results suggest that parity and AD specific genotype interact in women to impact hippocampal volume loss. In our sample, multiparous APOE4 non-carriers showed less hippocampus volume decline, whilst multiparous APOE4 carriers showed worse cognitive decline. These rseults show evidence of an interaction between parity and AD related genetic risk in women, which is associated in volume loss in a brain region which is a prime marker of AD. Essentially, this evidence strongly suggests there is a clear biological component to the interaction between parity and AD risk in women.
+
+When using the categorical grouping for parity, results showed significantly bigger effect in multiparous women. This could indicate that the cumulative effects of parity are only significantly interact with genetic risk after having had more than one child. However, it is important to note that the multiparous groups had a fairly larger number of observations than the nulliparous or primiparous group, therefore lack of significance might indicate a power issue when performing the gorup interaction.
+
+The AFLFA+ cohort is an ideal cohort to test this interaction, given the participants are enriched in genetic AD risk, As such, about 40% of our cohort is a carrier of the APOE4 allele, meaning group interactions are very balanced statistically.
+
+Our findings reproduce the ones found by Lee and colleagues. Similarly, APOE4 carriers show detrimental effects of parity on hippocampal volume trajectory. Although we did not replicate their findings on memory, this could be due to the relative short amount of time between both visits, on 3 years in average. However, another hypothesis could be that there are intricate social factors at play in humans revolving around parity, which could be influencing cognitive resilience. A previous study done with the UK biobank also finds no effect of the interaction between APOE4 and parity on cognitive score (lindseth et al 2023), although their battery of test is limited.
+
+Our post-hoc analysis of hippocampal subfields shows the most affected regions are the CA1, CA2, subiculum and enthorinal cortex, and a trend in the dentate gyrus. Given Bee's results, one could expect a stornger effect in the dentate gyrus, given most of the effect of parity in neurogenesis would reside in this subfield. The strong effect on parts of the cornu ammonis also reveals ageing mechanism.
+
+Some limitations should be considered. Firstly, the number of follow-up visits is insufficient to observe nonlinear evolution, therefore limiting our understanding of possible mechanisms underlying AD pathogenesis. Future work should include additional time points to better understand the trajectory of these results. Secondly, although our sample’s excellent health record makes it ideal to identify subtle changes in the early AD continuum, the vast majority of ALFA+ study participants are white Caucasians, resulting in an ethnically homogeneous sample primarily from middle to upper-middle class backgrounds. Future work should reproduce these analyses in a more diverse cohort to understand the impact of ethnicity and social background on the present results. Lastly, the absence of direct hormonal measurements limits our ability to draw definitive conclusions about the role of sex steroid hormones in the observed associations. By relying on proxy measures, we can only estimate hormone-related effects, potentially leading to an underestimation of their actual influence.
+
+# Figures
+
+## Figure 1
+
 ```{r, echo=F, warning=F}
 # Create grid of values for prediction - specify multiple time points
 
@@ -563,7 +867,7 @@ p1<-ggplot(slopes_df, aes(x = kids_total, y = diff_mri.trend,
                                                      levels = c("Nulliparous", "Primiparous", "Multiparous")), 
                               time_diff = Inf, 
                               Z_PACC = Inf, 
-                              label = "p= 0.0016**"),
+                              label = "p= 0.001**"),
             aes(x = time_diff, y = Z_PACC, label = label),
             size = 4, vjust = 1, hjust = 1, inherit.aes = FALSE)+
  geom_point(data = individual_slopes, 
@@ -634,7 +938,7 @@ ggplot( aes(x = kids_total, y = diff_mri.trend)) +
                                                      levels = c("Non-carriers", "Carriers")), 
                               kids_total = Inf, 
                               diff_mri.trend = Inf, 
-                              label = "p=0.0006***"),
+                              label = "p=0.001**"),
             aes(x = kids_total, y = diff_mri.trend, label = label),
             size = 4, vjust = 3, hjust = 1.2, inherit.aes = FALSE)+
   scale_color_manual(values = c("#1CA8B7", "#FF7043"),
@@ -653,103 +957,7 @@ p1/p2+
   plot_annotation(tag_levels = 'A')
 ```
 
-
-## Cognitive trajectory - test adjusting for Abeta makes sense?
-
-```{r, include=F}
-
-data_cog_composites<-bind_rows(cognition1, cognition2)%>%
-  mutate(subject=as.numeric(subject),
-         Visit=as.character(Visit))%>%
-  right_join(., data_cog_long)%>%
-  filter(sex==2)%>%
-  group_by(subject)%>%
-  filter(n()>1)%>%
-  mutate(Visit=as.numeric(Visit))%>%
-  left_join(., A_long)
-
-#subject!=21136
-
-fit_cog_att<-lmer(attention ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
-summary(fit_cog_att)
-influenceIndexPlot(fit_cog_att)
-plot(fit_cog_att)
-#chose not to remove because appart from cook's distance everything seems fine.. fine in other domains too. But she is driving the results a lot so could report with and without?
-
-ggplot(data_cog_composites, aes(x= time_diff, y= attention, group = subject, colour = APOE_binary))+
-  geom_line()+
-  facet_wrap(~kids_total)
-
-
-fit_cog_ex<-lmer(executive ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
-summary(fit_cog_ex)
-influenceIndexPlot(fit_cog_ex)
-
-fit_cog_mem<-lmer(memory ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
-summary(fit_cog_mem)
-influenceIndexPlot(fit_cog_mem)
-
-fit_cog_lang<-lmer(language ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
-summary(fit_cog_lang)
-influenceIndexPlot(fit_cog_lang)
-
-fit_cog_vis<-lmer(visual ~ kids_total*time_diff*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
-summary(fit_cog_vis)
-influenceIndexPlot(fit_cog_vis)
-
-
-```
-
-need to check if I should include outlier or not.
-
-## Exploratory analysis of hippocampal subfields
-need to recheck model residuals
-```{r, include = F, warning=FALSE}
-
-CA1_mean<-mean(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
-CA1_sd<-sd(data_ashs_female$vol_CA1[data_ashs_female$Visit==1], na.rm=T)
-CA2_mean<-mean(data_ashs_female$vol_CA2[data_ashs_female$Visit==1], na.rm=T)
-CA2_sd<-sd(data_ashs_female$vol_CA2[data_ashs_female$Visit==1], na.rm=T)
-CA3_mean<-mean(data_ashs_female$vol_CA3[data_ashs_female$Visit==1], na.rm=T)
-CA3_sd<-sd(data_ashs_female$vol_CA3[data_ashs_female$Visit==1], na.rm=T)
-DG_mean<-mean(data_ashs_female$vol_DG[data_ashs_female$Visit==1], na.rm=T)
-DG_sd<-sd(data_ashs_female$vol_DG[data_ashs_female$Visit==1], na.rm=T)
-SUB_mean<-mean(data_ashs_female$vol_SUB[data_ashs_female$Visit==1], na.rm=T)
-SUB_sd<-sd(data_ashs_female$vol_SUB[data_ashs_female$Visit==1], na.rm=T)
-
-data_ashs_female<-data_ashs_female%>%
-  mutate(vol_CA1_std = (vol_CA1 - CA1_mean) / CA1_sd,
-         vol_CA2_std = (vol_CA2 - CA2_mean) / CA2_sd,
-         vol_CA3_std = (vol_CA3 - CA3_mean) / CA3_sd,
-         vol_DG_std = (vol_DG - DG_mean) / DG_sd,
-         vol_SUB_std = (vol_SUB - SUB_mean) / SUB_sd)
-
-mod_ashs_CA1<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_CA1)
-influenceIndexPlot(mod_ashs_CA1)
-
-mod_ashs_CA2<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_CA2)
-influenceIndexPlot(mod_ashs_CA2)
-
-mod_ashs_CA3<-lmer(vol_CA3_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_CA3)
-influenceIndexPlot(mod_ashs_CA3)
-
-mod_ashs_DG<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education + (1|subject), data = data_ashs_female)
-summary(mod_ashs_DG)
-influenceIndexPlot(mod_ashs_DG)
-
-mod_ashs_SUB<-lmer(vol_SUB_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
-summary(mod_ashs_SUB)
-influenceIndexPlot(mod_ashs_SUB)
-
-
-```
-
-
-The 3-way interaction between parity, APOE4 and time was significant in the CA1 (β= `r tidy(mod_ashs_CA1)$estimate[11]`, SE = `r tidy(mod_ashs_CA1)$std.error[11]`, p= `r tidy(mod_ashs_CA1)$p.value[11]`), CA2  (β= `r tidy(mod_ashs_CA2)$estimate[11]`, SE = `r tidy(mod_ashs_CA2)$std.error[11]`, p= `r tidy(mod_ashs_CA2)$p.value[11]`) and in the DG (β= `r tidy(mod_ashs_DG)$estimate[11]`, SE = `r tidy(mod_ashs_DG)$std.error[11]`, p= `r tidy(mod_ashs_DG)$p.value[11]`). Similarly, parity was associated with steeper HV decline in APOE-E4 carriers.
-
+## Figure 2
 
 ```{r, echo=F, warning=F}
 # Standardize outcome variables based on visit 1 values
@@ -814,7 +1022,7 @@ forest_data <- bind_rows(results_apoe0, results_apoe1) %>%
   )
 
 # Create forest plot with standardized estimates
-ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
+forest1<-ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
   geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), 
                  height = 0.2, position = position_dodge(width = 0.5)) +
@@ -822,11 +1030,13 @@ ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
   geom_text(aes(label = sig_label), 
             position = position_dodge(width = 0.5),
             vjust = -0.8, size = 4, show.legend = FALSE) +
-  labs(x = "Parity × Time Interaction",
+  labs(x = "Parity:Time",
        y = "Hippocampal subfields",
        color = "APOE-e4") +
-  th
+  th+
+  theme(legend.position = "none")
 ```
+
 ```{r, echo=F, warning=F}
 
 # Fit models with standardized outcomes - APOE = 0
@@ -886,7 +1096,7 @@ forest_data <- bind_rows(results_apoe0, results_apoe1) %>%
   )
 
 # Create forest plot with standardized estimates
-ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
+forest2<-ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
   geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), 
                  height = 0.2, position = position_dodge(width = 0.5)) +
@@ -894,199 +1104,21 @@ ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
   geom_text(aes(label = sig_label), 
             position = position_dodge(width = 0.5),
             vjust = -0.8, size = 4, show.legend = FALSE) +
-  labs(x = "Parity × Time Interaction adjusted my AB load",
+  labs(x = "Parity:Interaction + Aβ load",
        y = "Hippocampal subfields",
        color = "APOE-e4") +
-  th
+  th+
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank() # Removes the axis line itself (depending on the theme used)
+  )
 ```
 
-## Calcharine structure
-
-```{r, include = F}
-
-
+```{r, echo=F, warning=FALSE}
+forest1+forest2
 ```
-No significant effect of the 3-way interaction was found in adjacent MTL structures.
-
-## Exploratory analysis of hormonal variables
-```{r}
-data_ashs_female<-data_ashs_female%>%
-  mutate(early_men = ifelse(age_menopause<45, 1, 0))
-
-mod_ashs_APOE_horm<-lmer(vol_HIPP ~  kids_total2*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + education  + repro_span+ early_men+ HRT+ CSF_Abeta_ratio+ cause_menopause +(1|subject), data = data_ashs_female)
-summary(mod_ashs_APOE_horm)
-```
-
-Adding other reproductive variables to our main analysis did not have an effect on the 3-way estimate.
-
-
-## Exploratory analysis of inflammatory biomarkers - do I have to normalize all variables? 
-
-```{r, include=F}
-data_biomarkers_long_female<-data_biomarkers_long%>%
-  filter(sex==2)%>%
-  group_by(subject)%>%
-  filter(n()>1)
-
-library(fitdistrplus)
-
-
-
-data_biomarkers_long%>%
-  drop_na(`CSF_IL-6`)%>%
-  pull(`CSF_IL-6`)%>%
-  descdist(., discrete = FALSE)
-
-
-
-gfap<-lmer(CSF_GFAP ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-
-summary(gfap) 
-
-resid_gfap<-residuals(gfap)
-fitted_gfap <- fitted(gfap)
-
-bc_gfap <- MASS::boxcox(fitted_gfap + resid_gfap ~ 1)
-lambda_gfap <- bc_gfap$x[which.max(bc_gfap$y)]
-
-data_biomarkers_long_female$CSF_GFAP_transformed <- (data_biomarkers_long_female$CSF_GFAP^lambda_gfap - 1) / lambda_gfap
-
-gfap2<-lmer(CSF_GFAP_transformed ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-summary(gfap2) 
-plot(gfap2)
-qqnorm(residuals(gfap2))
-
-##########
-
-strem<-lmer( CSF_sTREM2 ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-
-resid_strem<-residuals(strem)
-fitted_strem <- fitted(strem)
-
-bc_strem <- MASS::boxcox(fitted_strem + resid_strem ~ 1)
-lambda_strem <- bc_strem$x[which.max(bc_strem$y)]
-
-data_biomarkers_long_female$CSF_sTREM2_transformed <- (data_biomarkers_long_female$CSF_sTREM2^lambda_strem - 1) / lambda_strem
-
-strem2<-lmer(CSF_sTREM2_transformed ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-summary(strem2) 
-plot(strem2)
-qqnorm(residuals(strem2))
-
-######
-il6<-lmer( `CSF_IL-6` ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-
-resid_il6<-residuals(il6)
-fitted_il6 <- fitted(il6)
-
-bc_il6 <- MASS::boxcox(fitted_il6 + resid_il6 ~ 1)
-lambda_il6 <- bc_il6$x[which.max(bc_il6$y)]
-
-data_biomarkers_long_female$`CSF_IL-6_transformed` <- (data_biomarkers_long_female$`CSF_IL-6`^lambda_il6 - 1) / lambda_il6
-
-il62<-lmer(`CSF_IL-6_transformed` ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-summary(il62) 
-plot(il62)
-qqnorm(residuals(il62))
-
-####
-
-yk40<-lmer( CSF_YKL40 ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-
-resid_yk40<-residuals(yk40)
-fitted_yk40 <- fitted(yk40)
-
-bc_yk40 <- MASS::boxcox(fitted_yk40 + resid_yk40 ~ 1)
-lambda_yk40 <- bc_yk40$x[which.max(bc_yk40$y)]
-
-data_biomarkers_long_female$CSF_YKL40_transformed <- (data_biomarkers_long_female$CSF_YKL40^lambda_yk40 - 1) / lambda_yk40
-
-yk402<-lmer(CSF_YKL40_transformed ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-summary(yk402) 
-plot(yk402)
-qqnorm(residuals(yk402))
-
-#######
-
-s100<-lmer( CSF_S100 ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-
-resid_s100<-residuals(s100)
-fitted_s100 <- fitted(s100)
-
-bc_s100 <- MASS::boxcox(fitted_s100 + resid_s100 ~ 1)
-lambda_s100 <- bc_s100$x[which.max(bc_s100$y)]
-
-data_biomarkers_long_female$CSF_S100_transformed <- (data_biomarkers_long_female$CSF_S100^lambda_s100 - 1) / lambda_s100
-
-s1002<-lmer(CSF_S100_transformed ~ kids_total2*APOE_binary*biomarkers_time_diff + age_v1  + education +(1|subject), data = data_biomarkers_long_female)
-summary(s1002) 
-plot(s1002)
-qqnorm(residuals(s1002))
-
-```
-
-Nothing!
-
-```{r, include=F}
-
-tiv_freesurfer<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
-  filter(region=="eTIV")%>%
-  dplyr::select(subject, value)%>%
-  unique()%>%
-  mutate(subject=as.numeric(subject),
-         value=as.numeric(value))%>%
-  rename(tiv = value)
-
-total_gray_v1<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/freesurfer - aseg/bx_freesurfer7_aseg_ALFA_PLUS_V1_20231120_20250703_114141.xlsx"))%>%
-  filter(measurement == "Volume_mm3")%>%
-  filter(region %in% c("Left-Thalamus", "Right-Thalamus", "Left-Putamen", "Right-Putamen", "Left-Amygdala", "Right-Amygdala", "Left-Accumbens-area", "Right-Accumbens-area", "TotalGrayVol"))%>%
-  dplyr::select(subject, value, region)%>%
-  mutate(region_combined = gsub("^(Left-|Right-)", "", region))%>%
-  group_by(subject, region_combined) %>%
-  mutate(value=as.numeric(value))%>%
-  summarise(value = sum(value))%>%
-  pivot_wider(names_from = region_combined, values_from = value, names_prefix = "vol_")%>%
-  mutate(Visit = 1, 
-         subject=as.numeric(subject),
-         diff_mri= 0)
-
-total_gray_v2<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/freesurfer - aseg/bx_freesurfer7_aseg_ALFA_PLUS_V2_20230518_20250703_114854.xlsx"))%>%
-  filter(measurement == "Volume_mm3")%>%
-  filter(region %in% c("Left-Thalamus", "Right-Thalamus", "Left-Putamen", "Right-Putamen", "Left-Amygdala", "Right-Amygdala", "Left-Accumbens-area", "Right-Accumbens-area", "TotalGrayVol"))%>%
-  dplyr::select(subject, value, region)%>%
-  mutate(region_combined = gsub("^(Left-|Right-)", "", region))%>%
-  group_by(subject, region_combined) %>%
-  mutate(value=as.numeric(value))%>%
-  summarise(value = sum(value))%>%
-  pivot_wider(names_from = region_combined, values_from = value, names_prefix = "vol_")%>%
-  mutate(Visit = 2, 
-         subject=as.numeric(subject))%>%
-  left_join(., diff_mri)
-
-total_gray_all<-bind_rows(total_gray_v1, total_gray_v2)
-
-data_gray_all<-left_join(data_naked, total_gray_all)%>%
-  filter(sex==2)%>%
-  group_by(subject)%>%
-  filter(n()==2)%>%
-  ungroup()%>%
-  left_join(., tiv_freesurfer)
-```
-
-
-# Discussion
-
-Our study aimed to investigate the impact of parity on hippocampal subfield volumes and relation to the APOE4 allele in post-menopausal women at risk of AD. Our results suggest that parity and AD specific genotype interact in women to impact hippocampal volume loss. In our sample, multiparous APOE4 non-carriers showed less hippocampus volume decline, whilst multiparous APOE4 carriers showed worse cognitive decline. These rseults show evidence of an interaction between parity and AD related genetic risk in women, which is associated in volume loss in a brain region which is a prime marker of AD. Essentially, this evidence strongly suggests there is a clear biological component to the interaction between parity and AD risk in women.
-
-When using the categorical grouping for parity, results showed significantly bigger effect in multiparous women. This could indicate that the cumulative effects of parity are only significantly interact with genetic risk after having had more than one child. However, it is important to note that the multiparous groups had a fairly larger number of observations than the nulliparous or primiparous group, therefore lack of significance might indicate a power issue when performing the gorup interaction.
-
-The AFLFA+ cohort is an ideal cohort to test this interaction, given the participants are enriched in genetic AD risk, As such, about 40% of our cohort is a carrier of the APOE4 allele, meaning group interactions are very balanced statistically.
-
-Our findings reproduce the ones found by Lee and colleagues. Similarly, APOE4 carriers show detrimental effects of parity on hippocampal volume trajectory. Although we did not replicate their findings on memory, this could be due to the relative short amount of time between both visits, on 3 years in average. However, another hypothesis could be that there are intricate social factors at play in humans revolving around parity, which could be influencing cognitive resilience. A previous study done with the UK biobank also finds no effect of the interaction between APOE4 and parity on cognitive score (lindseth et al 2023), although their battery of test is limited.
-
-Our post-hoc analysis of hippocampal subfields shows the most affected regions are the CA1, CA2, subiculum and enthorinal cortex, and a trend in the dentate gyrus. Given Bee's results, one could expect a stornger effect in the dentate gyrus, given most of the effect of parity in neurogenesis would reside in this subfield. The strong effect on parts of the cornu ammonis also reveals ageing mechanism.
-
-Some limitations should be considered. Firstly, the number of follow-up visits is insufficient to observe nonlinear evolution, therefore limiting our understanding of possible mechanisms underlying AD pathogenesis. Future work should include additional time points to better understand the trajectory of these results. Secondly, although our sample’s excellent health record makes it ideal to identify subtle changes in the early AD continuum, the vast majority of ALFA+ study participants are white Caucasians, resulting in an ethnically homogeneous sample primarily from middle to upper-middle class backgrounds. Future work should reproduce these analyses in a more diverse cohort to understand the impact of ethnicity and social background on the present results. Lastly, the absence of direct hormonal measurements limits our ability to draw definitive conclusions about the role of sex steroid hormones in the observed associations. By relying on proxy measures, we can only estimate hormone-related effects, potentially leading to an underestimation of their actual influence.
 
 # Appendix
 
