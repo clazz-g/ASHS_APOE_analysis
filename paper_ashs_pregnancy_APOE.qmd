@@ -368,6 +368,10 @@ cognition2<-read_excel(paste0(config$alfa_dataset_cognition, "Visit 2 - Cognitio
    mutate(Visit=2)
 
 cognition_wide<-bind_rows(cognition1, cognition2)%>%
+  drop_na(attention, executive, memory, language, visual)%>%
+  group_by(subject)%>%
+  filter(n()>1)%>%
+  ungroup()%>%
   pivot_wider(values_from = c(attention, executive, memory, language, visual), names_from = Visit, names_prefix = "V")%>%
   dplyr::select(subject, ends_with("_V1"), ends_with("_V2"))%>%
   mutate(subject= as.numeric(subject))
@@ -611,11 +615,15 @@ data_cog_composites<-bind_rows(cognition1, cognition2)%>%
   right_join(., data_cog_long)%>%
   filter(sex==2)%>%
   group_by(subject)%>%
-  filter(n()>1)%>%
   mutate(Visit=as.numeric(Visit))%>%
-  left_join(., A_long)
+  left_join(., A_long)%>%
+  drop_na(attention, executive, memory, visual, language)%>%
+  group_by(subject)%>%
+  filter(n()>1)
 
 #subject!=21136
+
+
 
 fit_cog_att<-lmer(attention ~ time_diff*kids_total*APOE_binary +age_v1  +education +(1 | subject), data_cog_composites)
 summary(fit_cog_att)
@@ -623,8 +631,6 @@ influenceIndexPlot(fit_cog_att)
 plot(fit_cog_att)
 plot_model(fit_cog_att, type = "int")
 
-fit_cog_att_a0<-lmer(attention ~ time_diff*kids_total +age_v1  +education +(1 | subject), data_cog_composites[data_cog_composites$APOE_binary==0,])
-plot_model(fit_cog_att_a0, type = "int")
 #chose not to remove because appart from cook's distance everything seems fine.. fine in other domains too. But she is driving the results a lot so could report with and without?
 
 ggplot(data_cog_composites, aes(x= time_diff, y= attention, group = subject, colour = APOE_binary))+
@@ -650,7 +656,7 @@ influenceIndexPlot(fit_cog_vis)
 
 
 ```
-The interaction between parity, APOE4 and time yielded a weak trend which was not present after FDR correction. (not same direction so not sure if worth mentioning)
+The interaction between parity, APOE4 and time yielded a weak trend which was not present after FDR correction. 
 
 - talk about lower order interaction if present? they are a bit weird direction!
 
@@ -680,12 +686,16 @@ data_ashs_female<-data_ashs_female%>%
 mod_ashs_CA1<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA1)
 influenceIndexPlot(mod_ashs_CA1)
+mod_ashs_CA1_a1<-lmer(vol_CA1_std ~  kids_total*diff_mri +age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+summary(mod_ashs_CA1_a1)
 mod_ashs_CA1_ab<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + CSF_Abeta_ratio+ scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA1_ab)
 
 mod_ashs_CA2<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA2)
 influenceIndexPlot(mod_ashs_CA2)
+mod_ashs_CA2_a1<-lmer(vol_CA2_std ~ kids_total*diff_mri + age_v1  + scale(vol_tiv) + education +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+summary(mod_ashs_CA2_a1)
 mod_ashs_CA2_ab<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + scale(vol_tiv) + CSF_Abeta_ratio+  education +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA2_ab)
 
@@ -696,6 +706,8 @@ influenceIndexPlot(mod_ashs_CA3)
 mod_ashs_DG<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education + (1|subject), data = data_ashs_female)
 summary(mod_ashs_DG)
 influenceIndexPlot(mod_ashs_DG)
+mod_ashs_DG_a1<-lmer(vol_DG_std ~  kids_total*diff_mri +age_v1  + scale(vol_tiv) + education + (1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+summary(mod_ashs_DG_a1)
 mod_ashs_DG_ab<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + scale(vol_tiv) + education + CSF_Abeta_ratio+ (1|subject), data = data_ashs_female)
 summary(mod_ashs_DG_ab)
 
@@ -709,7 +721,9 @@ influenceIndexPlot(mod_ashs_SUB)
 
 The 3-way interaction between parity, APOE4 and time was significant in the CA1 (β= `r tidy(mod_ashs_CA1)$estimate[11]`, SE = `r tidy(mod_ashs_CA1)$std.error[11]`, p= `r tidy(mod_ashs_CA1)$p.value[11]`), CA2  (β= `r tidy(mod_ashs_CA2)$estimate[11]`, SE = `r tidy(mod_ashs_CA2)$std.error[11]`, p= `r tidy(mod_ashs_CA2)$p.value[11]`) and in the DG (β= `r tidy(mod_ashs_DG)$estimate[11]`, SE = `r tidy(mod_ashs_DG)$std.error[11]`, p= `r tidy(mod_ashs_DG)$p.value[11]`). Similarly, parity was associated with steeper HV decline in APOE-E4 carriers.
 
-Adjusting by AB led to a stronger effect in the CA1 (β= `r tidy(mod_ashs_CA1_ab)$estimate[12]`, SE = `r tidy(mod_ashs_CA1_ab)$std.error[12]`, p= `r tidy(mod_ashs_CA1_ab)$p.value[12]`), but caused the significance of the 3-way estimate to disappear in the CA2 (β= `r tidy(mod_ashs_CA2_ab)$estimate[12]`, SE = `r tidy(mod_ashs_CA2_ab)$std.error[12]`, p= `r tidy(mod_ashs_CA2_ab)$p.value[12]`). Effects in the DG remained largely unchanged β= `r tidy(mod_ashs_DG_ab)$estimate[12]`, SE = `r tidy(mod_ashs_DG_ab)$std.error[12]`, p= `r tidy(mod_ashs_DG_ab)$p.value[12]`).
+After stratifying the analysis by APOE4 status, only the carrier group remained significant in the CA1 (β= `r tidy(mod_ashs_CA1_a1)$estimate[7]`, SE = `r tidy(mod_ashs_CA1_a1)$std.error[7]`, p= `r tidy(mod_ashs_CA1_a1)$p.value[7]`), CA2 (β= `r tidy(mod_ashs_CA2_a1)$estimate[7]`, SE = `r tidy(mod_ashs_CA2_a1)$std.error[7]`, p= `r tidy(mod_ashs_CA2_a1)$p.value[7]`) and DG (β= `r tidy(mod_ashs_DG_a1)$estimate[7]`, SE = `r tidy(mod_ashs_DG_a1)$std.error[7]`, p= `r tidy(mod_ashs_DG_a1)$p.value[7]`).
+
+Adjusting whole group analysis by AB led to a stronger effect in the CA1 (β= `r tidy(mod_ashs_CA1_ab)$estimate[12]`, SE = `r tidy(mod_ashs_CA1_ab)$std.error[12]`, p= `r tidy(mod_ashs_CA1_ab)$p.value[12]`), but caused the significance of the 3-way estimate to disappear in the CA2 (β= `r tidy(mod_ashs_CA2_ab)$estimate[12]`, SE = `r tidy(mod_ashs_CA2_ab)$std.error[12]`, p= `r tidy(mod_ashs_CA2_ab)$p.value[12]`). Effects in the DG remained largely unchanged β= `r tidy(mod_ashs_DG_ab)$estimate[12]`, SE = `r tidy(mod_ashs_DG_ab)$std.error[12]`, p= `r tidy(mod_ashs_DG_ab)$p.value[12]`).
 
 ## Exploratory analysis of inflammatory biomarkers
 
