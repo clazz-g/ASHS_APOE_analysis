@@ -27,6 +27,10 @@ source("C:/Users/U253662/Documents/git/functions/jt_plot_aesthetics.R")
 ```{r, include=F}
 hippo_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "hippocampus_dataset.csv"),col_select = -1)
 
+cog_WRAP<-read_delim("G:/My Drive/Data/WRAP/RobustNormZScores.csv")%>%
+  dplyr::select(WRAPNo, VisNo, RNZ_TrailMakingTestTrailATime_trla)
+
+
 ptau_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "ptau217_dataset.csv"), col_select = -1)
 
 centiloids_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "centiloids_PIB_dataset.csv"), col_select = -1)
@@ -45,7 +49,10 @@ WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "basic_dataset.csv"), col_s
   group_by(subject)%>%
   arrange(years_since_baseline)%>%
   mutate(Visit = row_number())%>%
-  filter(Visit<3)
+  filter(Visit<3)%>%
+  filter(n()>1)%>%
+  ungroup()%>%
+  filter(sex==2)
 
 # participants<-WRAP%>%
 #   filter(sex==2)%>%
@@ -67,7 +74,8 @@ time_between_scans<-WRAP%>%
   dplyr::select(subject, days_since_baseline, Visit)%>%
   pivot_wider(names_from = Visit, values_from = days_since_baseline, names_prefix = "days_scan_")%>%
   mutate(diff_mri = days_scan_2 - days_scan_1)%>%
-  dplyr::select(subject, diff_mri)
+  dplyr::select(subject, diff_mri)%>%
+  mutate(diff_mri = diff_mri/365.25)
 
 WRAP_descriptive<-WRAP%>%
   filter(sex==2)%>%
@@ -110,7 +118,11 @@ desc_table
 ## Reproducing analysis: APOE x parity (continuous) x time
 
 ```{r, echo=F, warning=F}
-fit_wrap<-lmer(vol_HIPP ~ APOE_binary*years_since_baseline*kids_total + scale(rbm_icv)  + age_baseline + education + (1|subject), data=WRAP[WRAP$sex==2,])
+WRAP2<-WRAP%>%
+  left_join(., time_between_scans)%>%
+  filter(diff_mri>2)
+
+fit_wrap<-lmer(vol_HIPP ~ APOE_binary*diff_mri*kids_total + scale(rbm_icv)  + age_baseline + education + (1|subject), data=WRAP2)
 summary(fit_wrap)
 
 huxreg(fit_wrap, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
