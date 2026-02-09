@@ -530,9 +530,9 @@ ggpredict(mod_ashs_APOE_dicho, terms = c("APOE_binary", "diff_mri", "kids_dicho"
 
 ```
 
-Parity, APOE-ε4, and time showed a significant three-way interaction for total HV (β = `r tidy(mod_ashs_APOE)$estimate[11]`, SE = `r tidy(mod_ashs_APOE)$std.error[11]`, p = `r tidy(mod_ashs_APOE)$p.value[11]`), indicating that higher parity was associated with steeper decline in HV among APOE-ε4 carriers.
+Parity, APOE-ε4, and time showed a significant three-way interaction for total HV (β = `r tidy(mod_ashs_APOE)$estimate[11]`, SE = `r tidy(mod_ashs_APOE)$std.error[11]`, p = `r tidy(mod_ashs_APOE)$p.value[11]`), indicating that higher parity was associated with steeper decline in HV among APOE-ε4 carriers (Figure X).
 
-Stratifying by APOE-ε4 status yielded a significant interaction between parity and time in carriers only (β = `r tidy(mod_ashs_APOE_A1)$estimate[7]`, SE = `r tidy(mod_ashs_APOE_A1)$std.error[7]`, p = `r tidy(mod_ashs_APOE_A1)$p.value[7]`).
+Stratifying by APOE-ε4 status yielded a significant interaction between parity and time in carriers only (β = `r tidy(mod_ashs_APOE_A1)$estimate[7]`, SE = `r tidy(mod_ashs_APOE_A1)$std.error[7]`, p = `r tidy(mod_ashs_APOE_A1)$p.value[7]`) (Figure X).
 
 Reproducing the analysis using parity as a dichotomous variable reduced the 3-way interaction estimate and significance of the effect (β = `r tidy(mod_ashs_APOE_dicho)$estimate[11]`, SE = `r tidy(mod_ashs_APOE_dicho)$std.error[11]`, p = `r tidy(mod_ashs_APOE_dicho)$p.value[11]`).
 
@@ -596,6 +596,12 @@ The 3-way interaction between APOE4 parity and time was not associated with GMV 
 mod_ashs_APOE_ab<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ education  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_APOE_ab)
 
+mod_ashs_APOE_ab_a0<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==0,])
+summary(mod_ashs_APOE_ab_a0)
+
+mod_ashs_APOE_ab_a1<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+summary(mod_ashs_APOE_ab_a1)
+
 mod_ashs_APOE_abneg<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + education  +(1|subject), data = data_ashs_female[data_ashs_female$A==0,])
 summary(mod_ashs_APOE_abneg)
 
@@ -605,7 +611,9 @@ summary(mod_ashs_APOE_horm)
 
 ```
 
-To control for other potential confounding factors, the main analysis was first rerun including Aβ load as a covariate. The triple interaction effect was maintained when adjusting analyses by Aβ accumulation (β = `r tidy(mod_ashs_APOE_ab)$estimate[12]`, SE = `r tidy(mod_ashs_APOE_ab)$std.error[12]`, p = `r tidy(mod_ashs_APOE_ab)$p.value[12]`). However, Aβ load showed a notable association with the outcome (β = `r tidy(mod_ashs_APOE_ab)$estimate[7]`, SE = `r tidy(mod_ashs_APOE_ab)$std.error[7]`, p = `r tidy(mod_ashs_APOE_ab)$p.value[7]`), indicating it may play a role independently. Furthermore, when reproducing the analysis including only participants with negative Aβ status, the effect was maintained, although attenuated (CSF Aβ\<0.071 pg/ml, n = 128) (β = `r tidy(mod_ashs_APOE_abneg)$estimate[11]`, SE = `r tidy(mod_ashs_APOE_abneg)$std.error[11]`, p = `r tidy(mod_ashs_APOE_abneg)$p.value[11]`).
+To control for other potential confounding factors, the main analysis was first rerun including Aβ load as a covariate. The triple interaction effect was maintained when adjusting analyses by Aβ accumulation (β = `r tidy(mod_ashs_APOE_ab)$estimate[12]`, SE = `r tidy(mod_ashs_APOE_ab)$std.error[12]`, p = `r tidy(mod_ashs_APOE_ab)$p.value[12]`). However, Aβ load showed a notable association with the outcome (β = `r tidy(mod_ashs_APOE_ab)$estimate[7]`, SE = `r tidy(mod_ashs_APOE_ab)$std.error[7]`, p = `r tidy(mod_ashs_APOE_ab)$p.value[7]`), indicating it may play a role independently. When reproducing the analysis including only participants with negative Aβ status, the effect was maintained, although attenuated (CSF Aβ\<0.071 pg/ml, n = 128) (β = `r tidy(mod_ashs_APOE_abneg)$estimate[11]`, SE = `r tidy(mod_ashs_APOE_abneg)$std.error[11]`, p = `r tidy(mod_ashs_APOE_abneg)$p.value[11]`).
+
+Interestingly, covarying the models stratified by APOE4 status for AB did not modify the effect of parity and time on HV in carriers (β = `r tidy(mod_ashs_APOE_ab_a1)$estimate[8]`, SE = `r tidy(mod_ashs_APOE_ab_a1)$std.error[8]`, p = `r tidy(mod_ashs_APOE_ab_a1)$p.value[8]`), but it yielded a signficant interaction of parity and time on HV in non-carriers (β = `r tidy(mod_ashs_APOE_ab_a0)$estimate[8]`, SE = `r tidy(mod_ashs_APOE_ab_a0)$std.error[8]`, p = `r tidy(mod_ashs_APOE_ab_a0)$p.value[8]`), which was not the case without adjusting for it (Figure X).
 
 Additionally, replicating the analysis by further adjusting for hormonal variables (HRT, reproductive span, early menopause, cause of menopause) still yielded a significant 3-way estimate (β = `r tidy(mod_ashs_APOE_horm)$estimate[15]`, SE = `r tidy(mod_ashs_APOE_horm)$std.error[15]`, p = `r tidy(mod_ashs_APOE_horm)$p.value[15]`), suggesting these variables could not fully explain the association.
 
@@ -728,7 +736,7 @@ After stratifying the analysis by APOE4 status, only the carrier group remained 
 
 Adjusting whole group analysis by AB led to a stronger effect in the CA1 (β= `r tidy(mod_ashs_CA1_ab)$estimate[12]`, SE = `r tidy(mod_ashs_CA1_ab)$std.error[12]`, p= `r tidy(mod_ashs_CA1_ab)$p.value[12]`), but attenuated significance in the CA2 (β= `r tidy(mod_ashs_CA2_ab)$estimate[12]`, SE = `r tidy(mod_ashs_CA2_ab)$std.error[12]`, p= `r tidy(mod_ashs_CA2_ab)$p.value[12]`). Effects in the DG remained largely unchanged (β= `r tidy(mod_ashs_DG_ab)$estimate[12]`, SE = `r tidy(mod_ashs_DG_ab)$std.error[12]`, p= `r tidy(mod_ashs_DG_ab)$p.value[12]`).
 
-## Exploratory analysis of inflammatory biomarkers
+## Exploratory analysis of inflammatory and cardiovascular biomarkers
 
 ```{r, include=F}
 data_biomarkers_long_female<-data_biomarkers_long%>%
@@ -793,31 +801,219 @@ summary(yk402)
 plot(yk402)
 qqnorm(residuals(yk402))
 
+# does APOE seem to predict YKL levels?
+ykl_apoe<-lmer(CSF_YKL40_transformed ~ APOE_binary*biomarkers_time_diff + age_v1 + CSF_Abeta_ratio + education +(1|subject), data = data_biomarkers_long_female)
+plot(ykl_apoe)
+summary(ykl_apoe)
 
-# test<-data_ashs_female%>%
-#   mutate(Visit= ifelse(Visit==1, "V1", "V2"),
-#          A=as.factor(A))%>%
-#   left_join(biomarkers)
+```
+
+Parity showed a weak association with YKL-40 in APOE4 carriers nearing significance, but this association was independent of time (β= `r tidy(yk402)$estimate[2]`, SE = `r tidy(yk402)$std.error[2]`, p= `r tidy(yk402)$p.value[2]`).
+
+```{r, include=F, eval=F}
+test<-data_ashs_female%>%
+   mutate(Visit= ifelse(Visit==1, "V1", "V2"),
+          A=as.factor(A))%>%
+   left_join(biomarkers)
 # 
 # mod_ashs_APOE<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + education + CSF_YKL40 +(1|subject), data = test)
 # summary(mod_ashs_APOE)
+
+fit_test<-lmer(vol_HIPP ~  CSF_GFAP*diff_mri +age_v1 + scale(vol_tiv) + education +(1|subject), data = test[test$APOE_binary==1,])
+summary(fit_test)
+
+resid_fit_test<-residuals(fit_test)
+fitted_fit_test <- fitted(fit_test)
+
+bc_fit_test <- MASS::boxcox(fitted_fit_test + resid_fit_test ~ 1)
+lambda_fit_test <- bc_fit_test$x[which.max(bc_fit_test$y)]
+
+test$CSF_GFAP_transformed <- (test$CSF_GFAP^lambda_fit_test - 1) / lambda_fit_test
+
+fit_test2<-lmer(vol_HIPP ~  CSF_GFAP_transformed*diff_mri +age_v1 + scale(vol_tiv) + education +(1|subject), data = test[test$APOE_binary==1,])
+summary(fit_test2)
+
+##### mediation - time component
+
+test_med <-lmer(vol_HIPP ~  CSF_YKL40_transformed*diff_mri +age_v1 + scale(vol_tiv) + education +(1|subject), data = test[test$APOE_binary==1,])
+summary(test_med)
+
+
+model_mediator <- lmer(CSF_YKL40_transformed ~ kids_total*diff_mri + age_v1 + education +(1|subject), 
+                     data = test[test$APOE_binary==1,])
+
+# Model 2: Effect of parity and HV on cognition
+model_outcome <- lmer(vol_HIPP ~  kids_total*diff_mri + CSF_YKL40_transformed*diff_mri + scale(vol_tiv) + age_v1 + education +(1|subject), 
+                    data = test[test$APOE_binary==1,])
+
+# Check your models
+summary(model_mediator)
+summary(model_outcome)
+set.seed(123)
+
+mediation_results2 <- mediate(model_mediator,    # Mediator model
+                              model_outcome,     # Outcome model
+                              treat = "kids_total",  # Independent variable
+                              mediator = "CSF_YKL40_transformed",   # Mediator
+                              boot = FALSE,       # Use bootstrapping
+                              sims = 5000) 
+
+summary(mediation_results2)
+
+
+## mediation - baseline inflammation on HV change
+baseline_YKL40<-biomarkers%>%
+  filter(Visit=="V1")%>%
+  dplyr::select(subject, CSF_YKL40)
+
+
+
+vol_tiv_baseline<-data_ashs_female%>%
+  filter(Visit==1)%>%
+  dplyr::select(subject, vol_tiv)
+
+data_med<-data_ashs_female%>%
+  dplyr::select(subject, kids_total, age_v1, diff_mri, vol_HIPP, Visit, APOE_binary, education)%>%
+  pivot_wider(names_from = Visit, values_from = c(vol_HIPP, diff_mri))%>%
+  mutate(change_HIPP = (vol_HIPP_1+ vol_HIPP_2)/diff_mri_2)%>%
+  left_join(baseline_YKL40)%>%
+  left_join(., vol_tiv_baseline)
+
+model_mediator_pre <- lm(CSF_YKL40 ~ kids_total + age_v1 + education , 
+                     data = data_med[data_med$APOE_binary==1,])
+plot(model_mediator_pre)
+
+resid_model_mediator_pre<-residuals(model_mediator_pre)
+fitted_model_mediator_pre <- fitted(model_mediator_pre)
+
+bc_model_mediator_pre <- MASS::boxcox(fitted_model_mediator_pre + resid_model_mediator_pre ~ 1)
+lambda_model_mediator_pre <- bc_model_mediator_pre$x[which.max(bc_model_mediator_pre$y)]
+
+data_med$CSF_YKL40_transformed <- (data_med$CSF_YKL40^lambda_model_mediator_pre - 1) / lambda_model_mediator_pre
+
+model_mediator<-lm(CSF_YKL40_transformed ~ kids_total + age_v1  + education , data = data_med[data_med$APOE_binary==1,])
+plot(model_mediator)
+
+model_outcome <- lm(change_HIPP ~  kids_total + CSF_YKL40_transformed + vol_tiv + age_v1 + education , 
+                    data = data_med[data_med$APOE_binary==1,])
+
+mediation_results <- mediate(model_mediator,    # Mediator model
+                              model_outcome,     # Outcome model
+                              treat = "kids_total",  # Independent variable
+                              mediator = "CSF_YKL40_transformed",   # Mediator
+                              boot = TRUE,       # Use bootstrapping
+                              sims = 5000) 
+
+summary(mediation_results)
+
+### svcam
+
+baseline_svcam<-biomarkers%>%
+  filter(Visit=="V1")%>%
+  dplyr::select(subject, CSF_sVCAM1)
+
+data_med<-data_med%>%
+  left_join(., baseline_svcam)
+
+model_mediator_pre <- lm(CSF_sVCAM1 ~ kids_total + age_v1 + education , 
+                     data = data_med[data_med$APOE_binary==1,])
+plot(model_mediator_pre)
+
+resid_model_mediator_pre<-residuals(model_mediator_pre)
+fitted_model_mediator_pre <- fitted(model_mediator_pre)
+
+bc_model_mediator_pre <- MASS::boxcox(fitted_model_mediator_pre + resid_model_mediator_pre ~ 1)
+lambda_model_mediator_pre <- bc_model_mediator_pre$x[which.max(bc_model_mediator_pre$y)]
+
+data_med$CSF_sVCAM1_transformed <- (data_med$CSF_sVCAM1^lambda_model_mediator_pre - 1) / lambda_model_mediator_pre
+
+model_mediator<-lm(CSF_sVCAM1_transformed ~ kids_total + age_v1  + education , data = data_med[data_med$APOE_binary==1,])
+plot(model_mediator)
+
+model_outcome <- lm(change_HIPP ~  kids_total + CSF_sVCAM1_transformed + vol_tiv + age_v1 + education , 
+                    data = data_med[data_med$APOE_binary==1,])
+
+mediation_results <- mediate(model_mediator,    # Mediator model
+                              model_outcome,     # Outcome model
+                              treat = "kids_total",  # Independent variable
+                              mediator = "CSF_sVCAM1_transformed",   # Mediator
+                              boot = TRUE,       # Use bootstrapping
+                              sims = 5000) 
+
+summary(mediation_results)
+
+#baseline sicam
+
+baseline_sicam<-biomarkers%>%
+  filter(Visit=="V1")%>%
+  dplyr::select(subject, CSF_sICAM1)
+
+data_med<-data_med%>%
+  left_join(., baseline_sicam)
+
+model_mediator_pre <- lm(CSF_sICAM1 ~ kids_total + age_v1 + education , 
+                     data = data_med[data_med$APOE_binary==1,])
+plot(model_mediator_pre)
+
+resid_model_mediator_pre<-residuals(model_mediator_pre)
+fitted_model_mediator_pre <- fitted(model_mediator_pre)
+
+bc_model_mediator_pre <- MASS::boxcox(fitted_model_mediator_pre + resid_model_mediator_pre ~ 1)
+lambda_model_mediator_pre <- bc_model_mediator_pre$x[which.max(bc_model_mediator_pre$y)]
+
+data_med$CSF_sICAM1_transformed <- (data_med$CSF_sICAM1^lambda_model_mediator_pre - 1) / lambda_model_mediator_pre
+
+model_mediator<-lm(CSF_sICAM1_transformed ~ kids_total + age_v1  + education , data = data_med[data_med$APOE_binary==1,])
+plot(model_mediator)
+
+model_outcome <- lm(change_HIPP ~  kids_total + CSF_sICAM1_transformed + vol_tiv + age_v1 + education , 
+                    data = data_med[data_med$APOE_binary==1,])
+
+mediation_results <- mediate(model_mediator,    # Mediator model
+                              model_outcome,     # Outcome model
+                              treat = "kids_total",  # Independent variable
+                              mediator = "CSF_sICAM1_transformed",   # Mediator
+                              boot = TRUE,       # Use bootstrapping
+                              sims = 5000) 
+
+summary(mediation_results)
+
 ```
 
-Parity showed a near significant association with YKL-40 in APOE4 carriers, independent of time (β= `r tidy(yk402)$estimate[2]`, SE = `r tidy(yk402)$std.error[2]`, p= `r tidy(yk402)$p.value[2]`). 
 
-## CVR
-```{r}
-# framingham<-read_delim(paste0(config$alfa_dataset_raw, "CVR/Framingham_APlus_V1_20250730(in).csv"), 
-#     delim = ";", escape_double = FALSE, trim_ws = TRUE)%>%
-#   dplyr::select(IdParticipante, Risk)%>%
-#   mutate(Risk = as.numeric(Risk))%>%
-#   rename(subject = IdParticipante)
-# 
-# data_ashs_female_cvr<-data_ashs_female%>%
-#   left_join(., framingham)
-# 
-# mod_ashs_APOE<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + education + Risk +(1|subject), data = data_ashs_female_cvr)
-# summary(mod_ashs_APOE)
+
+
+```{r, include=F}
+svcam1<-lm( CSF_sVCAM1 ~ kids_total + age_v1  + CSF_Abeta_ratio+ education , data = data_biomarkers_long_female[data_biomarkers_long_female$APOE_binary==1 & data_biomarkers_long_female$Visit==1,])
+
+resid_svcam1<-residuals(svcam1)
+fitted_svcam1 <- fitted(svcam1)
+
+bc_svcam1 <- MASS::boxcox(fitted_svcam1 + resid_svcam1 ~ 1)
+lambda_svcam1 <- bc_svcam1$x[which.max(bc_svcam1$y)]
+
+data_biomarkers_long_female$CSF_sVCAM1_transformed <- (data_biomarkers_long_female$CSF_sVCAM1^lambda_svcam1 - 1) / lambda_svcam1
+
+svcam12<-lm(CSF_sVCAM1_transformed ~ kids_total + CSF_Abeta_ratio+ age_v1  + education , data = data_biomarkers_long_female[data_biomarkers_long_female$APOE_binary==1 & data_biomarkers_long_female$Visit==1,])
+summary(svcam12) 
+plot(svcam12)
+qqnorm(residuals(svcam12))
+
+
+sicam1<-lm( CSF_sICAM1 ~ kids_total + age_v1  + CSF_Abeta_ratio+ education , data = data_biomarkers_long_female[data_biomarkers_long_female$APOE_binary==1 & data_biomarkers_long_female$Visit==1,])
+
+resid_sicam1<-residuals(sicam1)
+fitted_sicam1 <- fitted(sicam1)
+
+bc_sicam1 <- MASS::boxcox(fitted_sicam1 + resid_sicam1 ~ 1)
+lambda_sicam1 <- bc_sicam1$x[which.max(bc_sicam1$y)]
+
+data_biomarkers_long_female$CSF_sICAM1_transformed <- (data_biomarkers_long_female$CSF_sICAM1^lambda_sicam1 - 1) / lambda_sicam1
+
+sicam12<-lm(CSF_sICAM1_transformed ~ kids_total + CSF_Abeta_ratio+ age_v1  + education , data = data_biomarkers_long_female[data_biomarkers_long_female$APOE_binary==1 & data_biomarkers_long_female$Visit==1,])
+summary(sicam12) 
+plot(sicam12)
+qqnorm(residuals(sicam12))
 ```
 
 
@@ -938,6 +1134,7 @@ slopes_nc <- emtrends(mod_ashs_APOE_A0,
                       data=data_ashs_female[data_ashs_female$APOE_binary==0,])
 slopes_nc_df <- as.data.frame(slopes_nc)
 slopes_nc_df$APOE_binary <- "Non-carriers"
+slopes_nc_df$cov<-0
 
 # Carriers  
 slopes_c <- emtrends(mod_ashs_APOE_A1,
@@ -947,9 +1144,31 @@ slopes_c <- emtrends(mod_ashs_APOE_A1,
                      data=data_ashs_female[data_ashs_female$APOE_binary==1,])
 slopes_c_df <- as.data.frame(slopes_c)
 slopes_c_df$APOE_binary <- "Carriers"
+slopes_c_df$cov<-0
+
+# Non-carriers + amyloid
+slopes_nc_ab <- emtrends(mod_ashs_APOE_ab_a0,
+                      specs = ~ kids_total,
+                      var = "diff_mri",
+                      at = list(kids_total = parity_range),
+                      data=data_ashs_female[data_ashs_female$APOE_binary==0,])
+slopes_nc_ab_df <- as.data.frame(slopes_nc_ab)
+slopes_nc_ab_df$APOE_binary <- "Non-carriers"
+slopes_nc_ab_df$cov<-1
+
+# Carriers  + amyloid
+slopes_c_ab <- emtrends(mod_ashs_APOE_ab_a1,
+                     specs = ~ kids_total,
+                     var = "diff_mri",
+                     at = list(kids_total = parity_range),
+                     data=data_ashs_female[data_ashs_female$APOE_binary==1,])
+slopes_c_ab_df <- as.data.frame(slopes_c_ab)
+slopes_c_ab_df$APOE_binary <- "Carriers"
+slopes_c_ab_df$cov<-1
 
 # Combine
 all_slopes <- rbind(slopes_nc_df, slopes_c_df)
+all_slopes_cov<- rbind(slopes_nc_ab_df, slopes_c_ab_df)
 
 # Same data as above, but on one plot
 p2<-all_slopes%>%
@@ -957,27 +1176,30 @@ p2<-all_slopes%>%
 ggplot( aes(x = kids_total, y = diff_mri.trend)) +
   geom_ribbon(aes(ymin = lower.CL, ymax = upper.CL, fill = APOE_binary), 
               alpha = 0.3) +
+  geom_ribbon(data = all_slopes_cov, aes(ymin = lower.CL, ymax = upper.CL, fill = APOE_binary), 
+              alpha = 0.3)+
   geom_line(aes(color = APOE_binary), size = 1) +
+  geom_line(data = all_slopes_cov, aes(x = kids_total, y = diff_mri.trend, color = APOE_binary), size = 1, linetype= "dashed")+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
   facet_wrap(~APOE_binary) +
   labs(x = "Parity (number of births)",
        y = "Estimated slope of HV change (cm3)") +
   th +
   theme(legend.position = "none")+
-  geom_text(data = data.frame(APOE_binary = factor("Non-carriers", 
-                                                     levels = c("Non-carriers", "Carriers")), 
-                              kids_total = Inf, 
-                              diff_mri.trend = Inf, 
-                              label = "p=0.257"),
-            aes(x = kids_total, y = diff_mri.trend, label = label),
-            size = 4, vjust = 3, hjust = 1.2, inherit.aes = FALSE)+
-  geom_text(data = data.frame(APOE_binary = factor("Carriers", 
-                                                     levels = c("Non-carriers", "Carriers")), 
-                              kids_total = Inf, 
-                              diff_mri.trend = Inf, 
-                              label = "p=0.001**"),
-            aes(x = kids_total, y = diff_mri.trend, label = label),
-            size = 4, vjust = 3, hjust = 1.2, inherit.aes = FALSE)+
+  # geom_text(data = data.frame(APOE_binary = factor("Non-carriers", 
+  #                                                    levels = c("Non-carriers", "Carriers")), 
+  #                             kids_total = Inf, 
+  #                             diff_mri.trend = Inf, 
+  #                             label = "p=0.257"),
+  #           aes(x = kids_total, y = diff_mri.trend, label = label),
+  #           size = 4, vjust = 3, hjust = 1.2, inherit.aes = FALSE)+
+  # geom_text(data = data.frame(APOE_binary = factor("Carriers", 
+  #                                                    levels = c("Non-carriers", "Carriers")), 
+  #                             kids_total = Inf, 
+  #                             diff_mri.trend = Inf, 
+  #                             label = "p=0.001**"),
+  #           aes(x = kids_total, y = diff_mri.trend, label = label),
+  #           size = 4, vjust = 3, hjust = 1.2, inherit.aes = FALSE)+
   scale_color_manual(values = c("#1CA8B7", "#FF7043"),
                      labels = c("Non-Carriers", "Carriers"))+
   scale_fill_manual(values = c("#1CA8B7", "#FF7043"),
