@@ -808,7 +808,7 @@ summary(ykl_apoe)
 
 ```
 
-Parity showed a weak association with YKL-40 in APOE4 carriers nearing significance, but this association was independent of time (β= `r tidy(yk402)$estimate[2]`, SE = `r tidy(yk402)$std.error[2]`, p= `r tidy(yk402)$p.value[2]`).
+Parity showed a weak association with YKL-40 in APOE4 carriers but this association was not significant (β= `r tidy(yk402)$estimate[2]`, SE = `r tidy(yk402)$std.error[2]`, p= `r tidy(yk402)$p.value[2]`).
 
 ```{r, include=F, eval=F}
 test<-data_ashs_female%>%
