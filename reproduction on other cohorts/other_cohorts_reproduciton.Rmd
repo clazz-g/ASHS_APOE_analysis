@@ -23,36 +23,60 @@ source("C:/Users/U253662/Documents/git/functions/jt_plot_aesthetics.R")
 
 # WRAP
 
+not info on gestational diabetes/preeclampsia
+CU exclusion is based on a "consensus"
+poor availability of amyloid dat hence not included
 
 ```{r, include=F}
-hippo_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "hippocampus_dataset.csv"),col_select = -1)
+ashs_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "ashs_dataset.csv"),col_select = -1)
 
-cog_WRAP<-read_delim("G:/My Drive/Data/WRAP/RobustNormZScores.csv")%>%
-  dplyr::select(WRAPNo, VisNo, RNZ_TrailMakingTestTrailATime_trla)
+menopause<- read_delim(paste0(config$wrap_dataset_cleaned, "menopause_dataset.csv"),col_select = -1)
 
+ptau217<-read_delim(paste0(config$wrap_dataset_cleaned, "ptau217_dataset.csv"),col_select = -1)%>%
+  dplyr::select(-days_since_baseline)
 
-ptau_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "ptau217_dataset.csv"), col_select = -1)
-
-centiloids_WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "centiloids_PIB_dataset.csv"), col_select = -1)
+consensus<-read_delim("G:/My Drive/Data/WRAP/ConsensusConference.csv")%>%
+  mutate(exclude_CU = ifelse(CC2==0, 1, 0))%>%
+  rename(subject = WRAPNo)%>%
+  dplyr::select(subject, exclude_CU, VisNo)%>%
+  rename(visit = VisNo)
 
 WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "basic_dataset.csv"), col_select = -1)%>%
-  left_join(.,hippo_WRAP)%>%
-  left_join(., ptau_WRAP)%>%
-  left_join(., centiloids_WRAP)%>%
-  mutate(age_baseline = ((age_at_acquisition*365.25)-days_since_baseline)/365.25)%>%
-  drop_na(kids_total, vol_HIPP)%>%
-  mutate(APOE_binary = factor(APOE_binary),
-         years_since_baseline = days_since_baseline/365.25,
-         parous_group = ifelse(kids_total>1, "2+", kids_total),
-         factor_kids_total = factor(kids_total),
-         parous_group2 = ifelse(kids_total>2, "3+", kids_total))%>%
+  left_join(.,ashs_WRAP)%>%
   group_by(subject)%>%
-  arrange(years_since_baseline)%>%
-  mutate(Visit = row_number())%>%
-  filter(Visit<3)%>%
+  mutate(age_MR_baseline = first(age_at_acquisition))%>%
+  drop_na(kids_total, whole_hippocampus)%>%
+  mutate(APOE_binary = factor(APOE_binary, levels = c(0, 1)),
+         parous_group = ifelse(kids_total>1, "2+", as.character(kids_total)),
+         factor_kids_total = factor(kids_total),
+         parous_group2 = ifelse(kids_total>2, "3+", as.character(kids_total)),
+         SeriesDescription = as.factor(SeriesDescription))%>%
+  filter(sex==2)%>%
+  left_join(., menopause)%>%
+  mutate(is_menopause = ifelse(age_at_acquisition<age_menopause, 0, 1))%>%
+  filter(is_menopause!=0)%>%
+  mutate(AcquisitionPlane = case_when(
+    str_detect(SeriesDescription, "Ax|axial") ~ "Axial",
+    str_detect(SeriesDescription, "Sag|SAG") ~ "Sagittal",
+    .default = "Unknown"
+  ))%>%
+  group_by(subject)%>%
+  arrange(age_at_acquisition, .by_group = TRUE) %>% 
+  mutate(days_since_first_scan = days_since_baseline - first(days_since_baseline),
+         whole_hippocampus = whole_hippocampus/1000,
+         visit = row_number(),
+         years_since_first_scan = days_since_first_scan/365.25)%>%
   filter(n()>1)%>%
-  ungroup()%>%
-  filter(sex==2)
+  left_join(., consensus)%>%
+  mutate(kids_total2 = ifelse(kids_total == 4, 3, as.numeric(kids_total)),
+         ashs_tiv_scaled = scale(ashs_tiv))
+
+
+WRAP_CU<-WRAP%>%
+  filter(exclude_CU==0)%>%
+  group_by(subject)%>%
+  filter(n()>1)%>%
+  ungroup()
 
 # participants<-WRAP%>%
 #   filter(sex==2)%>%
@@ -66,41 +90,29 @@ WRAP<-read_delim(paste0(config$wrap_dataset_cleaned, "basic_dataset.csv"), col_s
 
 ```{r, echo=F, warning=F}
 
-age_scan1<-WRAP%>%
-  filter(Visit==1)%>%
-  dplyr::select(subject, age_at_acquisition)
-
-time_between_scans<-WRAP%>%
-  dplyr::select(subject, days_since_baseline, Visit)%>%
-  pivot_wider(names_from = Visit, values_from = days_since_baseline, names_prefix = "days_scan_")%>%
-  mutate(diff_mri = days_scan_2 - days_scan_1)%>%
-  dplyr::select(subject, diff_mri)%>%
-  mutate(diff_mri = diff_mri/365.25)
-
-WRAP_descriptive<-WRAP%>%
-  filter(sex==2)%>%
+WRAP_descriptive<-WRAP_CU%>%
   group_by(subject)%>%
-  mutate(age_baseline= mean(age_baseline))%>%
+  mutate(visit_total = last(visit),
+         years_total = last(years_since_first_scan))%>%
+  slice(1)%>%
   ungroup()%>%
-  dplyr::select(subject, Visit, kids_total, APOE_binary, education, vol_HIPP)%>%
-  left_join(., age_scan1)%>%
-  left_join(., time_between_scans)%>%
-  pivot_wider(names_from = Visit, values_from = vol_HIPP, names_prefix = "HIPP_V")%>%
+  dplyr::select(subject, kids_total, APOE_binary, education, age_MR_baseline, whole_hippocampus, visit_total, years_total)%>%
   mutate(APOE_binary=ifelse(APOE_binary==1, "Carrier", "Non-Carrier"),
          kids_total=as.numeric(kids_total))%>%
   dplyr::select(-subject)
 
 desc_table<-tbl_summary(WRAP_descriptive,
+                        type = list(visit_total ~ "continuous"),
                         statistic = list(all_continuous() ~ "{mean} ({sd})"),
             by = kids_total, 
             missing = "no",
-            label= list(kids_total = "Number of childbirths",
+            label= list(kids_total = "Number of biologcal children",
                      APOE_binary = "APOE-E4 carrier, Count (%)",
-                     age_at_acquisition = "Age at first scan, Mean (SD)",
-                     diff_mri = "Time between scans, Mean (SD)",
+                     age_MR_baseline = "Age at first scan, Mean (SD)",
                      education = "Education (years), Mean (SD)",
-                     HIPP_V1 = "Baseline Hippocampal volume, Mean (SD)",
-                     HIPP_V2 = "Follow-up Hippocampal volume, Mean (SD)"
+                     visit_total = "Number of visits",
+                     years_total = "Average span between first and last",
+                     whole_hippocampus = "Average hippocampus volume at V1, Mean (SD)"
                      ))%>%
   add_n()%>%
   add_p()%>%
@@ -115,59 +127,274 @@ desc_table
 -   Population profile is not too dismimilar, age at baseline is younger but scans were done later than baseline in most cases (to do: compute age at first scan variable)
 -   Hippocampal segmentation is using SPM toolbox, not ASHS, so ROI could be different and quality, and so subfields available
 
-## Reproducing analysis: APOE x parity (continuous) x time
+## QC
 
+```{r, echo=F, warning=F, eval=F}
+hipp_v1<-WRAP_CU%>%
+  group_by(subject)%>%
+  filter(n()>1)%>%
+  ungroup()%>%
+  filter(visit==1)%>%
+  pull(whole_hippocampus)
+
+hipp_v2<-WRAP_CU%>%
+  filter(visit==2)%>%
+  pull(whole_hippocampus)
+
+plot(hipp_v1, hipp_v2)
+
+hipp_v22<-WRAP_CU%>%
+  group_by(subject)%>%
+  filter(n()>2)%>%
+  ungroup()%>%
+  filter(visit==2)%>%
+  pull(whole_hippocampus)
+
+hipp_v3<-WRAP_CU%>%
+  filter(visit==3)%>%
+  pull(whole_hippocampus)
+
+plot(hipp_v22, hipp_v3)
+
+hipp_v32<-WRAP_CU%>%
+  group_by(subject)%>%
+  filter(n()>3)%>%
+  ungroup()%>%
+  filter(visit==3)%>%
+  pull(whole_hippocampus)
+
+hipp_v4<-WRAP_CU%>%
+  filter(visit==4)%>%
+  pull(whole_hippocampus)
+
+plot(hipp_v32, hipp_v4)
+
+WRAP_CU <- WRAP_CU %>%
+  mutate(
+    z_score = scale(whole_hippocampus),
+    outlier_flag = abs(z_score) > 3
+  ) %>%
+  ungroup()
+
+WRAP_test <- WRAP_CU %>%
+  arrange(subject, visit) %>%
+  group_by(subject) %>%
+  mutate(
+    pct_change = (whole_hippocampus - lag(whole_hippocampus)) / lag(whole_hippocampus) * 100,
+    change_flag = abs(pct_change) > 15
+  ) %>%
+  ungroup()
+
+#participants flagged: 0202, 0424, 0922
+
+
+
+```
+
+## Reproducing analysis: APOE x parity (continuous) x time - 2 visits
+
+### Main group analysis 
 ```{r, echo=F, warning=F}
-WRAP2<-WRAP%>%
-  left_join(., time_between_scans)%>%
-  filter(diff_mri>2)
+fit_wrap_2 <-lmer(whole_hippocampus ~ years_since_first_scan*kids_total*APOE_binary + ashs_tiv_scaled + DeviceSerialNumber+ age_MR_baseline + Ethnicity  + (1|subject) , data=WRAP_CU[WRAP_CU$visit<3,])
 
-fit_wrap<-lmer(vol_HIPP ~ APOE_binary*diff_mri*kids_total + scale(rbm_icv)  + age_baseline + education + (1|subject), data=WRAP2)
-summary(fit_wrap)
+preds_2 <- ggpredict(fit_wrap_2, terms = c("years_since_first_scan", "kids_total", "APOE_binary"))
+
+huxreg(fit_wrap_2, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
+                 "Parity" = "kids_total",
+                 "APOE_E4 Carrier" = "APOE_binary1",
+                 "Age baseline" = "age_MR_baseline",
+                 "TIV" = "ashs_tiv_scaled",
+                 "Parity * APOE4" = "kids_total:APOE_binary1",
+                 "Parity * time" = "years_since_first_scan:kids_total",
+                 "APOE4 * time" = "years_since_first_scan:APOE_binary1",
+                 "Parity * APOE4 * time"="years_since_first_scan:kids_total:APOE_binary1"))
+```
+
+### APOE neg only
+```{r, echo=F, warning=F}
+fit_wrap_2_A0 <-lmer(whole_hippocampus ~ years_since_first_scan*kids_total + ashs_tiv_scaled  + age_MR_baseline + DeviceSerialNumber  + Ethnicity + (1|subject), data=WRAP_CU[WRAP_CU$APOE_binary==0 & WRAP_CU$visit<3, ])
+
+
+huxreg(fit_wrap_2_A0, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
+                 "Parity" = "kids_total",
+                 "Age baseline" = "age_MR_baseline",
+                 "TIV" = "ashs_tiv_scaled",
+                 "Parity * time" = "years_since_first_scan:kids_total"))
+```
+
+### APOE pos only
+```{r, echo=F, warning=F}
+fit_wrap_2_A1 <-lmer(whole_hippocampus ~ years_since_first_scan*kids_total + ashs_tiv_scaled  + age_MR_baseline   +DeviceSerialNumber  + Ethnicity+ (1|subject), data=WRAP_CU[WRAP_CU$APOE_binary==1 & WRAP_CU$visit<3, ])
+
+huxreg(fit_wrap_2_A1, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
+                 "Parity" = "kids_total",
+                 "Age baseline" = "age_MR_baseline",
+                 "TIV" = "ashs_tiv_scaled",
+                 "Parity * time" = "years_since_first_scan:kids_total"))
+```
+
+```{r, echo= F, warning=FALSE}
+WRAP_CU_2<- WRAP%>%
+  filter(visit <3)
+
+individual_slopes <- WRAP_CU_2 %>%
+  filter(!is.na(kids_total) & !is.na(APOE_binary) & !is.na(years_since_first_scan) & !is.na(whole_hippocampus)) %>%
+  group_by(subject, kids_total, APOE_binary) %>%  # Only keep subjects with at least 2 observations
+  summarise(
+    individual_slope = coef(lm(whole_hippocampus ~ years_since_first_scan))[2],
+    n_obs = n(),
+    .groups = 'drop'
+  ) %>%
+  filter(!is.na(individual_slope))%>%
+  mutate(APOE_binary = as.factor(APOE_binary))
+
+
+
+time_range <- range(WRAP_CU_2$years_since_first_scan, na.rm = TRUE)
+time_seq <- seq(from = time_range[1], to = time_range[2])
+
+emm_grid <- emmeans(fit_wrap_2, ~ years_since_first_scan * kids_total * APOE_binary,
+                    at = list(time = time_seq),
+                    data= WRAP_CU_2)
+emm_df <- as.data.frame(emm_grid)
+
+slopes <- emtrends(fit_wrap_2, ~ kids_total * APOE_binary, var = "years_since_first_scan", data= WRAP_CU_2, at = list(kids_total = c(0, 1, 2, 3, 4)))
+slopes_df <- as.data.frame(slopes)
+
+p1<-ggplot(slopes_df, aes(x = kids_total, y = years_since_first_scan.trend, 
+                            fill = as.factor(APOE_binary))) +
+  geom_col(position = "dodge", alpha = 0.8, color = "black", size = 0.3) +
+  geom_errorbar(aes(ymin = years_since_first_scan.trend - SE, ymax = years_since_first_scan.trend + SE),
+                position = position_dodge(width = 0.9), width = 0.3)+
+  th+
+  labs(x = "Number of childbirths", 
+     y = "Time slope", 
+     color = expression(italic("APOE")*"-ε4"),
+     fill = expression(italic("APOE")*"-ε4"))+
+ geom_point(data = individual_slopes, 
+             aes(x = kids_total, y = individual_slope, 
+                 color = as.factor(APOE_binary)),
+             position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.9),
+             alpha = 0.4, size = 2, shape=21, colour="black") +
+  scale_fill_manual(values = c("#1CA8B7", "#FF7043"),
+                     labels = c("Non-Carriers", "Carriers"))+
+scale_color_manual(values = c("#1CA8B7", "#FF7043"),
+                     labels = c("Non-Carriers", "Carriers"))+
+  scale_x_continuous(
+    breaks = c(0, 1, 2, 3, 4),
+    labels = c("0", "1", "2", "3", "4+")
+  )
+
+p1
+```
+
+
+## Reproducing analysis: APOE x parity (continuous) x time - all visits
+
+### Main group analysis 
+```{r, echo=F, warning=F}
+fit_wrap <-lmer(whole_hippocampus ~ years_since_first_scan*kids_total*APOE_binary + ashs_tiv_scaled + DeviceSerialNumber+ age_MR_baseline + Ethnicity  + (1|subject) , data=WRAP_CU)
+
+preds <- ggpredict(fit_wrap, terms = c("years_since_first_scan", "kids_total", "APOE_binary"))
 
 huxreg(fit_wrap, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
                  "Parity" = "kids_total",
                  "APOE_E4 Carrier" = "APOE_binary1",
-                 "Age baseline" = "age_baseline",
-                 "Education" = "education",
-                 "TIV" = "scale(rbm_icv)",
-                 "Parity * APOE4" = "APOE_binary1:kids_total",
-                 "Parity * time" = "years_since_baseline:kids_total",
-                 "APOE4 * time" = "APOE_binary1:years_since_baseline",
-                 "Parity * APOE4 * time"="APOE_binary1:years_since_baseline:kids_total"))
-
+                 "Age baseline" = "age_MR_baseline",
+                 "TIV" = "ashs_tiv_scaled",
+                 "Parity * APOE4" = "kids_total:APOE_binary1",
+                 "Parity * time" = "years_since_first_scan:kids_total",
+                 "APOE4 * time" = "years_since_first_scan:APOE_binary1",
+                 "Parity * APOE4 * time"="years_since_first_scan:kids_total:APOE_binary1"))
 ```
 
--   Model does not include amyloid because of data availability
--   Overall results are similar but not significant
+### APOE neg only
+```{r, echo=F, warning=F}
+fit_wrap_A0 <-lmer(whole_hippocampus ~ years_since_first_scan*kids_total + ashs_tiv_scaled  + age_MR_baseline + DeviceSerialNumber  + Ethnicity + (1|subject), data=WRAP[WRAP$APOE_binary==0, ])
 
 
-```{r, include=F}
-WRAP_f<-WRAP%>%
-  filter(sex==2)
+huxreg(fit_wrap_A0, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
+                 "Parity" = "kids_total",
+                 "Age baseline" = "age_MR_baseline",
+                 "TIV" = "ashs_tiv_scaled",
+                 "Parity * time" = "years_since_first_scan:kids_total"))
+```
 
-
-effects_wrap <- ggeffect(fit_wrap, terms = c("years_since_baseline", "kids_total", "APOE_binary"))
-
-# Create grid of values for prediction - specify multiple time points
-time_range <- range(WRAP_f$years_since_baseline, na.rm = TRUE)
-time_seq <- seq(from = time_range[1], to = time_range[2])
-
-emm_grid <- emmeans(fit_wrap, ~ years_since_baseline * kids_total * APOE_binary,
-                    at = list(time = time_seq),
-                    data= WRAP_f)
-emm_df <- as.data.frame(emm_grid)
-
-slopes <- emtrends(fit_wrap, ~ kids_total * APOE_binary, var = "years_since_baseline", data= WRAP_f, at = list(kids_total = c(0, 1, 2, 3, 4)))
-slopes_df <- as.data.frame(slopes)
+### APOE pos only
+```{r, echo=F, warning=F}
+fit_wrap_A1 <-lmer(whole_hippocampus ~ years_since_first_scan*kids_total + ashs_tiv_scaled  + age_MR_baseline   +DeviceSerialNumber  + Ethnicity+ (1|subject), data=WRAP[WRAP$APOE_binary==1, ])
+huxreg(fit_wrap_A1, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
+                 "Parity" = "kids_total",
+                 "Age baseline" = "age_MR_baseline",
+                 "TIV" = "ashs_tiv_scaled",
+                 "Parity * time" = "years_since_first_scan:kids_total"))
 ```
 
 
 ```{r, echo=F, warning=F}
-ggplot(slopes_df, aes(x = kids_total, y = years_since_baseline.trend, 
+
+preds_apoe<-ggemmeans(fit_wrap, 
+  terms = c("years_since_first_scan", "kids_total", "APOE_binary"))
+
+preds_apoe0<-as.data.frame(preds_apoe)%>%
+  rename(kids_total = group,
+         APOE_binary=facet)%>%
+  filter(APOE_binary==0)
+
+
+preds_apoe1<-as.data.frame(preds_apoe)%>%
+  rename(kids_total = group,
+         APOE_binary=facet)%>%
+  filter(APOE_binary==1)
+  
+
+ggplot(WRAP_CU, aes(x= years_since_first_scan, y= whole_hippocampus, group= subject, colour = kids_total))+
+  geom_line(alpha=.70)+
+  geom_line(data = preds_apoe0, aes(x=x, y= predicted, group=kids_total), inherit.aes = F, size=1)+
+  geom_ribbon(data = preds_apoe0, aes(x = x, ymin= conf.low, ymax = conf.high, group = kids_total), inherit.aes = F, alpha=0.1)+
+  geom_line(data = preds_apoe1, aes(x=x, y= predicted, group=kids_total), inherit.aes = F, size=1)+
+  geom_ribbon(data = preds_apoe1, aes(x = x, ymin= conf.low, ymax = conf.high, group = kids_total), inherit.aes = F, alpha=0.1)+
+  facet_wrap(~ APOE_binary)+
+  th
+```
+
+
+
+
+
+
+```{r, include=F}
+
+
+effects_wrap <- ggeffect(fit_wrap, terms = c("years_since_first_scan", "kids_total", "APOE_binary"))
+
+# Create grid of values for prediction - specify multiple time points
+time_range <- range(WRAP$years_since_first_scan, na.rm = TRUE)
+time_seq <- seq(from = time_range[1], to = time_range[2])
+
+emm_grid <- emmeans(fit_wrap, ~ years_since_first_scan * kids_total * APOE_binary,
+                    at = list(time = time_seq),
+                    data= WRAP)
+emm_df <- as.data.frame(emm_grid)
+
+slopes <- emtrends(fit_wrap, ~ kids_total * APOE_binary, var = "years_since_first_scan", data= WRAP, at = list(kids_total = c(0, 1, 2, 3, 4)))
+slopes_df <- as.data.frame(slopes)
+
+
+
+individual_slopes <- WRAP %>%
+  drop_na(APOE_binary) %>%
+  group_by(subject, kids_total, APOE_binary) %>%
+  filter(n() >= 2) %>%
+  do(model = lm(whole_hippocampus ~ years_since_first_scan, data = .)) %>%
+  mutate(slope = coef(model)[2]) %>%
+  dplyr::select(-model) %>%
+  ungroup()
+
+ggplot(slopes_df, aes(x = kids_total, y = years_since_first_scan.trend, 
                             fill = as.factor(APOE_binary))) +
   geom_col(position = "dodge", alpha = 0.8, color = "black", size = 0.3) +
-  geom_errorbar(aes(ymin = years_since_baseline.trend - SE, ymax = years_since_baseline.trend + SE),
+  geom_errorbar(aes(ymin = years_since_first_scan.trend - SE, ymax = years_since_first_scan.trend + SE),
                 position = position_dodge(width = 0.9), width = 0.3)+
   labs(x = "Number of childbirths", 
        y = "Time slope", 
@@ -175,69 +402,15 @@ ggplot(slopes_df, aes(x = kids_total, y = years_since_baseline.trend,
        fill = "APOE4 Carriership",
        title = "Predicted slopes of hippocampal volume by APOE4 carriership and number of kids")+
   scale_fill_manual(values = c("#1CA8B7", "#FF7043"),
-                     labels = c("Non Carrier", "Carrier"))
-
-
+                     labels = c("Non Carrier", "Carrier"))+
+   geom_point(data = individual_slopes, 
+             aes(x = kids_total, y = slope, fill = APOE_binary),
+             position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.9),
+             alpha = 0.4, size = 1.9, shape = 21)
 ```
 
-## Sensitivity analysis: APOE x parity (categorical) x time
-
-```{r, echo=F, warning=F}
-fit_wrap_cat<-lmer(vol_HIPP ~ APOE_binary*years_since_baseline*parous_group + scale(rbm_icv)  + age_baseline + education + (1|subject), data=WRAP[WRAP$sex==2,])
 
 
-
-huxreg(fit_wrap_cat, bold_signif = 0.05, outer_borders =1, stars = c("†" = 0.1, "*" = 0.05, "**" = 0.01, "***" = 0.001), coefs = c("Intercept" = "(Intercept)",
-                 "Primiparous" = "parous_group1",
-                 "Multiparous" = "parous_group2+",
-                 "APOE_E4 Carrier" = "APOE_binary1",
-                 "Age baseline" = "age_baseline",
-                 "Education" = "education",
-                 "TIV" = "scale(rbm_icv)",
-                 "Primiparous * APOE4" = "APOE_binary1:parous_group1",
-                 "Multiparous * APOE4" = "APOE_binary1:parous_group2+",
-                 "Primiparous * time" = "years_since_baseline:parous_group1",
-                 "Multiparous * time" = "years_since_baseline:parous_group2+",
-                 "APOE4 * time" = "APOE_binary1:years_since_baseline",
-                 "Primiparous * APOE4 * time"="APOE_binary1:years_since_baseline:parous_group1",
-                 "Multiparous * APOE4 * time"="APOE_binary1:years_since_baseline:parous_group2+"))
-```
-
--   Difference with ALFA: in ALFA the categorical split is still significant in the multiparous group unlike here 
-
-
-```{r, include=F}
-trend_hippo<-emtrends(fit_wrap_cat, ~ APOE_binary * parous_group, var = "years_since_baseline", data= WRAP[WRAP$sex==2,])
-pairs(trend_hippo, by= "parous_group")
-```
-
-```{r, echo=F, warning=FALSE}
-pred_cat_wrap<-ggpredict(fit_wrap_cat, terms = c("years_since_baseline", "APOE_binary", "parous_group"))%>%
-  as.data.frame()%>%
-  filter(x %in% c(0, 10))
-
-pred_cat_wrap%>%
-  mutate(group= factor(group, levels = c(0, 1), labels = c("Non-Carrier", "Carrier")),
-         facet= factor(facet, levels = c("0", "1", "2+"), labels = c("Nulliparous", "Primiparous", "Multiparous")))%>%
-  ggplot(aes(x= x, y=predicted, group=group, colour = group))+
-  geom_line(size=1.3)+
-  geom_ribbon(aes(x=x, ymin= conf.low, ymax = conf.high, group=group), alpha=0.15, colour=NA)+
-  facet_wrap(~facet)+
-  labs(x = "Time difference (years)", 
-       y = "Whole hippocampal volume", 
-       color = "APOE4 Carriership")+
-  geom_text(data = data.frame(facet = factor("Multiparous", 
-                                                     levels = c("Nulliparous", "Primiparous", "Multiparous")), 
-                              time_diff = Inf, 
-                              Z_PACC = Inf, 
-                              label = "p= 0.002"),
-            aes(x = time_diff, y = Z_PACC, label = label),
-            size = 4, vjust = 1.5, hjust = 1.2, inherit.aes = FALSE)
-```
-
-questions/remarks:
--   time baseline is not 0 since WRAP does not count first imaging session as 0. does this matter? 
--   Is amyloid adjusting necessary? tends to be the most problematic covariate
 
 
 # HABS HD
