@@ -4,7 +4,7 @@ author: "Clazz"
 toc: true
 number-sections: true
 format: 
-  docx:
+  html:
     code-fold: true
 editor: source
 bibliography: references.bib
@@ -246,37 +246,37 @@ data_cog_long<- left_join(data_naked, cognition)%>%
 
 # Introduction
 
-Alzheimer's disease (AD) is a neurodegenerative disorder characterised by the accumulation of pathophysiological abnormalities leading to neurodegeneration and progressive cognitive and functional decline. Ageing, carring the apolipoprotein E E4 (APOE4) and having female chromosomal sex are three established non-modifiable risk factors for the typical late-onset of this disease @riedel2016. Amongst APOE4 carriers, women exhibit an increased risk of conversion from healthy ageing to MCI, or from MCI to AD dementia between the ages of 65 to 75 compareed to men [@Altmann2014; @Neu2017]. Factors underlying the interaction between APOE4 and sex are not well understood, warrating a deeper investigation of sex specific events which might interact with this phenomenon. In particular, pregnancy is a female-specific event with far reaching biological impacts on multiple bodily functions, yet its potential effect on senecence has not yet been explored.
+Alzheimer’s disease (AD) is a neurodegenerative disorder characterised by the accumulation of amyloid-β and tau pathology, leading to neurodegeneration and progressive cognitive and functional decline. Ageing, carrying the Apolipoprotein-E ε4 (APOE ε4) allele, and female sex are three established non-modifiable risk factors for the typical late-onset presentation of this disease @riedel2016. Amongst APOE ε4 carriers, women exhibit an increased risk of progression from healthy ageing to Mild Cognitive Impairment (MCI), or from MCI to AD dementia between the ages of 65 to 75 compared to men [@Altmann2014; @Neu2017]. Mechanisms underlying the interaction between APOE ε4 and sex are not well understood, warranting a deeper investigation of female-sex specific events that might interact with this phenomenon.
 
-In humans, the first pregnancy is associated with drastic increases in sex-steroid levels @brett2001 and a significant hippocampal volume loss @pritschet2024, which only partially recovers in the post-partum period @Hoekzema2017. Whilst no data has been published regarding hippocampal volume change in second time mothers, Straathof and colleagues @straathof2026 recently showed that cortical volume changes that happened during the first preganncy were mirroired in the second, meaning hippocampal changes might also be reproduced. Interestingly, the dynamic volume changes seen during gestation are associated with the change curve seen in in free circulating sex-hormones @servin-barthet2025. In rodents, pregnancy is linked with decreased hippocampal volume during gestation as well as the mid post-partum @duarte-guterman2019. Animal models converge towards the idea that cell proliferation is reduced during pregnancy but returns to nulliparous levels after pups have been weaned @duarte-guterman2019. Together, these findings suggest that pregnancy and the post-partum period affect hippocampal volume dynamically. Crucially, the hippocampus is one of the first regions affected by AD, and whole hippocampal volume is a hallmark predictor of conversion from MCI to AD @apostolova2006. Therefore, this region seems of particular interest given it is affected by parity and is related to AD neurodegeneration.
+In particular, pregnancy is a female-specific event with far reaching biological impacts on multiple bodily functions @oleary1991; @huang2021; @hadden2009, yet its potential effect on AD-related physiological processes remains underexplored. In humans, the first pregnancy is associated with drastic increases in sex steroid levels @brett2001 and a significant hippocampal volume loss @pritschet2024, which only partially recovers in the post-partum period @Hoekzema2017. Whilst no data has been published regarding hippocampal volume change in second time mothers, Straathof and colleagues @straathof2026 recently showed that cortical volume changes that happened during the first pregnancy were mirrored in the second, meaning hippocampal changes might also be reproduced. Interestingly, dynamic grey matter volume changes seen during gestation are associated with the change curve seen in free circulating sex-hormones @servin-barthet2025. In rodents, pregnancy is linked with decreased hippocampal volume during gestation as well as the mid post-partum @duarte-guterman2019. Animal models converge towards the idea that cell proliferation is reduced during pregnancy but returns to nulliparous levels after pups have been weaned @duarte-guterman2019. Together, these findings suggest that pregnancy and the post-partum period affect hippocampal volume dynamically. Therefore, this region seems of particular interest given it is affected by parity and is related to AD neurodegeneration.
 
-Few studies have reported associations between parity and hippocampal volume in older adult women. A cross sectional that included 248 women spanning the range from CU to clinically diagnosed with AD found a singificant associaiton between grand multiparity and hippocampal volume. Additionally, preliminary evidence from the UK biobank using 1284 subjects reported that CU postmenopausal women showed lower hippocampal volume compared to nulliparous women, but this difference was not present when comparing multiparous women to nulliparous women @tucci2025. Interestingly, another UK Biobank study using this time 19,787 middle-aged CU women from the UK biobank found that middle-aged parous women exhibited reduced brain age compared with nulliparous women, an effect mainly driven by anatomical components situated in the limbic region @de2020. In a secondary analysis, author also found a significant positive linear associations between the Putamen, Hippocampus, Amygdala and Accumbens and number of childbirths. In animal models, nulliparous middle-aged rats show steeper hippocampal neurogenesis decline in compared to their primiparous counterparts @eid2019. Together, these findings suggest that past reproductive experience influences hippocampal structure in older age, but this association is inconsistent.
+The hippocampus is among the first regions affected by AD, and hippocampal atrophy is a hallmark predictor of progression from MCI to AD @apostolova2006. However, few studies have explored the relationship between parity (number of births) and hippocampal volume (HV) in older adult women. One cross-sectional study involving 248 women, ranging from cognitively unimpaired (CU) to those clinically diagnosed with AD, found a significant negative association between grand multiparity (4+ births) and HV @Jung2020. Additionally, preliminary evidence from a study of 1284 CU postmenopausal women from the UK Biobank indicated that women who have experienced at least one birth had lower HV compared to nulliparous women, but this difference was not present when comparing multiparous women to nulliparous women @tucci2025. Interestingly, another study of 19,787 middle-aged CU women from the UK Biobank found that parous women exhibited a significant positive linear association between the hippocampus and the number of childbirths, although this analysis was exploratory @de2020. Additionally, recent evidence from 254 cognitively unimpaired post-menopausal women suggest that the association between hippocampal volume and parity may depend on the presence of early AD neuropathology \[my paper, in press\]. In animal models, nulliparous middle-aged rats show a steeper decline in hippocampal neurogenesis than their primiparous counterparts @eid2019. Together, these findings suggest that past reproductive experience influences hippocampal structure in older age, but this association is inconsistent, meaning other factors may be contributing to and modulating this association.
 
-These inconsistent findings may be understood through the lens of Brinton's "healthy cell bias" theory, which posits that estrogen's neuroprotective effects are contingent upon neuronal metabolic health. Under physiological conditions, estrogen enhances glucose metabolism and mitochondrial bioenergetics, which supports the energy-intensive process of Ca²⁺ homeostasis. However, when metabolic injury is already present and Ca²⁺ regulation has been disrupted, estrogen exposure can paradoxically exacerbate neurodegeneration rather than prevent it. ApoE4 creates precisely this vulnerable metabolic state by impairing glucose metabolism and lysosomal function, essential for Ca²⁺ homeostasis @chen2025. Consequently, ApoE4 carriers may exist in a state of chronic metabolic compromise, rendering them susceptible to the significant surge in estrogen which occurs during the gestation period. This theory, initially proposed to explain contradictory findings of hormone therapy on dementia risk, may also apply to parity, since parity is not only associated with a significant increase in estradiol, but also an increase in oxidative stress that can accelerate cellular metabolism @yu2025.
+APOE-e4 may be another modifier of the direction of association between parity and HV in middle age. In a study by Lee and colleagues, wild-type and APOE ε4 models of middle-aged female rats were used to specifically investigate whether APOE status influences the effect of parity on neurogenesis and HV @lee2024. Results showed that primiparous APOE ε4 rats displayed decreased neurogenesis in the ventral dentate gyrus of the hippocampus compared to primiparous wild-type counterparts. In addition to this, parous APOE ε4 rats showed a spatial solving strategy, indicating decreased hippocampal recruitment. Whilst to our knowledge, no study has looked into the potential interplay of APOE-e4 and parity in older women, there is evidence showing that apolipoproteins play a role in pregnancy. A study following 243 women throughout each of their trimester found that maternal concentrations of apolipoproteins change during gestation, and some were linked with metabolic risk factors like liver enzymes, inflammatory markers and blood pressure @chen2025a. In addition to this, in a cohort of 100 pregnant women, APOE-e4 was associated with implantation failure @darabi2024.
 
-Using wildtype and APOE4 models middle aged female rats, Lee and colleagues @lee2024 set-out to specifically test the theory that APOE status modifies the effect of parity on neurogenesis and HV. Results showed that primiparous APOE4 rats displayed decreased neurogenesis in the ventral dentate gyrus of the hippocampus compared to primiparous wildtype rats. In addition to this, parous APOE4 rats showed a spatial solving strategy which indicated a decreased recruitment of the hippocampus. These results confirmed the a-priori hypothesis that in the case of a compromised metabolic state, here due to carrying the APOE4 allele, pregnancy exerts a differencial effect on hippocampal cellular structure in middle-aged rats, with downstream effects on cognition.
-
-Our objective was to understand if parity exerts a differential long-term effect on hippocampal volume and trajectory depending on APOE4 status in postmenopausal CU women. To do so, we aimed to test the interactive effects of parity, APOE4 carriership and time on hippocampal volume. We hypothesized that APOE4 carriers would show a negative relationship between parity and hippocampal volume and trajectory.
+This study aims to evaluate whether parity is associated with differential long-term effects on HV and its trajectory as a function of APOE ε4 allele status in postmenopausal CU women at increased risk for AD. To do so, we aimed to test the interactive effects of parity, APOE ε4 carriership and time on hippocampal volume. We hypothesized that APOE ε4 carriers would show a negative relationship between parity and hippocampal volume and trajectory.
 
 # Methods
 
 ## Study population
 
-We included postmenopausal women who completed the baseline and first longitudinal visit (with an average time between visits of 3.32 years) from the ongoing ALFA+ study (Clinicaltrials.gov, NCT01835717). ALFA+ is a research cohort of middle-aged cognitively unimpaired participants, many of whom are offspring of AD patients, who have been deeply characterized by clinical interviews, lifestyle and risk factor questionnaires, cognitive testing, CSF biomarkers, and neuroimaging procedures, including magnetic resonance imaging (MRI), and Aβ positron emission tomography (PET). All of these procedures are repeated every 3 years with the main aim of identifying the earliest pathophysiological changes in the preclinical AD continuum @molinuevo2016. Briefly, ALFA+ inclusion criteria were: 1) participants who had previously participated in the 45-65/FPM2012 study (ALFA parent cohort); 2) age between 45 and 75 years at the moment of inclusion in the cohort; 3) long-term commitment to undergo all tests and study procedures (MRI, PET, and lumbar puncture). Exclusion criteria at baseline included: 1) cognitive impairment (Clinical Dementia Rating \[CDR\] \> 0, Mini-Mental State Examination \[MMSE\] \< 26, semantic fluency \< 12); 2) any significant systemic illness or unstable medical condition which could lead to difficulty complying with the protocol; 3) any contraindication to any test or procedure; 4) family history of monogenic AD. In addition, women with a history of cardiovascular-related gestational disease, such as preeclampsia, were excluded from our sample for analysis. Sex and menopausal status, defined as absence of menstruations for 12 consecutive months, were self disclosed. Women who reported being premenopausal or perimenopausal were not included in our analysis either.
+We included postmenopausal women who completed the baseline and first longitudinal visit (with an average time between visits of 3.32 years) from the ongoing ALFA+ study (Clinicaltrials.gov, NCT01835717). ALFA+ is a research cohort of middle-aged cognitively unimpaired participants, many of whom are offspring of AD patients, who have been deeply characterized by clinical interviews, lifestyle and risk factor questionnaires, cognitive testing, CSF biomarkers, and neuroimaging procedures, including magnetic resonance imaging (MRI), and Aβ positron emission tomography (PET). All of these procedures are repeated every 3 years with the main aim of identifying the earliest pathophysiological changes in the preclinical AD continuum @molinuevo2016. Briefly, ALFA+ inclusion criteria were: 1) participants who had previously participated in the 45-65/FPM2012 study (ALFA parent cohort); 2) age between 45 and 75 years at the moment of inclusion in the cohort; 3) long-term commitment to undergo all tests and study procedures (MRI, PET, and lumbar puncture). Exclusion criteria at baseline included: 1) cognitive impairment (Clinical Dementia Rating \[CDR\] \> 0, Mini-Mental State Examination \[MMSE\] \< 26, semantic fluency \< 12); 2) any significant systemic illness or unstable medical condition which could lead to difficulty complying with the protocol; 3) any contraindication to any test or procedure; 4) family history of monogenic AD.
+
+In addition, women with a history of cardiovascular-related gestational disease, such as preeclampsia, were excluded from this analysis. Sex and menopausal status (using STRAW criteria) were self-reported, and women who had not reached menopause were not included.
 
 The study was approved by the Independent Ethics Committee “Parc de Salut Mar”, Barcelona, and all participants gave written informed consent. Baseline visits took place between 2016 and 2019, and the follow-up visit between 2019 and 2022.
 
 ## Reproductive variables
 
-Parity was defined as the number of biological children and used as a continuous and dichotomous \[parous vs nulliparous\] variable in the main analyses. Due to the small number of grand multiparous participants, anyone with 4 or more biological children was grouped together. Hormonal Replacement Therapy (HRT) use was defined as a binary variable \[currently using vs not currently using\]. Cause of menopause was also defined as a binary variable \[natural vs non-natural\]. Reproductive span was calculated by subtracting age at menarche from age at menopause. Early menopause was defined as a binary variable \[age at menopause\> 45 vs age at menopause≤ 45\]. These informations were self-reported by participants during an interview with a clinician at the baseline visit. When asking about age at menopause, participants were asked to report their age 6(?) months after their last period.
+The reproductive variables were self-reported by participants during a clinical interview in the baseline visit. Parity was defined as the number of biological children and used as a continuous and dichotomous \[parous vs nulliparous\] variable in the main analyses. Due to the small number of grand multiparous participants, all participants with 4 or more biological children were grouped. Hormonal replacement therapy \[ever used vs not ever used\], cause of menopause \[natural vs non-natural\] and early menopause \[age at menopause\> 45 vs age at menopause≤ 45\] were defined as binary variables. Reproductive span was calculated by subtracting age at menarche from age at menopause. The number of abortions was used as a continuous variable.
 
 ## Cognitive measures
 
-The main cognitive outcome of this study was a modified Preclinical Alzheimer’s cognitive composite (mPACC), including the total immediate recall of the Free and Cued Selective Reminding Test (FCSRT), the total delayed recall of the logical memory subtest in the Wechsler Memory Scale-IV, the Coding subtest of the Wechsler Adult Intelligence Scale-Fourth Edition (WAIS-IV), and the total score of the semantic fluency test (animals category), as defined in previous work @lópez-martos2025a. Z-scores were computed for Visits 1 and 2 and used in the linear regressions. When using the longitudinal mPACC score in the mediation analysis, longitudinal cognitive change was computed as the difference between baseline and follow-up standardized scores.
+The main cognitive outcome of this study was a modified Preclinical Alzheimer’s cognitive composite (mPACC), a sensitive composite measure of early cognitive decline, comprising the total immediate recall of the Free and Cued Selective Reminding Test (FCSRT), the total delayed recall of the logical memory subtest in the Wechsler Memory Scale-IV, the Coding subtest of the Wechsler Adult Intelligence Scale-Fourth Edition (WAIS-IV), and the total score of the semantic fluency test (animals category), as defined in previous work @lópez-martos2025a. Z-scores were computed for Visits 1 and 2 and used in the linear regressions.
 
-## AD biomarkers
+## Core AD and glial activation biomarkers
 
-CSF collection, processing, and storage in the ALFA+ study have been described previously @Milà-Alomà2020. Briefly, CSF Aβ42, Aβ40, sTREM2, YKL40 and GFAP were measured with the exploratory Roche NeuroToolKit immunoassays (Roche Diagnostics International Ltd, Rotkreuz, Switzerland) on a cobas e 601 module. Measurements were performed at the Clinical Neurochemistry Laboratory, Sahlgrenska University Hospital, Molndal, Sweden. Aß accumulation (Aß+, Aß–) was estimated using CSF Aß42/40. Aß status (Aß+, Aß–) was defined using the cutoff of 0.071 for the ratio Aß42/40 \[23\], where any participant below this cutoff was considered to be Aβ+.
+CSF collection, processing, and storage in the ALFA+ study have been described previously @Milà-Alomà2020. Briefly, CSF Aβ42, Aβ40, sTREM2, YKL40, IL-6 and GFAP were measured with the exploratory Roche NeuroToolKit immunoassays (Roche Diagnostics International Ltd, Rotkreuz, Switzerland) on a cobas e 601 module. Measurements were performed at the Clinical Neurochemistry Laboratory, Sahlgrenska University Hospital, Molndal, Sweden. Aß accumulation (Aß+, Aß–) was estimated using CSF Aß42/40. Aß status (Aß+, Aß–) was defined using the cutoff of 0.071 for the ratio Aß42/40 @Milà-Alomà2020 , where any participant below this cutoff was considered to be Aβ+.
 
 ## Imaging data acquisition and preprocessing
 
@@ -292,19 +292,19 @@ Gray matter volumes were acquired using Freesurfer7's cortical Desikan-Killiany 
 
 ## Statistical analyses
 
-Linear mixed-effects models were used to explore associations between variables through time. This method was chosen over using simple linear regression and using subject slopes between baseline and follow-up due to its ability to account for within-subject correlation, and accommodate missing data under MAR assumptions.
+Descriptive statistics were performed using Kruskal-Wallis rank sum test for longitudinal variables and Fisher's exact test for binary variables. Data was grouped by the number of biological children in order to identify any confounders to covary for in the rest of our analyses.
 
-Hippocampal volume was designated as a primary outcome of interest given the existing literature. Cognitive performance was used as a secondary outcome to provide clinical context to our findings.
+Linear mixed-effects models were used to explore longitudinal associations between exposures and outcomes. This method was chosen over simple linear regression of subject slopes between baseline and follow-up, due to its ability to account for within-subject correlation and accommodate missing data under the missing-at-random (MAR) assumption.
 
-Our primary analysis assessed the joint effects of parity and APOE-e4 (exposures), on HV (outcome) over both visits, and test if this association is dependent on time. This model included a three-way interaction term among parity, APOE4, and time (the interval between Visit 1 and Visit 2 in years) as well as all lower-order interactions. Analyses were adjusted for age at baseline visit and scaled total intracranial volume. In addition to this, we also included HRT as a covariate due to reported effect it may have on HV in postmenopausal women (sources). To test specificity of the results with regards to our ROI, we reproduced the 3-way interaction between parity, APOE4 and time on gray matter volume changes in the calcarine cortex. This analysis was also adjusted for age at baseline visit, total intracranial volume and HRT.
+Hippocampal volume was designated as the primary outcome of interest. Cognitive performance was used as a secondary outcome to provide a clinical context to our findings.
 
-To test for potential confounders, sensitivity analyses were performed adding Aβ load as a covariate to disentangle the neuropathological contributions of Aβ accumulation from the phenogenetic contributions of APOE4. Given the high correlation between Aβ load and APOE4 variables, collinearity was tested for each model and can be found in the suppplementary materials. In addition to this, we reproduced the analysis in Aβ-negative participants only. We then conducted another secodary analysis which included additional covariates that reflect estrogen exposure in order to see if these impacted the association at hand.
+Primary analyses assessed the joint effects of parity and APOE-e4 (exposures), on HV (outcome) across study visits, and tested whether this association depended on time. This model included a three-way interaction term among parity, APOE ε4, and time (years between Visit 1 and Visit 2) as well as all lower-order interactions. Analyses were adjusted for age at baseline, education, scaled TIV and HRT. To assess the AD-specificity of our results, the three-way interaction (parity × APOE ε4 × time) was replicated using gray matter volume in the calcarine cortex, a region typically spared in preclinical AD. This model was adjusted for baseline age, education TIV, and HRT.
 
-Our secondary analysis assessed the joint effects of parity and APOE-e4 (exposures) on cognitive performance (outcome). This model included a three-way interaction term among parity, APOE4, and time (the interval between Visit 1 and Visit 2 in years) as well as all lower-order interactions. Analyses were adjusted for age at baseline visit and education.
+Sensitivity analyses were performed to determine whether the observed associations were driven by AD-related pathology. Continuous CSF Aβ42/40 load and its interaction with time were introduced as a covariate to disentangle the neuropathological contributions of Aβ accumulation from the APOE ε4-related effects. Given the high correlation between Aβ load and APOE ε4 variables, collinearity was tested for each model (eTable X). In addition to this, we reproduced the analysis in Aβ-negative participants only. Additional sensitivity analyses included additional covariates that reflect estrogen exposure \[early menopause, reproductive span, cause of menopause, number of abortions\] to evaluate their impact on the associations of interest. 
 
-We conducted exploratory mixed-effect linear regressions to examine the interactives effects of parity APOE-e4 and time on hippocampal subfield volumes across visits. Subfields values were standardized for comparison purposes. Given the exploratory nature of these analyses, results are reported without correction for multiple comparisons.
+Secondary analyses explored the joint effects of parity and APOE-e4 (exposures) on mPACC (outcome) using the same framework as the primary analysis. Covariates included were for baseline age, HRT and education. Aβ load was then introduced in a second analysis.
 
-Lastly, we conducted exploratory mixed-effects linear regressions using inflammatory biomarkers as outcomes to investigate their role in the observed association. CSF inflammatory variables were log-transformed to respect linear model assumptions. They were first tested as simple outcomes, then as ratio over Aß40 since the use of a reference protein may be helpful in improving CSF biomarker clinical relevance @karlsson2025.
+Exploratory linear mixed-effects models examined the interaction among parity, APOE-e4, and time on hippocampal subfield volumes across visits. Subfield measures were standardized to enable comparison across regions. Given the exploratory nature of these analyses, no correction for multiple comparisons was applied. Additional exploratory models used CSF inflammatory biomarkers \[GFAP, sTREM2, YKL-40, IL-6\] as outcomes to investigate their potential role in the observed associations. Biomarker values were log-transformed to meet model assumptions and were analyzed both as raw measures and as ratios normalized to Aβ40, since the use of a reference protein may enhance the clinical relevance of CSF biomarkers and be helpful in improving CSF biomarker clinical relevance @karlsson2025.
 
 Statistical significance was set at p \< 0.05. Analyses were conducted using R software, version 4.5.1 (The R Foundation for Statistical Computing, Vienna, Austria). The package ‘emmeans’ was used to calculate estimated marginal mean for direct group comparison of predicted effects @lenth2017. The package tidiverse was used for data processing and plotting @wickham2019. The package gtsummary was used for formatting tables @sjoberg2021. The package ggeffects was used to extract predicted values from regression models @lüdecke2018. The package lme4 was used for performing mixed effect linear regression models @bates2015.
 
@@ -345,15 +345,15 @@ dropout<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025_2010_ST
   mutate(STF_reas = factor(STF_reas, levels = c("1", "2", "3", "4", "5", "6", "7"), labels = c("Death", "No response", "Participant withdrawal", "Clinician decision", "Promotor decision", "Protocol issue", "Other")),
          STF_state = factor(STF_state, levels = c("1", "2", "3", "4"), labels = c("Completed", "Failed preescreening", "Failed screening", "Discontinued")))
 
-cognition1<-read_excel(paste0(config$alfa_dataset_cognition, "Visit 1 - Cognition Z Scores.xlsx"))%>%
-  dplyr::select(-Gender, -Age_V1S1, -Years_Edu, -V1S1_dt, -Z_PACC_Composite_1.2._v1)%>%
-  rename(memory = Z_Memory_Composite_v1, 
-         attention = Z_Attention_Composite_v1,
-         executive = Z_Executive_Composite_v1,
-         language = Z_Language_Composite_v1,
-         visual = Z_Visual_Composite_v1,
-         subject = IdParticipante)%>%
-  mutate(Visit=1)
+# cognition1<-read_excel(paste0(config$alfa_dataset_cognition, "Visit 1 - Cognition Z Scores.xlsx"))%>%
+#   dplyr::select(-Gender, -Age_V1S1, -Years_Edu, -V1S1_dt, -Z_PACC_Composite_1.2._v1)%>%
+#   rename(memory = Z_Memory_Composite_v1, 
+#          attention = Z_Attention_Composite_v1,
+#          executive = Z_Executive_Composite_v1,
+#          language = Z_Language_Composite_v1,
+#          visual = Z_Visual_Composite_v1,
+#          subject = IdParticipante)%>%
+#   mutate(Visit=1)
 
 cognition1<-read_excel("G:/My Drive/Data/ALFA+/data_raw/Cognition/PACCv1_to_v3(incomplete).xlsx")%>%
   rename(subject = IdParticipante)%>%
@@ -364,7 +364,7 @@ cognition1<-read_excel("G:/My Drive/Data/ALFA+/data_raw/Cognition/PACCv1_to_v3(i
   dplyr::select(subject, Z_PACC)
   
 
-ashs1<-data_ashs_long%>%
+ashs_desc<-data_ashs_long%>%
   group_by(subject)%>%
   filter(n()>1)%>%
   ungroup()%>%
@@ -376,13 +376,11 @@ biomarkers_wide<-biomarkers%>%
 
 data_table<-data_naked%>%
   filter(sex==2)%>%
-  inner_join(., ashs1)%>%
+  inner_join(., ashs_desc)%>%
   left_join(.,cognition1)%>%
   left_join(.,biomarkers_wide)%>%
   dplyr::select(age_v1, kids_total, APOE_binary, education, vol_tiv, vol_HIPP, Z_PACC, CSF_Abeta_ratio_V1, HRT, early_men, repro_span , cause_menopause,subject)%>%
-  mutate(kids_total= ifelse(kids_total==4, "4+", as.character(kids_total)),
-         vol_tiv = vol_tiv/1000,
-         vol_HIPP=vol_HIPP/1000)%>%
+  mutate(kids_total= ifelse(kids_total==4, "4+", as.character(kids_total)))%>%
   left_join(., diff_mri)%>%
   dplyr::select(age_v1, kids_total, education, APOE_binary, CSF_Abeta_ratio_V1, HRT, early_men, repro_span , cause_menopause, vol_HIPP , diff_mri, Z_PACC, vol_tiv)
 
@@ -421,9 +419,9 @@ desc_table<-tbl_summary(data_table,
 desc_table
 ```
 
-As shown in Table 1, 29 (X%) participants had no previous childbirths, 40 (X%) had one previous childbirth, 91 (X%) had 2, 23 (X%) had 3, and only 6 (X%) had 4 or more. Education significantly differed depending on parity. 
+As shown in Table 1, `r desc_table$table_styling$header$modify_stat_n[9]` (`r desc_table$table_styling$header$modify_stat_n[9]*100/desc_table$table_styling$header$modify_stat_n[8]`%) participants had no previous childbirths, `r desc_table$table_styling$header$modify_stat_n[10]` (`r desc_table$table_styling$header$modify_stat_n[10]*100/desc_table$table_styling$header$modify_stat_n[8]`%) had one previous childbirth, `r desc_table$table_styling$header$modify_stat_n[11]` (`r desc_table$table_styling$header$modify_stat_n[11]*100/desc_table$table_styling$header$modify_stat_n[8]`%) had 2, `r desc_table$table_styling$header$modify_stat_n[12]` (`r desc_table$table_styling$header$modify_stat_n[12]*100/desc_table$table_styling$header$modify_stat_n[8]`%) had 3, and only `r desc_table$table_styling$header$modify_stat_n[13]` (`r desc_table$table_styling$header$modify_stat_n[13]*100/desc_table$table_styling$header$modify_stat_n[8]`%) had 4 or more. Education significantly differed depending on parity.
 
-## Primary analysis: Interplay between parity, APOE-E4 and HV decline
+## Interplay between parity, APOE-E4 and HV decline
 
 ```{r, include = F}
 
@@ -457,14 +455,8 @@ summary(mod_ashs_APOE_dicho)
 ggpredict(mod_ashs_APOE_dicho, terms = c("APOE_binary", "diff_mri", "kids_dicho")) %>% plot()
 
 
-```
-
-Parity, APOE-ε4, and time showed a significant three-way interaction for total HV (β = `r tidy(mod_ashs_APOE)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.high[12]`\], p = `r tidy(mod_ashs_APOE)$p.value[12]`), indicating that higher parity was associated with steeper decline in HV among APOE-ε4 carriers (Figure X). Stratifying by APOE-ε4 status yielded a significant interaction between parity and time in carriers only (β = `r tidy(mod_ashs_APOE_A1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.high[8]`\], p \< 0.001) (Figure X).
-
-Reproducing the analysis using parity as a dichotomous variable did not yield any significant associaiton with our 3-way estimate. (p = `r tidy(mod_ashs_APOE_dicho)$p.value[12]`).
-
-```{r, include = F}
-tiv_freesurfer<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
+##########
+  tiv_freesurfer<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
   filter(region=="eTIV")%>%
   dplyr::select(subject, value)%>%
   unique()%>%
@@ -507,12 +499,13 @@ data_gray<-left_join(data_naked, gray_all)%>%
 
 mod_cal<-lmer(vol_pericalcarine ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+scale(tiv) + education  +(1|subject), data = data_gray)
 summary(mod_cal)
-
 ```
 
-The 3-way interaction between APOE4 parity and time was not associated with GMV in the calcarine cortical area (p = `r tidy(mod_cal)$p.value[11]`).
+Parity, APOE-ε4, and time showed a significant three-way interaction for total HV (β = `r tidy(mod_ashs_APOE)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.high[12]`\], p = `r tidy(mod_ashs_APOE)$p.value[12]`), indicating that higher parity was associated with a steeper decline in HV among APOE-ε4 carriers (Figure X). Stratifying by APOE-ε4 status yielded a significant interaction between parity and time in carriers only (β = `r tidy(mod_ashs_APOE_A1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.high[8]`\], p \< 0.001) (Figure X). The 3-way interaction between APOE ε4 parity and time was not associated with GMV in the calcarine cortical area (p = `r tidy(mod_cal)$p.value[11]`).
 
-## Sensitivity analysis: Adjusting for potential confounding factors
+Reproducing the analysis using parity as a dichotomous variable did not yield any significant associaiton with our 3-way estimate. (p = `r tidy(mod_ashs_APOE_dicho)$p.value[12]`).
+
+## Adjusting for potential confounding factors
 
 ```{r, include=F}
 
@@ -520,16 +513,16 @@ The 3-way interaction between APOE4 parity and time was not associated with GMV 
 
 ### AB load
 
-mod_ashs_APOE_ab<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+ education+scale(vol_tiv) + CSF_Abeta_ratio  +(1|subject), data = data_ashs_female)
+mod_ashs_APOE_ab<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+ education+scale(vol_tiv) + CSF_Abeta_ratio + CSF_Abeta_ratio:diff_mri  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_APOE_ab)
 
-mod_ashs_APOE_ab_a0<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ HRT+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==0,])
+mod_ashs_APOE_ab_a0<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ HRT+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==0,])
 summary(mod_ashs_APOE_ab_a0)
 
-mod_ashs_APOE_ab_a1<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+mod_ashs_APOE_ab_a1<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_APOE_ab_a1)
 
-mod_ashs_APOE_abneg<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+ education+scale(vol_tiv)   +(1|subject), data = data_ashs_female[data_ashs_female$A==0,])
+mod_ashs_APOE_abneg<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+ CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ education+scale(vol_tiv)   +(1|subject), data = data_ashs_female[data_ashs_female$A==0,])
 summary(mod_ashs_APOE_abneg)
 
 
@@ -545,13 +538,13 @@ anova_mod<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_
 anova(mod_ashs_APOE_horm, anova_mod)
 ```
 
-To control for other potential confounding factors, the main analysis was first rerun including Aβ load as a covariate. The triple interaction effect was maintained when adjusting analyses by Aβ accumulation (β = `r tidy(mod_ashs_APOE_ab)$estimate[13]`, 95% CI \[`r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.low[13]`, `r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.high[13]`\], p = `r tidy(mod_ashs_APOE_ab)$p.value[13]`). However, Aβ load showed a non-negligeable association with the outcome (β = `r tidy(mod_ashs_APOE_ab)$estimate[9]`, 95% CI \[`r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.low[9]`, `r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.high[9]`\], p = `r tidy(mod_ashs_APOE_ab)$p.value[9]`), indicating it may play a role independently. When reproducing the analysis including only participants with negative Aβ status, the effect was maintained, although attenuated (CSF Aβ\<0.071 pg/ml, n = 128) (β = `r tidy(mod_ashs_APOE_abneg)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_APOE_abneg, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_APOE_abneg, conf.int = TRUE)$conf.high[12]`\], p = `r tidy(mod_ashs_APOE_abneg)$p.value[12]`).
+To account for potential confounding factors, the primary analysis was repeated including Aβ load as a covariate. The triple interaction remained significant after adjustment for Aβ (β = `r tidy(mod_ashs_APOE_ab)$estimate[14]`, 95% CI \[`r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.low[14]`, `r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.high[14]`\], p = `r tidy(mod_ashs_APOE_ab)$p.value[14]`). Aβ load itself showed a strong association with the longitudinal outcome (β = `r tidy(mod_ashs_APOE_ab)$estimate[13]`, 95% CI \[`r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.low[13]`, `r tidy(mod_ashs_APOE_ab, conf.int = TRUE)$conf.high[13]`\], p = `r tidy(mod_ashs_APOE_ab)$p.value[13]`), suggesting a potential independent contribution.
 
--   when doing the AB neg model, should I covary by continous CSF AB?
+When reproducing the analysis including only participants with negative Aβ status, the effect was maintained, although attenuated (CSF Aβ\<0.071 pg/ml, n = 128) (β = `r tidy(mod_ashs_APOE_abneg)$estimate[14]`, 95% CI \[`r tidy(mod_ashs_APOE_abneg, conf.int = TRUE)$conf.low[14]`, `r tidy(mod_ashs_APOE_abneg, conf.int = TRUE)$conf.high[14]`\], p = `r tidy(mod_ashs_APOE_abneg)$p.value[14]`).
 
-Replicating the analysis by further adjusting for hormonal variables (HRT, reproductive span, early menopause, cause of menopause) still yielded a significant 3-way estimate (β = `r tidy(mod_ashs_APOE_horm)$estimate[15]`, 95% CI \[`r tidy(mod_ashs_APOE_horm, conf.int = TRUE)$conf.low[15]`, `r tidy(mod_ashs_APOE_horm, conf.int = TRUE)$conf.high[15]`\], p = `r tidy(mod_ashs_APOE_horm)$p.value[15]`). Additionally, using anova test to compare this model's performance with our original model, we did not find that the inclusion of the proxy variables explained the variance in the data any better.
+The analysis was further adjusted for hormonal variables (HRT use, reproductive span, early menopause, and cause of menopause), and the three-way interaction remained significant (β = `r tidy(mod_ashs_APOE_horm)$estimate[15]`, 95% CI \[`r tidy(mod_ashs_APOE_horm, conf.int = TRUE)$conf.low[15]`, `r tidy(mod_ashs_APOE_horm, conf.int = TRUE)$conf.high[15]`\], p = `r tidy(mod_ashs_APOE_horm)$p.value[15]`). Additionally, model comparison using an ANOVA test indicated that inclusion of these proxy variables did not improve model fit relative to the original model.
 
-## Secondary analysis: Cognitive trajectory
+## Interplay between parity, APOE-e4 and cognitive trajectory
 
 ```{r, include=F}
 
@@ -581,13 +574,14 @@ data_cog_long<- data_naked %>%
   mutate(Visit=as.numeric(Visit))%>%
   left_join(., A_long)%>%
   group_by(subject)%>%
-  filter(n()>1)
+  filter(n()>1)%>%
+  ungroup()
 
 
 
-fit_cog<-lmer(Z_PACC ~ time_diff_years*kids_total*APOE_binary +age_v1 +education +(1 | subject), data_cog_long)
+fit_cog<-lmer(Z_PACC ~ time_diff_years*kids_total*APOE_binary +age_v1 + HRT +education +(1 | subject), data_cog_long)
 summary(fit_cog)
-fit_cog_ab<-lmer(Z_PACC ~ time_diff_years*kids_total*APOE_binary +age_v1 +education + CSF_Abeta_ratio+ (1 | subject), data_cog_long)
+fit_cog_ab<-lmer(Z_PACC ~ time_diff_years*kids_total*APOE_binary +age_v1 + HRT +education + CSF_Abeta_ratio+ CSF_Abeta_ratio:time_diff_years+ (1 | subject), data_cog_long)
 summary(fit_cog_ab)
 influenceIndexPlot(fit_cog_ab)
 plot(fit_cog_ab)
@@ -600,9 +594,9 @@ ggplot(data_cog_long, aes(x= time_diff, y= Z_PACC, group = subject, colour = APO
   facet_wrap(~kids_total)
 ```
 
-The interaction between parity, APOE4 and time did not yield a significant association with the cognitive outcome (p = `r tidy(fit_cog)$p.value[10]`). However, adjusting the analysis by AB yielded a significant effect of the lower-order interaction between APOE4 and parity (β= `r tidy(fit_cog_ab)$estimate[10]`, 95% CI \[`r tidy(fit_cog_ab, conf.int = TRUE)$conf.low[10]`, `r tidy(fit_cog_ab, conf.int = TRUE)$conf.high[10]`\], p= `r tidy(fit_cog_ab)$p.value[10]`), where APOE4 carriers showed worse overall mPACC score with higher parity.
+The interaction between parity, APOE ε4 and time did not yield a significant association with PACCm (p = `r tidy(fit_cog)$p.value[11]`). Adjusting the analysis for AB strengthened the lower-order interaction between APOE ε4 and parity but it still did not reach signifiance (β= `r tidy(fit_cog_ab)$estimate[11]`, 95% CI \[`r tidy(fit_cog_ab, conf.int = TRUE)$conf.low[11]`, `r tidy(fit_cog_ab, conf.int = TRUE)$conf.high[10]`\], p= `r tidy(fit_cog_ab)$p.value[11]`).
 
-## Exploratory analysis of hippocampal subfields
+## Exploratory analysis of the interplay between parity, APOE-e4 and hippocampal subfields
 
 ```{r, include = F, warning=FALSE}
 
@@ -629,7 +623,7 @@ summary(mod_ashs_CA1)
 influenceIndexPlot(mod_ashs_CA1)
 mod_ashs_CA1_a1<-lmer(vol_CA1_std ~  kids_total*diff_mri +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_CA1_a1)
-mod_ashs_CA1_ab<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + CSF_Abeta_ratio+ HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
+mod_ashs_CA1_ab<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA1_ab)
 
 mod_ashs_CA2<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
@@ -637,7 +631,7 @@ summary(mod_ashs_CA2)
 influenceIndexPlot(mod_ashs_CA2)
 mod_ashs_CA2_a1<-lmer(vol_CA2_std ~ kids_total*diff_mri + age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_CA2_a1)
-mod_ashs_CA2_ab<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + HRT+ education+scale(vol_tiv) + CSF_Abeta_ratio +(1|subject), data = data_ashs_female)
+mod_ashs_CA2_ab<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + HRT+ education+scale(vol_tiv) + CSF_Abeta_ratio + CSF_Abeta_ratio:diff_mri+(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA2_ab)
 
 mod_ashs_CA3<-lmer(vol_CA3_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
@@ -649,7 +643,7 @@ summary(mod_ashs_DG)
 influenceIndexPlot(mod_ashs_DG)
 mod_ashs_DG_a1<-lmer(vol_DG_std ~  kids_total*diff_mri +age_v1  + HRT+ education+scale(vol_tiv)  + (1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_DG_a1)
-mod_ashs_DG_ab<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  + CSF_Abeta_ratio+ (1|subject), data = data_ashs_female)
+mod_ashs_DG_ab<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  + CSF_Abeta_ratio + CSF_Abeta_ratio:diff_mri+ (1|subject), data = data_ashs_female)
 summary(mod_ashs_DG_ab)
 
 mod_ashs_SUB<-lmer(vol_SUB_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
@@ -659,9 +653,9 @@ influenceIndexPlot(mod_ashs_SUB)
 
 ```
 
-The 3-way interaction between parity, APOE4 and time was significant in the CA1 (β= `r tidy(mod_ashs_CA1)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_CA1, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_CA1, conf.int = TRUE)$conf.high[12]`\], p= `r tidy(mod_ashs_CA1)$p.value[12]`), CA2 (β= `r tidy(mod_ashs_CA2)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_CA2, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_CA2, conf.int = TRUE)$conf.high[12]`\], p= `r tidy(mod_ashs_CA2)$p.value[12]`) and in the DG (β= `r tidy(mod_ashs_DG)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_DG, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_DG, conf.int = TRUE)$conf.high[12]`\], p= `r tidy(mod_ashs_DG)$p.value[12]`). Similarly, parity was associated with steeper HV decline in APOE-E4 carriers. When stratifying the analysis by APOE4 status, only the carrier group remained significant in the CA1 (β= `r tidy(mod_ashs_CA1_a1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_CA1_a1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_CA1_a1, conf.int = TRUE)$conf.high[8]`\], p= `r tidy(mod_ashs_CA1_a1)$p.value[8]`), CA2 (β= `r tidy(mod_ashs_CA2_a1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_CA2_a1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_CA2_a1, conf.int = TRUE)$conf.high[8]`\], p= `r tidy(mod_ashs_CA2_a1)$p.value[8]`) and DG (β= `r tidy(mod_ashs_DG_a1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_DG_a1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_DG_a1, conf.int = TRUE)$conf.high[8]`\], p= `r tidy(mod_ashs_DG_a1)$p.value[8]`).
+The 3-way interaction between parity, APOE-ε4 and time was significant in the CA1 (β= `r tidy(mod_ashs_CA1)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_CA1, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_CA1, conf.int = TRUE)$conf.high[12]`\], p= `r tidy(mod_ashs_CA1)$p.value[12]`), CA2 (β= `r tidy(mod_ashs_CA2)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_CA2, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_CA2, conf.int = TRUE)$conf.high[12]`\], p= `r tidy(mod_ashs_CA2)$p.value[12]`) and in the DG (β= `r tidy(mod_ashs_DG)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_DG, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_DG, conf.int = TRUE)$conf.high[12]`\], p= `r tidy(mod_ashs_DG)$p.value[12]`) where similarly to the analysis in total HV, parity was associated with steeper HV decline in APOE-ε4 carriers and the opposite in non-carriers. When stratifying the analysis by APOE-ε4 status, only the carrier group remained significant in the CA1 (β= `r tidy(mod_ashs_CA1_a1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_CA1_a1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_CA1_a1, conf.int = TRUE)$conf.high[8]`\], p= `r tidy(mod_ashs_CA1_a1)$p.value[8]`), CA2 (β= `r tidy(mod_ashs_CA2_a1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_CA2_a1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_CA2_a1, conf.int = TRUE)$conf.high[8]`\], p= `r tidy(mod_ashs_CA2_a1)$p.value[8]`) and DG (β= `r tidy(mod_ashs_DG_a1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_DG_a1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_DG_a1, conf.int = TRUE)$conf.high[8]`\], p= `r tidy(mod_ashs_DG_a1)$p.value[8]`).
 
-Adjusting whole group analysis by AB led to a stronger effect in the CA1 (β= `r tidy(mod_ashs_CA1_ab)$estimate[13]`, 95% CI \[`r tidy(mod_ashs_CA1_ab, conf.int = TRUE)$conf.low[13]`, `r tidy(mod_ashs_CA1_ab, conf.int = TRUE)$conf.high[13]`\], p= `r tidy(mod_ashs_CA1_ab)$p.value[13]`), but attenuated significance in the CA2 (p= `r tidy(mod_ashs_CA2_ab)$p.value[13]`). Effects in the DG remained largely unchanged (β= `r tidy(mod_ashs_DG_ab)$estimate[13]`, 95% CI \[`r tidy(mod_ashs_DG_ab, conf.int = TRUE)$conf.low[13]`, `r tidy(mod_ashs_DG_ab, conf.int = TRUE)$conf.high[13]`\], p= `r tidy(mod_ashs_DG_ab)$p.value[13]`).
+Adjusting whole group analysis by AB increased effects in the CA1 (β= `r tidy(mod_ashs_CA1_ab)$estimate[14]`, 95% CI \[`r tidy(mod_ashs_CA1_ab, conf.int = TRUE)$conf.low[14]`, `r tidy(mod_ashs_CA1_ab, conf.int = TRUE)$conf.high[14]`\], p= `r tidy(mod_ashs_CA1_ab)$p.value[14]`) but decreased them in the CA2 (p= `r tidy(mod_ashs_CA2_ab)$p.value[14]`). Effects in the DG remained largely unchanged (β= `r tidy(mod_ashs_DG_ab)$estimate[14]`, 95% CI \[`r tidy(mod_ashs_DG_ab, conf.int = TRUE)$conf.low[14]`, `r tidy(mod_ashs_DG_ab, conf.int = TRUE)$conf.high[14]`\], p= `r tidy(mod_ashs_DG_ab)$p.value[14]`).
 
 ## Exploratory analysis for inflammatory biomarkers
 
@@ -736,45 +730,25 @@ pca_inf$var$coord[,1]
 
 ```
 
-No significant effect of the interaction between parity and APOE-e4 was found with any of the tested inflammatory outcomes.
+No significant effect of the interaction between parity and APOE-e4 was found with any of the tested outcomes.
 
 # Discussion (work in progress)
 
-Our study aimed to investigate the impact of parity and APOE4 allele on hippocampal volume and cgnitive change in CU post-menopausal women at risk of AD. Our results suggest that parity and AD-related genotype interact in women to impact hippocampal volume loss. Specifically, APOE4 carriers showed an association between parity and steeped HV loss, but the opposite was true in non carriers. Stratified analyses revealed that the interactive effects of parity and time were only significant in APOE4 carriers. These interactive effects were not explained by potential confounding factors such as AB accumulation or other reproductive variables. Exploratory analyses of hippocampal subfields showed a significant association between the 3-way interaction and the CA1 and DG after adjusting for AB load. No association with cognition was found. Together, these findings highlight that being a carrier of the APOE4 allele may...
+Our study aimed to investigate the impact of parity and APOE-e4 allele on hippocampal volume in CU post-menopausal women at risk of AD. Parity and APOE-e4 interacted to significantly impact hippocampal volume change in our sample. Stratified analyses revealed that this effect was driven by APOE-e4 carriers, who showed steeper HV loss in the context of higher parity, indicating that genetic factors may modify the effect of reproductive history on hipoccampal plasticity. These interactive effects remained significant when adjusting for potential confounding factors such as AB accumulation or other reproductive variables. Together, these findings highlight that parity may exert a long term effect on hippocampal plasticity in postmenopausal women but this is dependent on genetic predisposition.
 
-Association between higher parity and steeper HV reduction in APOE4 carriers
+The main finding of our study was that APOE-e4 carriers showed an association between higher parity and steeper hippocampal decline. Our results indicate that reproductive history may exert an effect on HV change in older female APOE-e4 carriers. Interestingly, results were not maintained when using parity as a dichotomous variable (nulliparous vs parous), suggesting the phenomenon observed may be dose-dependent. Although APOE-e4 carriers showed significantly higher accumulations of AB load, adjusting for this variable did not seem to explain the observed effect. Moreover, this effect was also seen after reproducing the same analysis with AB negative subjects only. Recent evidence from the same cohort highlighted a possible modifying effect of amyloid status on the association between parity and HV, but this was not time-dependent. Therefore, our results do not seem to reflect amyloid driven neurodegeneration, but instead an independent pathway specific to APOE-e4 and parity.
 
-The main finding of our study was that APOE4 carriers showed an association between higher parity and steeper hippocampal decline. Our results evoke that previous parity may confer a deleterious effect on HV, a hallmark marker of early AD-related neurodegeneration, in carriers on the APOE4 allele. Although APOE4 carriers showed significantly higher accumulations of AB load, adjusting for this variable did not seem to explain the observed effect. Moreover, this effect was also seen after reproducing the same analysis with AB negative subjects only. Therefore, our results do not seem to reflect amyloid driven neurodegeneration, which can affect the hippocampaus in early stages of the disease (Raffa), but instead an independent pathway specific to APOE4 and parity. These results coincide with our previous hypothesis that the physiological and metabolical stress induced by pregnancy might be mitigated by initial presence of disease risk. Carrying the APOE4 allele is associated with increased inflammation in young adults (Ringman 2012), and this altered inflammatory response might induce greater stress in response to the high neuroplastic demands that occur during pregnancy.
+We did not find a significant three-way interaction between parity, APOE-ε4 and time on cognitive change. This dissociation between our structural and cognitive outcomes may be due to the relatively young age of our participants, or the relatively short follow-up interval. Notably, hippocampal volume loss can precede detectable cognitive decline by years in preclinical AD populations (cite), and our sample may simply not yet have reached the threshold at which structural changes translate into measurable cognitive differences. However, it is also possible for these changes to reflect a change in volume separate from neurodegeneration. Adjusting for amyloid load did strengthen the lower-order association between parity and APOE-e4, where consistent with the HV findings, carriers showed worse cognition with higher parity. However, this did not reach significance. Interestingly, Lee and colleagues observed a shift toward non-spatial cognitive strategies in primiparous APOE-e4 rats, suggesting reduced hippocampal use @lee2024. These results lend some support to the idea that such effects may eventually emerge in our cohort . Interestingly, previous work on our cohort found that parity and amyloid status together predicted dementia-related cognitive change, which further suggests that the pathway linking parity and APOE-ε4 to hippocampal volume loss observed here may operate independently from amyloid-driven decline. Additional time points will be essential to determine the clinical significance of the structural changes.
 
-In rodents, decrease in hipocampal neurogeneration mid-gestation till long after weaning (Puri richard Galea 2023)
+Exploratory analyses of hippocampal subfields suggested that the CA1 and DG drive the effect seen at whole hippocampal level. Similarly to whole hippocampal analyses, stratified analyses in APOE4 subgroups showed that the effect was driven by carriers of the allele. Our findings mirror results from Lee and colleagues, who found that primiparous wildtype rats showed a higher number of immature neurons in the ventral DG compared to nulliparous, but that nulliparous APOE-e4 rats showed a higher number of immature neurons in that area than their primiparous counterparts @lee2024. Interestingly, the CA1 is an impacted area of the hippocampus during pregnancy in humans @pritschet2024 and rodents show changes both in the CA1 @puri2023 and DG @pawluski2007a. However, these changes are highly dynamic and unlikely to reflect neurodegeneration or to last up until older age @servin-barthet2025a. One possible explanation for these results could be that parity may interact with prior genetic vulnerability to affect "inflammageing" @zavatta2022. It is worth noting that sensitivity analyses adjusting for amyloid load did not impact the association between our predictor and CA1 volume, even though this subfield is generally involved in AD-related neurodegeneration @deflores2015. In brief, these findings do not seem to reflect amyloid-dependent atrophy but may point toward an interaction of pregnancy and genetic vulnerability that could contribute to an accelerated senecence.
 
-past reproductive experience effects age dependent decline in neurogenesis in rodents, in a way ahich may attentuate the effects of aging in some hippocampal areas, and translates to better spatial cognition (duarte guzman 2019).
+Our data did not find a significant link between inflammation-related CSF biomarkers and the interactive effects of APOE4, parity and time. Inflammatory processes serve essential physiological roles in parturition @Challis2009, yet their long-term consequences remain understudied in humans. Neuroinflammation is a known contributor of neurodegeneration @ransohoff2016, and APOE-e4 genotype is linked with a chronic pro-inflammatory state @tao2018, therefore inflammatory pathways offered a plausible mechanistic explanation for the main findings. Neuroimmune and inflammatory processes increase less with age in parous rats, compared with nulliparous rats @duarte-guterman2019. Interestingly, primiparous middle-aged hAPOE4 rats showed a greater inflammatory phenotype compared to wildtype rats in the ventral hippocampus @lee2024, suggesting that APOE4 might also modify parity-related long-term inflammatory responses. The absence of significant findings in our sample might reflect the limited precision of CSF measurements relative to region-specific measurements that are possible on animal models. Larger samples and additional time points will be needed to better characterise longitudinal inflammatory patterns in parous and nulliparous older women.
 
-APOE4\*parity specific HV changes driven by the CA1 and DG
+The varying temporality of the observed phenomena, make it difficult to know whether we are observing an acute phenomenon that happened at the time of the reproducitve event, or if the long-term physiological changes brought-on by pregnancy affected the outcome little by little over time. A way to unify these ideas is to look at Brinton’s “healthy cell bias” theory, which posits that estrogen’s neuroprotective effects depend on neuronal metabolic health @brinton2008. Under physiological conditions, estrogen enhances glucose metabolism and mitochondrial bioenergetics, which supports the energy-intensive process of Ca²⁺ homeostasis. However, when metabolic injury is already present and Ca²⁺ regulation has been disrupted, estrogen exposure can paradoxically exacerbate neurodegeneration rather than prevent it. APOE ε4 carriership may create precisely this vulnerable metabolic state by impairing glucose metabolism and lysosomal function, essential for Ca²⁺ homeostasis @chen2025b. Therefore, APOE ε4 carriers may be in a state of chronic metabolic compromise, rendering them susceptible to the significant surge in estrogen that occurs during gestation. This theory, initially proposed to explain contradictory findings of hormone therapy on dementia risk, may also apply to parity, since parity is not only associated with a significant increase in estradiol, but also with an increased oxidative stress that which accelerate cellular metabolism @yu2025a. However, further studies examining the long-term effects of pregnancy on humans are needed to fully confirm this theory.
 
-Exploratory analyses of hippocampal subfields suggested that the CA1 and DG drive the effect seen at whole hippocampal level. Similarly to whole hippocampal analyses, stratified analyses in APOE4 subgroups showed that the effect was driven by carriers of the allele. Interestingly, Lee and colleagues found that primiparity increased neurogenesis in wildtype rats, but reduced it in APOE4 rats. Changes in these areas could be linked with parity related shanges, given the CA1 is among the impacted areas of the hippocampus during pregnancy in humans (Pritschet 2023) and rodents (Puri richard Galea 2023), and parity increases DG volumes in rodents.
+Some limitations should be considered. Firstly, the number of follow-up visits is insufficient to observe nonlinear evolution, therefore limiting our understanding of possible mechanisms underlying AD pathogenesis. Future work should include additional time points to better understand the trajectory of these results. Secondly, although our sample’s excellent health record makes it ideal to identify subtle changes in the early AD continuum, the vast majority of ALFA+ study participants are white Caucasians, resulting in an ethnically homogeneous sample primarily from middle to upper-middle class backgrounds. Future work should reproduce these analyses in a more diverse cohort to understand the impact of ethnicity and social background on the present results. Lastly, the absence of direct hormonal measurements limits our ability to draw definitive conclusions about the role of sex steroid hormones in the observed associations. By relying on proxy measures, we can only estimate hormone-related effects, potentially leading to an underestimation of their actual influence. This is particularly pertinent to relate the present findings to the Healthy cell bias theory, given the role of sex steroids is a primordial part of this hypothesis.
 
--   reduction in dendritic branching and increases in dendritic spines is obsevred in the CA1 in late post-partum (Puri richard Galea 2023)
-
-Our findings mirroir the ones found by Lee and colleagues in rodents. Similarly, female APOE4 rodent models showed an association between parity and lower neurogenesis in the ventral hippocampus. In addition to this, the DG was one of the impacted regions in our sample.
-
-Effect of parity increases with each additional child
-
-Unlike in Lee's study, our sample included multiparous women. Replication of the main analysis usign parity as a dichotomous variable reduced the size of the estimate and its significance. This suggests that parity is a better predictor when used as a continuous variable. Therefore, the interactive effect of parity with APOE4 and time seem to increase with every additional biological child. However, our sample lacked in grand multiparous women, which has been associated with higher AD/cogntive decline. There might be a non linear association between parity and out outcome which might be missed by the limitation of our data.
-
-Possible mechanisms behind the effect
-
-Our data did not find a significant link between inflammation-related CSF biomarkers and the interactive effects of APOE4, parity and time. Inflammatory processes serve essential physiological roles in parutrition (Challis 2009). Long-term consequences remain understudied and several reproductive adjacent variables seem to also impact this long-term association like sex of the child, age at first pregnancy or time between pregnancies (Zavatta 2021). Interestingly, neuroimmune and inflamatory processes see a lesser increase with age in parous rats, compared with nulliparous rats (durate-guzman 2019). In Lee et al., primiparous middleaged hAPOE4 rats showed a greater inflammatory phenotype compared to wildtype rats in the ventral hippocampus, suggesting that APOE4 might also modify parity-related long-term inflammatory responses. However, the ability to directly test presence of these markers in the regions of interest may partly explain the lack of significant relationship in our sample
-
-No effect on cognitive changes
-
-The effects seen on the hippocampus did not trasnlate to an effect on any of the cognitive domains examined. A previous study done with the UK biobank also finds no effect of the interaction between APOE4 and parity on cognitive score (lindseth et al 2023), although their battery of test is limited. In our case, this lack of association might not indicate absence of associaiton but rather reflect the relatively short amount of time between visits, and limited number of follow-ups. Since neurodegeneration typically precedes cognitive symptoms, our window of observation might be capturing early changes which could, in turn, translate into cognitive changes.
-
-The AFLFA+ cohort is an ideal cohort to test this interaction, given the participants are enriched in genetic AD risk, As such, about 40% of our cohort is a carrier of the APOE4 allele, meaning group interactions are very balanced statistically.
-
-Some limitations should be considered. Firstly, the number of follow-up visits is insufficient to observe nonlinear evolution, therefore limiting our understanding of possible mechanisms underlying AD pathogenesis. Future work should include additional time points to better understand the trajectory of these results. Secondly, although our sample’s excellent health record makes it ideal to identify subtle changes in the early AD continuum, the vast majority of ALFA+ study participants are white Caucasians, resulting in an ethnically homogeneous sample primarily from middle to upper-middle class backgrounds. Future work should reproduce these analyses in a more diverse cohort to understand the impact of ethnicity and social background on the present results. Lastly, the absence of direct hormonal measurements limits our ability to draw definitive conclusions about the role of sex steroid hormones in the observed associations. By relying on proxy measures, we can only estimate hormone-related effects, potentially leading to an underestimation of their actual influence.
-
-possible insight into why women who are carriers of APOE4 have a higher elevated risk for AD compared with men? interaction between preg and apoe4 phenotype
+To conclude, this research showed preliminary evidence that parity is associated with HV trajectory in postmenopausal depending on their genetic profile. Specifically, APOE-ε4 carriers showed steeper hippocampal volume loss with higher parity, an effect that was dose-dependent, subfield-specific, and independent of amyloid accumulation. These findings suggest that the long-term neurobiological consequences of pregnancy are not uniform across individuals, but are instead shaped by underlying genetic vulnerability. Taken together with the broader literature on sex-specific risk factors for AD, our results underscore the importance of incorporating reproductive history into models of brain aging in women. Future work with longer follow-up, larger and more diverse samples, and direct hormonal measurements will be essential to clarify the mechanisms at play and determine whether the structural changes observed here carry clinical significance over time.
 
 # Figures
 
@@ -821,7 +795,7 @@ p1<-ggplot(slopes_df, aes(x = kids_total, y = diff_mri.trend,
                                                      levels = c("Nulliparous", "Primiparous", "Multiparous")), 
                               time_diff = Inf, 
                               Z_PACC = Inf, 
-                              label = "p= 0.001**"),
+                              label = "p= 0.003**"),
             aes(x = time_diff, y = Z_PACC, label = label),
             size = 4, vjust = 1, hjust = 1, inherit.aes = FALSE)+
  geom_point(data = individual_slopes, 
@@ -901,12 +875,14 @@ ggplot( aes(x = kids_total, y = diff_mri.trend)) +
               alpha = 0.3) +
   geom_ribbon(data = all_slopes_cov, aes(ymin = lower.CL, ymax = upper.CL, fill = APOE_binary), 
               alpha = 0.3)+
-  geom_line(aes(color = APOE_binary), size = 1) +
-  geom_line(data = all_slopes_cov, aes(x = kids_total, y = diff_mri.trend, color = APOE_binary), size = 1, linetype= "dashed", inherit.aes = F)+
+  geom_line(aes(color = APOE_binary, linetype = "Unadjusted"), size = 1) +
+  geom_line(data = all_slopes_cov, aes(x = kids_total, y = diff_mri.trend, color = APOE_binary,  linetype = "Adjusted"), size = 1, inherit.aes = F)+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
   facet_wrap(~APOE_binary) +
-  labs(x = "Parity (number of biological children)",
-       y = "Estimated slope of HV change (cm3)") +
+  labs(x = "Number of biological children",
+       y = "Estimated slope of HV change (cm3)",
+       color = expression(italic("APOE")*"-ε4"),
+     fill = expression(italic("APOE")*"-ε4")) +
   th +
   # geom_text(data = data.frame(APOE_binary = factor("Non-carriers", 
   #                                                    levels = c("Non-carriers", "Carriers")), 
@@ -929,13 +905,23 @@ ggplot( aes(x = kids_total, y = diff_mri.trend)) +
   scale_x_continuous(
     breaks = c(0, 1, 2, 3, 4),
     labels = c("0", "1", "2", "3", "4+")
+  )+
+  scale_linetype_manual(
+    name   = "Model",
+    values = c("Unadjusted" = "solid", "Adjusted" = "dashed")
+  )+
+  guides(
+  linetype = guide_legend(
+    keywidth = unit(2, "cm")  # increase this until enough dashes show
   )
+)
 
 ```
 
 ```{r, echo=F, warning=F}
 p1/p2+
   plot_annotation(tag_levels = 'A')
+ggsave("figure1.png", width = 8, height = 7)
 ```
 
 ## Figure 2
@@ -948,29 +934,29 @@ p1/p2+
 
 # Fit models with standardized outcomes - APOE = 0
 models_apoe0 <- list(
-  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0)),
-  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0)),
-  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0)),
-  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
             data = filter(data_ashs_female, APOE_binary == 0)),
-  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0))
 )
 
 # Fit models with standardized outcomes - APOE = 1
 models_apoe1 <- list(
-  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1)),
-  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1)),
-  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1)),
-  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
             data = filter(data_ashs_female, APOE_binary == 1)),
-  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + (1 | subject),
+  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education +HRT+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1))
 )
 
@@ -986,8 +972,8 @@ extract_interaction <- function(model_list, apoe_status) {
   })
 }
 
-results_apoe0 <- extract_interaction(models_apoe0, "APOE = 0")
-results_apoe1 <- extract_interaction(models_apoe1, "APOE = 1")
+results_apoe0 <- extract_interaction(models_apoe0, "Non-carriers")
+results_apoe1 <- extract_interaction(models_apoe1, "Carriers")
 
 # Combine results
 forest_data <- bind_rows(results_apoe0, results_apoe1) %>%
@@ -1013,38 +999,40 @@ forest1<-ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
             vjust = -0.8, size = 4, show.legend = FALSE) +
   labs(x = "Parity:Time",
        y = "Hippocampal subfields",
-       color = "APOE-e4") +
+       color = expression(italic("APOE")*"-ε4")) +
   th+
   theme(legend.position = "none")
+  scale_color_manual(values = c("#1CA8B7", "#FF7043"),
+                     labels = c("Non-Carriers", "Carriers"))
 ```
 
 ```{r, echo=F, warning=F}
 
 # Fit models with standardized outcomes - APOE = 0
 models_apoe0 <- list(
-  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0)),
-  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0)),
-  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0)),
-  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
             data = filter(data_ashs_female, APOE_binary == 0)),
-  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 0))
 )
 
 # Fit models with standardized outcomes - APOE = 1
 models_apoe1 <- list(
-  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  CA1 = lmer(vol_CA1_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1)),
-  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  CA2 = lmer(vol_CA2_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1)),
-  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  CA3 = lmer(vol_CA3_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1)),
-  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  DG = lmer(vol_DG_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
             data = filter(data_ashs_female, APOE_binary == 1)),
-  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + CSF_Abeta_ratio+ (1 | subject),
+  SUB = lmer(vol_SUB_std ~ kids_total2*diff_mri + vol_tiv + age_v1 + education + HRT+CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ (1 | subject),
              data = filter(data_ashs_female, APOE_binary == 1))
 )
 
@@ -1060,8 +1048,8 @@ extract_interaction <- function(model_list, apoe_status) {
   })
 }
 
-results_apoe0 <- extract_interaction(models_apoe0, "APOE = 0")
-results_apoe1 <- extract_interaction(models_apoe1, "APOE = 1")
+results_apoe0 <- extract_interaction(models_apoe0, "Non-Carriers")
+results_apoe1 <- extract_interaction(models_apoe1, "Carriers")
 
 # Combine results
 forest_data <- bind_rows(results_apoe0, results_apoe1) %>%
@@ -1085,9 +1073,9 @@ forest2<-ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
   geom_text(aes(label = sig_label), 
             position = position_dodge(width = 0.5),
             vjust = -0.8, size = 4, show.legend = FALSE) +
-  labs(x = "Parity:Time + Aβ load",
+  labs(x = "Parity:Time adjusted",
        y = "Hippocampal subfields",
-       color = "APOE-e4") +
+       color = expression(italic("APOE")*"-ε4")) +
   th+
   theme(
     axis.title.y = element_blank(),
@@ -1095,10 +1083,13 @@ forest2<-ggplot(forest_data, aes(x = estimate, y = region, color = APOE)) +
     axis.ticks.y = element_blank(),
     axis.line.y = element_blank() # Removes the axis line itself (depending on the theme used)
   )
+  scale_color_manual(values = c("#1CA8B7", "#FF7043"),
+                     labels = c("Non-Carriers", "Carriers"))
 ```
 
 ```{r, echo=F, warning=FALSE}
 forest1+forest2
+ggsave("figure2.png", width = 8, height = 7)
 ```
 
 # Appendix
@@ -1107,7 +1098,7 @@ forest1+forest2
 
 MRI scans were acquired on a in-house 3.0 T scanner (GE Discovery MR750 W 3 T) using the same protocol for all participants, which included one T1- and three T2- weighted sequences. The 3D-T1w sequence was designed with an isotropic voxel size of1mm3 and a matrix size of256x256x160 (TR/TE/TI = 8.0/3.7/450 ms, NSA = 1, flip angle = 8°). Three 3D-T2w sequences, with a voxel size of1 mm× 1 mm× 3 mm, were also used: fluid attenuation inversion recovery (FLAIR: TR/TE/ TI = 11,000/90/2600 ms, flip angle = 160°), fast spin echo (FSE: TR/TE = 5000/85 ms, flip angle = 110°) and, gradient echo (GRE: TR/TE = 1300/23 ms, flip angle = 15°). All scans were visually assessed to verify their quality and to detect incidental findings by a trained neuroradiologist and have been reported elsewhere (Brugulat-Serrat et al. 2017). At visit 1, ten participants were excluded due to the presence of a meningioma, as well as 37 participants due to susceptibility, motion artefacts or segmentation problems, resulting in a total of 561 images available for subsequent analysis. At Visit 2, ... The medial temporal lobe atrophy was assessed by Medial Temporal Atrophy scale [@scheltens1992a].
 
-# 
+# References
 
 ```{r, include=F}
 
