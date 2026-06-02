@@ -76,8 +76,8 @@ apoe2<-read_delim("G:/My Drive/Data/ALFA+/data_raw/fluid_biomarkers/20201007_APl
 
 data_naked<-read_delim(paste0(config$alfa_dataset_cleaned, "ALFA_dataset_basic.csv"), 
     delim = ",", escape_double = FALSE, trim_ws = TRUE)%>%
-  mutate(sex=factor(sex),
-         APOE_binary = factor(APOE_binary), 
+  filter(sex==2)%>%
+  mutate(APOE_binary = factor(APOE_binary), 
          subject=as.numeric(subject),
          parous_group= factor(parous_group),
          DOB = as.Date (DOB, format = "%Y-%m-%d"),
@@ -210,7 +210,7 @@ data_biomarkers_long<-left_join(data_naked, biomarkers)%>%
   mutate(biomarkers_time_diff = ifelse(Visit==1, 0, biomarkers_time_diff))
 
 A_long<-data_biomarkers_long%>%
-  dplyr::select(subject, Visit, CSF_Abeta_ratio)
+  dplyr::select(subject, Visit, CSF_Abeta_ratio, A)
   
 ```
 
@@ -317,7 +317,6 @@ Rates of missing data in exposures or outcome variables at each time point are r
 alfa_participants_v1<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv"), delim= ";", col_names = TRUE)%>%
   rename(subject = IdParticipante)%>%
   right_join(., alfa_subjects)%>%
-  filter(sex==2)%>%
   dplyr::select(subject,Age_V1)%>%
   drop_na()%>%
   nrow()
@@ -325,7 +324,6 @@ alfa_participants_v1<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long
 alfa_participants_v2<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv"), delim= ";", col_names = TRUE)%>%
   rename(subject = IdParticipante)%>%
   right_join(., alfa_subjects)%>%
-  filter(sex==2)%>%
   dplyr::select(subject,Age_V2)%>%
   drop_na()%>%
   nrow()
@@ -333,7 +331,6 @@ alfa_participants_v2<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long
 alfa_subjects_dropout<-read_delim(paste0(config$alfa_dataset_raw, "Alfa Plus Long 2025__AlfaPlus_general_20250304095809(in).csv"), delim= ";", col_names = TRUE)%>%
 rename(subject = IdParticipante)%>%
   right_join(., alfa_subjects)%>%
-  filter(sex==2)%>%
   filter(is.na(Age_V2))%>%
   dplyr::select(subject)
 
@@ -374,18 +371,17 @@ biomarkers_wide<-biomarkers%>%
   pivot_wider(names_from = Visit, values_from = starts_with("CSF_"))
 
 data_table<-data_naked%>%
-  filter(sex==2)%>%
   inner_join(., ashs_desc)%>%
   left_join(.,cognition1)%>%
   left_join(.,biomarkers_wide)%>%
-  dplyr::select(age_v1, kids_total, APOE_binary, education, vol_tiv, vol_HIPP, Z_PACC, CSF_Abeta_ratio_V1, HRT, early_men, repro_span , cause_menopause,subject)%>%
-  mutate(kids_total= ifelse(kids_total==4, "4+", as.character(kids_total)))%>%
+  dplyr::select(age_v1, kids_total2, APOE_binary, education, vol_tiv, vol_HIPP, Z_PACC, CSF_Abeta_ratio_V1, HRT, early_men, repro_span , cause_menopause,subject)%>%
+  mutate(kids_total2= ifelse(kids_total2==3, "3+", as.character(kids_total2)))%>%
   left_join(., diff_mri)%>%
-  dplyr::select(age_v1, kids_total, education, APOE_binary, CSF_Abeta_ratio_V1, HRT, early_men, repro_span , cause_menopause, vol_HIPP , diff_mri, Z_PACC, vol_tiv)
+  dplyr::select(age_v1, kids_total2, education, APOE_binary, CSF_Abeta_ratio_V1, HRT, early_men, repro_span , cause_menopause, vol_HIPP , diff_mri, Z_PACC, vol_tiv)
 
 desc_table<-tbl_summary(data_table,
                         statistic = list(all_continuous() ~ "{mean} ({sd})"),
-            by = kids_total, 
+            by = kids_total2, 
             missing="no",
             label= list(kids_total2 = "Number of childbirths",
                      APOE_binary = "APOE-E4 carriers, Count (%)",
@@ -425,14 +421,13 @@ As shown in Table 1, `r desc_table$table_styling$header$modify_stat_n[9]` (`r de
 ```{r, include = F}
 
 data_ashs_female<-data_ashs_long%>%
-  filter(sex==2)%>%
   group_by(subject)%>%
   filter(n()==2)%>%
   ungroup()%>%
   left_join(., A_long)%>%
   mutate(A = ifelse(CSF_Abeta_ratio<0.071, 1, 0))
 
-mod_ashs_APOE<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) +HRT + education +(1|subject), data = data_ashs_female)
+mod_ashs_APOE<-lmer(vol_HIPP ~  kids_total2*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) +HRT + education +(1|subject), data = data_ashs_female)
 summary(mod_ashs_APOE)
 preds <- ggpredict(mod_ashs_APOE, terms = c("diff_mri", "APOE_binary"))
 
@@ -443,10 +438,10 @@ influenceIndexPlot(mod_ashs_APOE)
 
 ###
 
-mod_ashs_APOE_A0<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) +HRT + education +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==0,])
+mod_ashs_APOE_A0<-lmer(vol_HIPP ~  kids_total2*diff_mri +age_v1 + scale(vol_tiv) +HRT + education +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==0,])
 summary(mod_ashs_APOE_A0)
 
-mod_ashs_APOE_A1<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) +HRT + education +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+mod_ashs_APOE_A1<-lmer(vol_HIPP ~  kids_total2*diff_mri +age_v1 + scale(vol_tiv) +HRT + education +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_APOE_A1)
 
 mod_ashs_APOE_dicho<-lmer(vol_HIPP ~  kids_dicho*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) + HRT + education +(1|subject), data = data_ashs_female)
@@ -455,52 +450,10 @@ ggpredict(mod_ashs_APOE_dicho, terms = c("APOE_binary", "diff_mri", "kids_dicho"
 
 
 ##########
-  tiv_freesurfer<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
-  filter(region=="eTIV")%>%
-  dplyr::select(subject, value)%>%
-  unique()%>%
-  mutate(subject=as.numeric(subject),
-         value=as.numeric(value))%>%
-  rename(tiv = value)
 
-gray_v1<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
-  filter(measurement== "GrayVol")%>%
-  dplyr::select(-ID, -measurement)%>%
-  pivot_wider(names_from = region, values_from = value, names_prefix = "vol_")%>%
-  mutate(across(starts_with("vol_"), ~as.numeric(.)))%>%
-  group_by(subject)%>%
-  summarise(across(starts_with("vol_"), sum))%>%
-  mutate(Visit= "1",
-         subject=as.numeric(subject),
-         diff_mri= 0)
-
-gray_v2<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V2_20230518_20250703_111331.xlsx"))%>%
-  filter(measurement== "GrayVol")%>%
-  dplyr::select(-ID, -measurement)%>%
-  pivot_wider(names_from = region, values_from = value, names_prefix = "vol_")%>%
-  mutate(across(starts_with("vol_"), ~as.numeric(.)))%>%
-  group_by(subject)%>%
-  summarise(across(starts_with("vol_"), sum))%>%
-  mutate(Visit= "2",
-         subject=as.numeric(subject))%>%
-  left_join(., diff_mri)
-
-gray_all<-bind_rows(gray_v1, gray_v2)
-
-data_gray<-left_join(data_naked, gray_all)%>%
-  filter(sex==2)%>%
-  left_join(., tiv_freesurfer)%>%
-  group_by(subject)%>%
-  filter(n()==2)%>%
-  ungroup()%>%
-  group_by(subject)%>%
-  mutate(gray_all = rowSums(across(starts_with("vol_"))))
-
-mod_cal<-lmer(vol_pericalcarine ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+scale(tiv) + education  +(1|subject), data = data_gray)
-summary(mod_cal)
 ```
 
-Parity, APOE-ε4, and time showed a significant three-way interaction for total HV (β = `r tidy(mod_ashs_APOE)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.high[12]`\], p = `r tidy(mod_ashs_APOE)$p.value[12]`), indicating that higher parity was associated with a steeper decline in HV among APOE-ε4 carriers (Figure X). Stratifying by APOE-ε4 status yielded a significant interaction between parity and time in carriers only (β = `r tidy(mod_ashs_APOE_A1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.high[8]`\], p \< 0.001) (Figure X). The 3-way interaction between APOE ε4 parity and time was not associated with GMV in the calcarine cortical area (p = `r tidy(mod_cal)$p.value[11]`).
+Parity, APOE-ε4, and time showed a significant three-way interaction for total HV (β = `r tidy(mod_ashs_APOE)$estimate[12]`, 95% CI \[`r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.low[12]`, `r tidy(mod_ashs_APOE, conf.int = TRUE)$conf.high[12]`\], p = `r tidy(mod_ashs_APOE)$p.value[12]`), indicating that higher parity was associated with a steeper decline in HV among APOE-ε4 carriers (Figure X). Stratifying by APOE-ε4 status yielded a significant interaction between parity and time in carriers only (β = `r tidy(mod_ashs_APOE_A1)$estimate[8]`, 95% CI \[`r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.low[8]`, `r tidy(mod_ashs_APOE_A1, conf.int = TRUE)$conf.high[8]`\], p \< 0.001) (Figure X).
 
 Reproducing the analysis using parity as a dichotomous variable did not yield any significant associaiton with our 3-way estimate. (p = `r tidy(mod_ashs_APOE_dicho)$p.value[12]`).
 
@@ -512,16 +465,16 @@ Reproducing the analysis using parity as a dichotomous variable did not yield an
 
 ### AB load
 
-mod_ashs_APOE_ab<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+ education+scale(vol_tiv) + CSF_Abeta_ratio + CSF_Abeta_ratio:diff_mri  +(1|subject), data = data_ashs_female)
+mod_ashs_APOE_ab<-lmer(vol_HIPP ~  kids_total2*APOE_binary*diff_mri +age_v1 + HRT+ education+scale(vol_tiv) + A + A:diff_mri  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_APOE_ab)
 
-mod_ashs_APOE_ab_a0<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ HRT+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==0,])
+mod_ashs_APOE_ab_a0<-lmer(vol_HIPP ~  kids_total2*diff_mri +age_v1 + scale(vol_tiv) + A+ A:diff_mri+ HRT+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==0,])
 summary(mod_ashs_APOE_ab_a0)
 
-mod_ashs_APOE_ab_a1<-lmer(vol_HIPP ~  kids_total*diff_mri +age_v1 + scale(vol_tiv) + CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+mod_ashs_APOE_ab_a1<-lmer(vol_HIPP ~  kids_total2*diff_mri +age_v1 + scale(vol_tiv) + A+ A:diff_mri+ education  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_APOE_ab_a1)
 
-mod_ashs_APOE_abneg<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+ CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ education+scale(vol_tiv)   +(1|subject), data = data_ashs_female[data_ashs_female$A==0,])
+mod_ashs_APOE_abneg<-lmer(vol_HIPP ~  kids_total2*APOE_binary*diff_mri +age_v1 + HRT+ A+ A:diff_mri+ education+scale(vol_tiv)   +(1|subject), data = data_ashs_female[data_ashs_female$A==0,])
 summary(mod_ashs_APOE_abneg)
 
 
@@ -529,10 +482,10 @@ summary(mod_ashs_APOE_abneg)
 anova_data<-data_ashs_female%>%
   drop_na(repro_span, early_men, cause_menopause)
 
-mod_ashs_APOE_horm<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv)  + education+ repro_span+ early_men+ HRT+ cause_menopause + (1|subject), data = anova_data)
+mod_ashs_APOE_horm<-lmer(vol_HIPP ~  kids_total2*APOE_binary*diff_mri +age_v1 + scale(vol_tiv)  + education+ repro_span+ early_men+ HRT+ cause_menopause + (1|subject), data = anova_data)
 summary(mod_ashs_APOE_horm)
 
-anova_mod<-lmer(vol_HIPP ~  kids_total*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) +HRT + education+(1|subject), data = anova_data)
+anova_mod<-lmer(vol_HIPP ~  kids_total2*APOE_binary*diff_mri +age_v1 + scale(vol_tiv) +HRT + education+(1|subject), data = anova_data)
 
 anova(mod_ashs_APOE_horm, anova_mod)
 ```
@@ -578,19 +531,14 @@ data_cog_long<- data_naked %>%
 
 
 
-fit_cog<-lmer(Z_PACC ~ time_diff_years*kids_total*APOE_binary +age_v1 + HRT +education +(1 | subject), data_cog_long)
+fit_cog<-lmer(Z_PACC ~ time_diff_years*kids_total2*APOE_binary +age_v1 + HRT +education +(1 | subject), data_cog_long)
 summary(fit_cog)
-fit_cog_ab<-lmer(Z_PACC ~ time_diff_years*kids_total*APOE_binary +age_v1 + HRT +education + CSF_Abeta_ratio+ CSF_Abeta_ratio:time_diff_years+ (1 | subject), data_cog_long)
+fit_cog_ab<-lmer(Z_PACC ~ time_diff_years*kids_total2*APOE_binary +age_v1 + HRT +education + A+ A:time_diff_years+ (1 | subject), data_cog_long)
 summary(fit_cog_ab)
 influenceIndexPlot(fit_cog_ab)
 plot(fit_cog_ab)
 plot_model(fit_cog_ab, type="int")
 
-#chose not to remove because appart from cook's distance everything seems fine.. fine in other domains too. But she is driving the results a lot so could report with and without?
-
-ggplot(data_cog_long, aes(x= time_diff, y= Z_PACC, group = subject, colour = APOE_binary))+
-  geom_line()+
-  facet_wrap(~kids_total)
 ```
 
 The interaction between parity, APOE ε4 and time did not yield a significant association with PACCm (p = `r tidy(fit_cog)$p.value[11]`). Adjusting the analysis for AB strengthened the lower-order interaction between APOE ε4 and parity but it still did not reach signifiance (β= `r tidy(fit_cog_ab)$estimate[11]`, 95% CI \[`r tidy(fit_cog_ab, conf.int = TRUE)$conf.low[11]`, `r tidy(fit_cog_ab, conf.int = TRUE)$conf.high[10]`\], p= `r tidy(fit_cog_ab)$p.value[11]`).
@@ -617,35 +565,35 @@ data_ashs_female<-data_ashs_female%>%
          vol_DG_std = (vol_DG - DG_mean) / DG_sd,
          vol_SUB_std = (vol_SUB - SUB_mean) / SUB_sd)
 
-mod_ashs_CA1<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
+mod_ashs_CA1<-lmer(vol_CA1_std ~  kids_total2*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA1)
 influenceIndexPlot(mod_ashs_CA1)
-mod_ashs_CA1_a1<-lmer(vol_CA1_std ~  kids_total*diff_mri +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+mod_ashs_CA1_a1<-lmer(vol_CA1_std ~  kids_total2*diff_mri +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_CA1_a1)
-mod_ashs_CA1_ab<-lmer(vol_CA1_std ~  kids_total*diff_mri*APOE_binary +age_v1  + CSF_Abeta_ratio+ CSF_Abeta_ratio:diff_mri+ HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
+mod_ashs_CA1_ab<-lmer(vol_CA1_std ~  kids_total2*diff_mri*APOE_binary +age_v1  + A+ A:diff_mri+ HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA1_ab)
 
-mod_ashs_CA2<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
+mod_ashs_CA2<-lmer(vol_CA2_std ~ kids_total2*diff_mri*APOE_binary + age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA2)
 influenceIndexPlot(mod_ashs_CA2)
-mod_ashs_CA2_a1<-lmer(vol_CA2_std ~ kids_total*diff_mri + age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+mod_ashs_CA2_a1<-lmer(vol_CA2_std ~ kids_total2*diff_mri + age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_CA2_a1)
-mod_ashs_CA2_ab<-lmer(vol_CA2_std ~ kids_total*diff_mri*APOE_binary + age_v1  + HRT+ education+scale(vol_tiv) + CSF_Abeta_ratio + CSF_Abeta_ratio:diff_mri+(1|subject), data = data_ashs_female)
+mod_ashs_CA2_ab<-lmer(vol_CA2_std ~ kids_total2*diff_mri*APOE_binary + age_v1  + HRT+ education+scale(vol_tiv) + A + A:diff_mri+(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA2_ab)
 
 mod_ashs_CA3<-lmer(vol_CA3_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_CA3)
 influenceIndexPlot(mod_ashs_CA3)
 
-mod_ashs_DG<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  + (1|subject), data = data_ashs_female)
+mod_ashs_DG<-lmer(vol_DG_std ~  kids_total2*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  + (1|subject), data = data_ashs_female)
 summary(mod_ashs_DG)
 influenceIndexPlot(mod_ashs_DG)
-mod_ashs_DG_a1<-lmer(vol_DG_std ~  kids_total*diff_mri +age_v1  + HRT+ education+scale(vol_tiv)  + (1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
+mod_ashs_DG_a1<-lmer(vol_DG_std ~  kids_total2*diff_mri +age_v1  + HRT+ education+scale(vol_tiv)  + (1|subject), data = data_ashs_female[data_ashs_female$APOE_binary==1,])
 summary(mod_ashs_DG_a1)
-mod_ashs_DG_ab<-lmer(vol_DG_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  + CSF_Abeta_ratio + CSF_Abeta_ratio:diff_mri+ (1|subject), data = data_ashs_female)
+mod_ashs_DG_ab<-lmer(vol_DG_std ~  kids_total2*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  + A + A:diff_mri+ (1|subject), data = data_ashs_female)
 summary(mod_ashs_DG_ab)
 
-mod_ashs_SUB<-lmer(vol_SUB_std ~  kids_total*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
+mod_ashs_SUB<-lmer(vol_SUB_std ~  kids_total2*diff_mri*APOE_binary +age_v1  + HRT+ education+scale(vol_tiv)  +(1|subject), data = data_ashs_female)
 summary(mod_ashs_SUB)
 influenceIndexPlot(mod_ashs_SUB)
 
@@ -660,7 +608,6 @@ Adjusting whole group analysis by AB increased effects in the CA1 (β= `r tidy(m
 
 ```{r, include=F}
 data_biomarkers_long_female<-data_biomarkers_long%>%
-  filter(sex==2)%>%
   group_by(subject)%>%
   filter(n()>1)%>%
   ungroup()%>%
@@ -673,65 +620,14 @@ data_biomarkers_long_female_v1<-data_biomarkers_long_female%>%
          ykl_ratio= CSF_YKL40/CSF_Abeta40,
          gfap_ratio = CSF_GFAP/CSF_Abeta40)
 
-fit_base_strem<- lm(log(CSF_GFAP) ~ kids_total*APOE_binary + age_v1 + education, data= data_biomarkers_long_female_v1)
+fit_base_strem<- lm(log(CSF_YKL40) ~ kids_total2*APOE_binary + age_v1 + education, data= data_biomarkers_long_female_v1)
 summary(fit_base_strem)
 plot(fit_base_strem)
 ```
 
-```{r, eval=F, include=F}
-library(FactoMineR)
-library(factoextra)
-
-
-
-data_PCA_inf<-data_biomarkers_long_female%>%
-  dplyr::select(subject, Visit, CSF_GFAP, CSF_sTREM2, CSF_YKL40, biomarkers_time_diff)%>%
-  pivot_wider(names_from = Visit, values_from = c(CSF_GFAP, CSF_sTREM2, CSF_YKL40, biomarkers_time_diff))%>%
-  mutate(diff_CSF_GFAP = (CSF_GFAP_2 - CSF_GFAP_1)/biomarkers_time_diff_2,
-         diff_CSF_sTREM2 = (CSF_sTREM2_2 - CSF_sTREM2_1)/biomarkers_time_diff_2,
-         diff_CSF_YKL40 = (CSF_YKL40_2 - CSF_YKL40_1)/biomarkers_time_diff_2)%>%
-  dplyr::select(diff_CSF_GFAP, diff_CSF_sTREM2, diff_CSF_YKL40)
-
-
-pca_inf<-PCA(data_PCA_inf)
-eigenvalues_inf <- pca_inf$eig
-eigenvalues_inf
-
-barplot(eigenvalues_inf[, 2], names.arg=1:nrow(eigenvalues_inf), 
-       main = "Variances",
-       xlab = "Principal Components",
-       ylab = "Percentage of variances",
-       col ="steelblue")
-# Add connected line segments to the plot
-lines(x = 1:nrow(eigenvalues_inf), eigenvalues_inf[, 2], 
-      type="b", pch=19, col = "red")
-
-
-fviz_pca_var(pca_inf, col.var="contrib")
-
-pc1<-pca_inf$ind$coord
-data_biomarkers_long_female_pc1<-data_biomarkers_long_female%>%
-  group_by(subject)%>%
-  filter(n()>1)%>%
-  slice_head()%>%
-  ungroup()
-
-data_biomarkers_long_female_pc1$pc1<-pc1[,1]
-
-fit_pca_inf<-lm(pc1 ~ kids_total*APOE_binary+ age_v1, data = data_biomarkers_long_female_pc1)
-plot(fit_pca_inf)
-assumptions(fit_pca_inf)
-
-
-summary(trafo_lm(fit_pca_inf, trafo = "gpower"))
-
-pca_inf$var$coord[,1]
-
-```
-
 No significant effect of the interaction between parity and APOE-e4 was found with any of the tested outcomes.
 
-# Discussion (work in progress)
+# Discussion 
 
 Our study aimed to investigate the impact of parity on hippocampal volume in CU post-menopausal women at risk of AD, and how APOE-ε4 modified this association. Parity and APOE-ε4 interacted to impact hippocampal volume change in our sample significantly. Stratified analyses revealed that this effect was driven by APOE-ε4 carriers, who showed steeper HV loss with higher parity, suggesting that genetic factors may modify the effect of reproductive history on HV. These interactive effects remained significant after adjustment for potential confounding factors, such as Aβ accumulation and other reproductive variables. Together, these findings highlight that parity may exert a long-term effect on HV in postmenopausal women, but this is dependent on genetic predisposition.
 
@@ -758,8 +654,8 @@ To conclude, this research showed preliminary evidence that parity is associated
 # Create grid of values for prediction - specify multiple time points
 
 individual_slopes <- data_ashs_female %>%
-  filter(!is.na(kids_total) & !is.na(APOE_binary) & !is.na(diff_mri) & !is.na(vol_HIPP)) %>%
-  group_by(subject, kids_total, APOE_binary) %>%  # Only keep subjects with at least 2 observations
+  filter(!is.na(kids_total2) & !is.na(APOE_binary) & !is.na(diff_mri) & !is.na(vol_HIPP)) %>%
+  group_by(subject, kids_total2, APOE_binary) %>%  # Only keep subjects with at least 2 observations
   summarise(
     individual_slope = coef(lm(vol_HIPP ~ diff_mri))[2],
     n_obs = n(),
@@ -773,15 +669,15 @@ individual_slopes <- data_ashs_female %>%
 time_range <- range(data_ashs_long$diff_mri, na.rm = TRUE)
 time_seq <- seq(from = time_range[1], to = time_range[2])
 
-emm_grid <- emmeans(mod_ashs_APOE, ~ diff_mri * kids_total * APOE_binary,
+emm_grid <- emmeans(mod_ashs_APOE, ~ diff_mri * kids_total2 * APOE_binary,
                     at = list(time = time_seq),
                     data= data_ashs_long)
 emm_df <- as.data.frame(emm_grid)
 
-slopes <- emtrends(mod_ashs_APOE, ~ kids_total * APOE_binary, var = "diff_mri", data= data_ashs_long, at = list(kids_total = c(0, 1, 2, 3, 4)))
+slopes <- emtrends(mod_ashs_APOE, ~ kids_total2 * APOE_binary, var = "diff_mri", data= data_ashs_long, at = list(kids_total2 = c(0, 1, 2, 3)))
 slopes_df <- as.data.frame(slopes)
 
-p1<-ggplot(slopes_df, aes(x = kids_total, y = diff_mri.trend, 
+p1<-ggplot(slopes_df, aes(x = kids_total2, y = diff_mri.trend, 
                             fill = as.factor(APOE_binary))) +
   geom_col(position = "dodge", alpha = 0.8, color = "black", size = 0.3) +
   geom_errorbar(aes(ymin = diff_mri.trend - SE, ymax = diff_mri.trend + SE),
@@ -791,15 +687,8 @@ p1<-ggplot(slopes_df, aes(x = kids_total, y = diff_mri.trend,
      y = "Time slope", 
      color = expression(italic("APOE")*"-ε4"),
      fill = expression(italic("APOE")*"-ε4"))+
-  geom_text(data = data.frame(parous_group = factor("Multiparous", 
-                                                     levels = c("Nulliparous", "Primiparous", "Multiparous")), 
-                              time_diff = Inf, 
-                              Z_PACC = Inf, 
-                              label = "p= 0.003**"),
-            aes(x = time_diff, y = Z_PACC, label = label),
-            size = 4, vjust = 1, hjust = 1, inherit.aes = FALSE)+
  geom_point(data = individual_slopes, 
-             aes(x = kids_total, y = individual_slope, 
+             aes(x = kids_total2, y = individual_slope, 
                  color = as.factor(APOE_binary)),
              position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.9),
              alpha = 0.4, size = 2, shape=21, colour="black") +
@@ -808,8 +697,8 @@ p1<-ggplot(slopes_df, aes(x = kids_total, y = diff_mri.trend,
 scale_color_manual(values = c("#1CA8B7", "#FF7043"),
                      labels = c("Non-Carriers", "Carriers"))+
   scale_x_continuous(
-    breaks = c(0, 1, 2, 3, 4),
-    labels = c("0", "1", "2", "3", "4+")
+    breaks = c(0, 1, 2, 3),
+    labels = c("0", "1", "2", "3+")
   )
 
 ```
@@ -821,13 +710,13 @@ library(ggtext)
 
 
 # Get slopes across parity values for each APOE group
-parity_range <- c(0, 1, 2, 3, 4)
+parity_range <- c(0, 1, 2, 3)
 
 # Non-carriers
 slopes_nc <- emtrends(mod_ashs_APOE_A0,
-                      specs = ~ kids_total,
+                      specs = ~ kids_total2,
                       var = "diff_mri",
-                      at = list(kids_total = parity_range),
+                      at = list(kids_total2 = parity_range),
                       data=data_ashs_female[data_ashs_female$APOE_binary==0,])
 slopes_nc_df <- as.data.frame(slopes_nc)
 slopes_nc_df$APOE_binary <- "Non-carriers"
@@ -835,9 +724,9 @@ slopes_nc_df$cov<-0
 
 # Carriers  
 slopes_c <- emtrends(mod_ashs_APOE_A1,
-                     specs = ~ kids_total,
+                     specs = ~ kids_total2,
                      var = "diff_mri",
-                     at = list(kids_total = parity_range),
+                     at = list(kids_total2 = parity_range),
                      data=data_ashs_female[data_ashs_female$APOE_binary==1,])
 slopes_c_df <- as.data.frame(slopes_c)
 slopes_c_df$APOE_binary <- "Carriers"
@@ -845,9 +734,9 @@ slopes_c_df$cov<-0
 
 # Non-carriers + amyloid
 slopes_nc_ab <- emtrends(mod_ashs_APOE_ab_a0,
-                      specs = ~ kids_total,
+                      specs = ~ kids_total2,
                       var = "diff_mri",
-                      at = list(kids_total = parity_range),
+                      at = list(kids_total2 = parity_range),
                       data=data_ashs_female[data_ashs_female$APOE_binary==0,])
 slopes_nc_ab_df <- as.data.frame(slopes_nc_ab)
 slopes_nc_ab_df$APOE_binary <- "Non-carriers"
@@ -855,9 +744,9 @@ slopes_nc_ab_df$cov<-1
 
 # Carriers  + amyloid
 slopes_c_ab <- emtrends(mod_ashs_APOE_ab_a1,
-                     specs = ~ kids_total,
+                     specs = ~ kids_total2,
                      var = "diff_mri",
-                     at = list(kids_total = parity_range),
+                     at = list(kids_total2 = parity_range),
                      data=data_ashs_female[data_ashs_female$APOE_binary==1,])
 slopes_c_ab_df <- as.data.frame(slopes_c_ab)
 slopes_c_ab_df$APOE_binary <- "Carriers"
@@ -870,13 +759,13 @@ all_slopes_cov<- rbind(slopes_nc_ab_df, slopes_c_ab_df)
 # Same data as above, but on one plot
 p2<-all_slopes%>%
   mutate(APOE_binary=factor(APOE_binary, levels = c("Non-carriers", "Carriers")))%>%
-ggplot( aes(x = kids_total, y = diff_mri.trend)) +
+ggplot( aes(x = kids_total2, y = diff_mri.trend)) +
   geom_ribbon(aes(ymin = lower.CL, ymax = upper.CL, fill = APOE_binary), 
               alpha = 0.3) +
   geom_ribbon(data = all_slopes_cov, aes(ymin = lower.CL, ymax = upper.CL, fill = APOE_binary), 
               alpha = 0.3)+
   geom_line(aes(color = APOE_binary, linetype = "Unadjusted"), size = 1) +
-  geom_line(data = all_slopes_cov, aes(x = kids_total, y = diff_mri.trend, color = APOE_binary,  linetype = "Adjusted"), size = 1, inherit.aes = F)+
+  geom_line(data = all_slopes_cov, aes(x = kids_total2, y = diff_mri.trend, color = APOE_binary,  linetype = "Adjusted"), size = 1, inherit.aes = F)+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
   facet_wrap(~APOE_binary) +
   labs(x = "Number of biological children",
@@ -903,8 +792,8 @@ ggplot( aes(x = kids_total, y = diff_mri.trend)) +
   scale_fill_manual(values = c("#1CA8B7", "#FF7043"),
                      labels = c("Non-Carriers", "Carriers"))+
   scale_x_continuous(
-    breaks = c(0, 1, 2, 3, 4),
-    labels = c("0", "1", "2", "3", "4+")
+    breaks = c(0, 1, 2, 3),
+    labels = c("0", "1", "2", "3+")
   )+
   scale_linetype_manual(
     name   = "Model",
@@ -1100,7 +989,54 @@ MRI scans were acquired on a in-house 3.0 T scanner (GE Discovery MR750 W 3 T) u
 
 # References
 
-```{r, include=F}
+```{r, include=F, eval=F}
+  tiv_freesurfer<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
+  filter(region=="eTIV")%>%
+  dplyr::select(subject, value)%>%
+  unique()%>%
+  mutate(subject=as.numeric(subject),
+         value=as.numeric(value))%>%
+  rename(tiv = value)
+
+gray_v1<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V1_20231120_20250703_110643.xlsx"))%>%
+  filter(measurement== "GrayVol")%>%
+  dplyr::select(-ID, -measurement)%>%
+  pivot_wider(names_from = region, values_from = value, names_prefix = "vol_")%>%
+  mutate(across(starts_with("vol_"), ~as.numeric(.)))%>%
+  group_by(subject)%>%
+  summarise(across(starts_with("vol_"), sum))%>%
+  mutate(Visit= "1",
+         subject=as.numeric(subject),
+         diff_mri= 0)
+
+gray_v2<-read_excel(paste0(config$alfa_dataset_raw, "neuroimaging/cortical thickness/bx_freesurfer7_aparc_ALFA_PLUS_V2_20230518_20250703_111331.xlsx"))%>%
+  filter(measurement== "GrayVol")%>%
+  dplyr::select(-ID, -measurement)%>%
+  pivot_wider(names_from = region, values_from = value, names_prefix = "vol_")%>%
+  mutate(across(starts_with("vol_"), ~as.numeric(.)))%>%
+  group_by(subject)%>%
+  summarise(across(starts_with("vol_"), sum))%>%
+  mutate(Visit= "2",
+         subject=as.numeric(subject))%>%
+  left_join(., diff_mri)
+
+gray_all<-bind_rows(gray_v1, gray_v2)
+
+data_gray<-left_join(data_naked, gray_all)%>%
+  filter(sex==2)%>%
+  left_join(., tiv_freesurfer)%>%
+  group_by(subject)%>%
+  filter(n()==2)%>%
+  ungroup()%>%
+  group_by(subject)%>%
+  mutate(gray_all = rowSums(across(starts_with("vol_"))))
+
+mod_cal<-lmer(vol_pericalcarine ~  kids_total*APOE_binary*diff_mri +age_v1 + HRT+scale(tiv) + education  +(1|subject), data = data_gray)
+summary(mod_cal)
+```
+
+
+```{r, include=F, eval=F}
 
 #not sure you are removing people who don't have more than 1 here
 #CSF sTREM2, YKL40, GFAP, and plasma GFAP.
@@ -1162,7 +1098,7 @@ qqnorm(residuals(yk402))
 
 ```
 
-```{r, include=F}
+```{r, include=F, eval=F}
 svcam1<-lm( CSF_sVCAM1 ~ kids_total + age_v1  + CSF_Abeta_ratio+ education , data = data_biomarkers_long_female[data_biomarkers_long_female$APOE_binary==1 & data_biomarkers_long_female$Visit==1,])
 
 resid_svcam1<-residuals(svcam1)
@@ -1365,7 +1301,7 @@ summary(mediation_results)
 
 ```
 
-```{r, includ=F, eval=F}
+```{r, include=F, eval=F}
 
 library(mice)
 # Step 1: Set up and run imputation
